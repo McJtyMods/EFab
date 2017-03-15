@@ -24,6 +24,11 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> {
         super(Material.IRON, GridTE.class, GridContainer.class, "grid", true);
     }
 
+    @Override
+    public boolean isHorizRotation() {
+        return true;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public Class<? extends GenericGuiContainer> getGuiClass() {
