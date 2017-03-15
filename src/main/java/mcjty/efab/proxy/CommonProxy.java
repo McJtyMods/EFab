@@ -1,6 +1,7 @@
 package mcjty.efab.proxy;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
@@ -35,7 +36,7 @@ public abstract class CommonProxy {
 //        XNetMessages.registerNetworkMessages(network);
 
 //        ModItems.init();
-//        ModBlocks.init();
+        ModBlocks.init();
     }
 
     private void readMainConfig() {

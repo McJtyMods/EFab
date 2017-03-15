@@ -1,6 +1,7 @@
 package mcjty.efab.proxy;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import mcjty.efab.blocks.ModBlocks;
 import mcjty.lib.McJtyLibClient;
 import mcjty.lib.font.TrueTypeFont;
 import mcjty.lib.tools.MinecraftTools;
@@ -24,7 +25,7 @@ public class ClientProxy extends CommonProxy {
 //        OBJLoader.INSTANCE.addDomain(RFTools.MODID);
 //        ModelLoaderRegistry.registerLoader(new BakedModelLoader());
 //        ModItems.initModels();
-//        ModBlocks.initModels();
+        ModBlocks.initModels();
         McJtyLibClient.preInit(e);
     }
 

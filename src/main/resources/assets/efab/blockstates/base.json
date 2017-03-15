@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "efab:base"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}
