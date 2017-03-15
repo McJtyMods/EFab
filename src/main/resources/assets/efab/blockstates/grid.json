@@ -1,0 +1,28 @@
+{
+  "forge_marker": 1,
+  "defaults": {},
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": {
+      "south": {},
+      "north": { "y": 180 },
+      "east": { "y": 270 },
+      "west": { "y": 90 }
+    },
+    "half": {
+      "true": {
+        "submodel": {
+          "b": { "custom": { "flip-v": true }, "model": "efab:halfbase" },
+          "g": { "custom": { "flip-v": true }, "model": "efab:grid", "translation": [0, 0.4, 0] }
+        }
+      },
+      "false": {
+        "submodel": {
+          "b": { "custom": { "flip-v": true }, "model": "efab:fullbase" },
+          "g": { "custom": { "flip-v": true }, "model": "efab:grid", "translation": [0, 0.9, 0] }
+        }
+      }
+    }
+  }
+}

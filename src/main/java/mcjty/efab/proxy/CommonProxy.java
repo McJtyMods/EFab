@@ -1,10 +1,13 @@
 package mcjty.efab.proxy;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.blocks.network.EFabMessages;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
+import mcjty.lib.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
@@ -12,6 +15,7 @@ import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
@@ -32,8 +36,8 @@ public abstract class CommonProxy {
 
         readMainConfig();
 
-//        SimpleNetworkWrapper network = PacketHandler.registerMessages(XNet.MODID, "xnet");
-//        XNetMessages.registerNetworkMessages(network);
+        SimpleNetworkWrapper network = PacketHandler.registerMessages(EFab.MODID, "efab");
+        EFabMessages.registerNetworkMessages(network);
 
 //        ModItems.init();
         ModBlocks.init();
