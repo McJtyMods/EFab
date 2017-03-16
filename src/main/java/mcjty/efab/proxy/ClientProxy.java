@@ -1,13 +1,14 @@
 package mcjty.efab.proxy;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.lib.McJtyLibClient;
-import mcjty.lib.font.TrueTypeFont;
 import mcjty.lib.tools.MinecraftTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -17,12 +18,10 @@ import java.util.concurrent.Callable;
 
 public class ClientProxy extends CommonProxy {
 
-    public static TrueTypeFont font;
-
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
-//        OBJLoader.INSTANCE.addDomain(RFTools.MODID);
+        OBJLoader.INSTANCE.addDomain(EFab.MODID);
 //        ModelLoaderRegistry.registerLoader(new BakedModelLoader());
 //        ModItems.initModels();
         ModBlocks.initModels();
