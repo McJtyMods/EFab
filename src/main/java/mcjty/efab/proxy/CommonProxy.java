@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Level;
 
@@ -60,7 +61,7 @@ public abstract class CommonProxy {
     }
 
     public void init(FMLInitializationEvent e) {
-//        NetworkRegistry.INSTANCE.registerGuiHandler(XNet.instance, new GuiProxy());
+        NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 //        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
 //        ModRecipes.init();
     }

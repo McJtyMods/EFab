@@ -15,13 +15,13 @@
       "true": {
         "submodel": {
           "b": { "custom": { "flip-v": true }, "model": "efab:halfbase.obj" },
-          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj", "translation": [0, 0.4, 0] }
+          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj", "transform": { "translation": [0, 0.4, 0] } }
         }
       },
       "false": {
         "submodel": {
           "b": { "custom": { "flip-v": true }, "model": "efab:fullbase.obj" },
-          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj", "translation": [0, 0.8, 0] }
+          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj", "transform": { "translation": [0, 0.8, 0] } }
         }
       }
     }

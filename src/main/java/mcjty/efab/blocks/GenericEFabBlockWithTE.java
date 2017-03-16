@@ -32,6 +32,7 @@ public abstract class GenericEFabBlockWithTE<T extends GenericTileEntity, C exte
         setCreativeTab(EFab.tabEFab);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public void initModel() {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));

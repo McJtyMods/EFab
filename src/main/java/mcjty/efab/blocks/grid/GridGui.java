@@ -12,7 +12,7 @@ import java.awt.*;
 
 public class GridGui extends GenericGuiContainer<GridTE> {
 
-    public static final int WIDTH = 256;
+    public static final int WIDTH = 171;
     public static final int HEIGHT = 236;
 
     private static final ResourceLocation mainBackground = new ResourceLocation(EFab.MODID, "textures/gui/grid.png");

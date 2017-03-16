@@ -9,10 +9,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,6 +29,13 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> {
     @Override
     public boolean isHorizRotation() {
         return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void initModel() {
+        super.initModel();
+        ClientRegistry.bindTileEntitySpecialRenderer(GridTE.class, new GridRenderer());
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,6 +72,10 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> {
         world.markBlockRangeForRenderUpdate(pos, pos);
     }
 
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+    }
 
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
