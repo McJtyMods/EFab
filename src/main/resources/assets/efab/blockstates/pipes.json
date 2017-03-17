@@ -1,0 +1,45 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "submodel": {
+      "s0": { "custom": { "flip-v": true }, "model": "efab:pipe.obj" },
+      "s1": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0] } },
+      "s2": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0.5, 0] } },
+      "s3": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0.5, 0] } },
+      "s4": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0.5] } },
+      "s5": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0.5, 0.5] } },
+      "s6": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0.5, 0.5] } },
+      "s7": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0, 0.5] } }
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "state": {
+      "0": {
+        "submodel": {
+          "s0": { "transform": { "translation": [0, 0, 0]          , "y": 90 } },
+          "s1": { "transform": { "translation": [0.5, 0, 0]        } },
+          "s2": { "transform": { "translation": [0, 0.5, 0]        , "x": 90 } },
+          "s3": { "transform": { "translation": [0.5, 0.5, 0]      } },
+          "s4": { "transform": { "translation": [0.5, 0, 0.5]      } },
+          "s5": { "transform": { "translation": [0.5, 0.5, 0.5]    , "z": 90 } },
+          "s6": { "transform": { "translation": [0, 0.5, 0.5]      } },
+          "s7": { "transform": { "translation": [0, 0, 0.5]        } }
+        }
+      },
+      "1": {
+        "submodel": {
+          "s0": { "transform": { "translation": [0, 0, 0]          } },
+          "s1": { "transform": { "translation": [0.5, 0, 0]        , "z": 90 } },
+          "s2": { "transform": { "translation": [0, 0.5, 0]        , "y": 90 } },
+          "s3": { "transform": { "translation": [0.5, 0.5, 0]      } },
+          "s4": { "transform": { "translation": [0.5, 0, 0.5]      , "y": 90 } },
+          "s5": { "transform": { "translation": [0.5, 0.5, 0.5]    } },
+          "s6": { "transform": { "translation": [0, 0.5, 0.5]      } },
+          "s7": { "transform": { "translation": [0, 0, 0.5]        , "z": 90 } }
+        }
+      }
+    }
+  }
+}
