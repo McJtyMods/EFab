@@ -1,6 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
+    "model": "efab:empty_model"
   },
   "variants": {
     "normal": [{}],

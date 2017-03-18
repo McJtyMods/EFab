@@ -72,10 +72,10 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> {
         world.markBlockRangeForRenderUpdate(pos, pos);
     }
 
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-    }
+//    @Override
+//    public EnumBlockRenderType getRenderType(IBlockState state) {
+//        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+//    }
 
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {

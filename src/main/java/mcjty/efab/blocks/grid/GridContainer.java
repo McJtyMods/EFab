@@ -24,6 +24,7 @@ public class GridContainer extends GenericContainer {
 
     public GridContainer(EntityPlayer player, IInventory inventory) {
         super(factory);
+        addInventory(CONTAINER_INVENTORY, inventory);
         addInventory(ContainerFactory.CONTAINER_PLAYER, player.inventory);
         generateSlots();
     }

@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class PipeBlock extends GenericEFabBlock {
 
-    public static PropertyInteger STATE = PropertyInteger.create("state", 0, 1);
+    public static PropertyInteger STATE = PropertyInteger.create("state", 0, 3);
 
     public PipeBlock() {
         super(Material.IRON, "pipes");
@@ -52,7 +52,7 @@ public class PipeBlock extends GenericEFabBlock {
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 //        boolean half = isNeedToBeHalf(worldIn.getBlockState(pos.down()).getBlock());
-        int s = random.nextInt(2);
+        int s = random.nextInt(4);
         return state.withProperty(STATE, s);
     }
 
@@ -60,6 +60,16 @@ public class PipeBlock extends GenericEFabBlock {
         return block == ModBlocks.baseBlock;
     }
 
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return super.getStateFromMeta(meta);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
 
     @Override
     protected BlockStateContainer createBlockState() {
