@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "custom": { "flip-v": true }, "model": "efab:tankfull.obj"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "state": {
+      "full": { "custom": { "flip-v": true }, "model": "efab:tankfull.obj" },
+      "bottom": { "custom": { "flip-v": true }, "model": "efab:tankbottom.obj" },
+      "top": { "custom": { "flip-v": true }, "model": "efab:tanktop.obj" },
+      "middle": { "custom": { "flip-v": true }, "model": "efab:tankmiddle.obj" }
+    }
+  }
+}
