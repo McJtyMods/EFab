@@ -15,8 +15,7 @@
     "half": {
       "true": {
         "submodel": {
-          "b": { "custom": { "flip-v": true }, "model": "efab:halfbase.obj" },
-          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj", "transform": { "translation": [0, 0.4, 0] } }
+          "g": { "custom": { "flip-v": true }, "model": "efab:grid.obj" }
         }
       },
       "false": {

@@ -62,25 +62,26 @@ public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
 //        double distanceSq = MinecraftTools.getPlayer(Minecraft.getMinecraft()).getDistanceSq(tileEntity.getPos());
 
         bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        boolean half = GridBlock.isHalfBlock(tileEntity.getWorld(), tileEntity.getPos());
 
         for (int x = 0 ; x < 3 ; x++) {
             for (int y = 0 ; y < 3 ; y++) {
-                renderHandle(tileEntity, x, y);
+                renderHandle(tileEntity, x, y, half);
             }
         }
     }
 
-    private static void renderHandle(GridTE te, int x, int y) {
+    private static void renderHandle(GridTE te, int x, int y, boolean half) {
         ItemStack stackInSlot = te.getStackInSlot(y * 3 + x);
         if (ItemStackTools.isValid(stackInSlot)) {
-            renderItemStackInWorld(new Vec3d(x * .3, .6, y * .3), stackInSlot);
+            renderItemStackInWorld(new Vec3d(x * .3-.3, .1 + (half ? 0.2 : 1), y * .3-.3), stackInSlot);
         }
     }
 
     private static void renderItemStackInWorld(Vec3d offset, ItemStack stack) {
         net.minecraft.client.renderer.RenderHelper.enableStandardItemLighting();
         GlStateManager.translate(offset.xCoord, offset.yCoord, offset.zCoord);
-        renderItemCustom(stack, 0, 0.3f);
+        renderItemCustom(stack, 0, 0.1f);
         GlStateManager.translate(-offset.xCoord, -offset.yCoord, -offset.zCoord);
     }
 
