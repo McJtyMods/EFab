@@ -1,12 +1,14 @@
 package mcjty.efab.blocks.pipes;
 
 import mcjty.efab.blocks.GenericEFabBlock;
-import mcjty.efab.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -18,7 +20,8 @@ import java.util.Random;
 
 public class PipeBlock extends GenericEFabBlock {
 
-    public static PropertyInteger STATE = PropertyInteger.create("state", 0, 3);
+    public static final PropertyDirection FACING_HORIZ = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 3);
 
     public PipeBlock() {
         super(Material.IRON, "pipes");
@@ -49,30 +52,38 @@ public class PipeBlock extends GenericEFabBlock {
 
     private static Random random = new Random();
 
+    /**
+     * Called by ItemBlocks after a block is set in the world, to allow post-place logic
+     */
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-//        boolean half = isNeedToBeHalf(worldIn.getBlockState(pos.down()).getBlock());
-        int s = random.nextInt(4);
-        return state.withProperty(STATE, s);
-    }
-
-    private boolean isNeedToBeHalf(Block block) {
-        return block == ModBlocks.baseBlock;
-    }
-
-
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return super.getStateFromMeta(meta);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return 0;
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        world.setBlockState(pos, state
+                .withProperty(FACING_HORIZ, placer.getHorizontalFacing().getOpposite())
+                .withProperty(STATE, random.nextInt(4))
+                , 2);
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, STATE);
+        return new BlockStateContainer(this, STATE, FACING_HORIZ);
+    }
+
+    /**
+     * Convert the given metadata into a BlockState for this Block
+     */
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        EnumFacing value = EnumFacing.VALUES[(meta & 3) + 2];
+        return getDefaultState()
+                .withProperty(FACING_HORIZ, value)
+                .withProperty(STATE, (meta>>2) & 3);
+    }
+
+    /**
+     * Convert the BlockState into the correct metadata value
+     */
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return (state.getValue(FACING_HORIZ).getIndex()-2) + (state.getValue(STATE) << 2);
     }
 }

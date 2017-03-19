@@ -6,6 +6,12 @@
   "variants": {
     "normal": [{}],
     "inventory": [{}],
+    "facing": {
+      "south": {},
+      "north": { "y": 180 },
+      "east": { "y": 270 },
+      "west": { "y": 90 }
+    },
     "state": {
       "0": {
         "submodel": {
@@ -54,7 +60,7 @@
       "3": {
         "submodel": {
           "s0": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "rotation": {"y":90}, "translation": [0, 0, -0.5]          } },
-          "s1": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "rotation": { "x": 90 }, "translation": [0.5, -0.5, 0]        } },
+          "s1": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0]        } },
           "s2": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "rotation": [{ "x": 90 },{"z":90}], "translation": [-0.5, 0, 0]        } },
           "s3": { "custom": { "flip-v": true }, "model": "efab:pipeblock.obj", "transform": { "rotation": [{ "x": 180 },{"y":90}], "translation": [0.5, 0, 0]      } },
           "s4": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "rotation": [ { "y": 270 }, {"z": 90}], "translation": [0, 0, 0]      } },
