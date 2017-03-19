@@ -1,6 +1,7 @@
 package mcjty.efab.blocks;
 
 import mcjty.efab.blocks.base.BaseBlock;
+import mcjty.efab.blocks.boiler.BoilerBlock;
 import mcjty.efab.blocks.gearbox.GearBoxBlock;
 import mcjty.efab.blocks.grid.GridBlock;
 import mcjty.efab.blocks.pipes.PipeBlock;
@@ -15,6 +16,7 @@ public class ModBlocks {
     public static PipeBlock pipeBlock;
     public static GridBlock gridBlock;
     public static TankBlock tankBlock;
+    public static BoilerBlock boilerBlock;
 
     public static void init() {
         baseBlock = new BaseBlock();
@@ -22,6 +24,7 @@ public class ModBlocks {
         pipeBlock = new PipeBlock();
         gridBlock = new GridBlock();
         tankBlock = new TankBlock();
+        boilerBlock = new BoilerBlock();
     }
 
     @SideOnly(Side.CLIENT)
@@ -31,5 +34,6 @@ public class ModBlocks {
         pipeBlock.initModel();
         gridBlock.initModel();
         tankBlock.initModel();
+        boilerBlock.initModel();
     }
 }
