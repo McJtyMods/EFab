@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "efab:blocks/gearbox",
+    "down": "efab:blocks/gearbox",
+    "up": "efab:blocks/gearbox",
+    "east": "efab:blocks/gearbox",
+    "west": "efab:blocks/gearbox",
+    "north": "efab:blocks/gearbox",
+    "south": "efab:blocks/gearbox"
+  }
+}
