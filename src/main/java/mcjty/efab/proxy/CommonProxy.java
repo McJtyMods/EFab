@@ -5,6 +5,7 @@ import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.network.EFabMessages;
 import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.recipes.RecipeManager;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.network.PacketHandler;
@@ -30,6 +31,7 @@ public abstract class CommonProxy {
     public void preInit(FMLPreInitializationEvent e) {
         McJtyLib.preInit(e);
 
+        RecipeManager.init();
         GeneralConfig.preInit(e);
 
         modConfigDir = e.getModConfigurationDirectory();
