@@ -99,7 +99,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             ItemStack currentStack = getStackInSlot(i);
             if (ItemStackTools.isEmpty(currentStack)) {
                 return true;
-            } else if (isItemStackConsideredEqual(currentStack, output)) {
+            } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
                 int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
                 if (remaining >= ItemStackTools.getStackSize(output)) {
                     return true;
@@ -117,7 +117,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (ItemStackTools.isEmpty(currentStack)) {
                 setInventorySlotContents(i, output);
                 return;
-            } else if (isItemStackConsideredEqual(currentStack, output)) {
+            } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
                 int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
                 if (remaining >= ItemStackTools.getStackSize(output)) {
                     ItemStackTools.setStackSize(output, ItemStackTools.getStackSize(output) + ItemStackTools.getStackSize(currentStack));
@@ -130,10 +130,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 ItemStackTools.incStackSize(output, -remaining);
             }
         }
-    }
-
-    private static boolean isItemStackConsideredEqual(ItemStack result, ItemStack itemstack1) {
-        return ItemStackTools.isValid(itemstack1) && itemstack1.getItem() == result.getItem() && (!result.getHasSubtypes() || result.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(result, itemstack1);
     }
 
     private void setRecipeGhostOutput() {
