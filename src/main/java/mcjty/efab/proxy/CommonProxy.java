@@ -3,7 +3,7 @@ package mcjty.efab.proxy;
 import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
-import mcjty.efab.blocks.network.EFabMessages;
+import mcjty.efab.network.EFabMessages;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.EFabShapedRecipe;
 import mcjty.efab.recipes.RecipeManager;

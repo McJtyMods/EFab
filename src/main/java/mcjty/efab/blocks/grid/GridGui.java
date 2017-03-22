@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.grid;
 
 import mcjty.efab.EFab;
-import mcjty.efab.blocks.network.EFabMessages;
+import mcjty.efab.network.EFabMessages;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;

@@ -1,4 +1,4 @@
-package mcjty.efab.blocks.network;
+package mcjty.efab.network;
 
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 

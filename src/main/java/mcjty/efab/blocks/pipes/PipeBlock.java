@@ -1,9 +1,9 @@
 package mcjty.efab.blocks.pipes;
 
-import mcjty.efab.blocks.GenericEFabBlock;
+import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -18,13 +18,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class PipeBlock extends GenericEFabBlock {
-
-    public static final PropertyDirection FACING_HORIZ = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-    public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 3);
+public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer> {
 
     public PipeBlock() {
-        super(Material.IRON, "pipes");
+        super(Material.IRON, PipeTE.class, EmptyContainer.class, "pipes", false);
+    }
+
+    public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 3);
+
+    @Override
+    public boolean isHorizRotation() {
+        return true;
     }
 
     @Override

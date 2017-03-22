@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.tank;
 
-import mcjty.efab.blocks.GenericEFabBlock;
+import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -13,12 +14,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TankBlock extends GenericEFabBlock {
+public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer> {
 
     public static final PropertyEnum<EnumTankState> STATE = PropertyEnum.create("state", EnumTankState.class, EnumTankState.values());
 
     public TankBlock() {
-        super(Material.IRON, "tank");
+        super(Material.IRON, TankTE.class, EmptyContainer.class, "tank", false);
+    }
+
+    @Override
+    public boolean hasNoRotation() {
+        return true;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.grid;
 
 import mcjty.efab.EFab;
-import mcjty.efab.blocks.network.EFabMessages;
+import mcjty.efab.network.EFabMessages;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
