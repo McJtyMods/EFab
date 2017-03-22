@@ -1,0 +1,5 @@
+{
+    "machine" : {"category": "block", "sounds": ["efab:machine"]},
+    "sparks" : {"category": "block", "sounds": ["efab:sparks"]},
+    "steam" : {"category": "block", "sounds": ["efab:steam"]}
+}
