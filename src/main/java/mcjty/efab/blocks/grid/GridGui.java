@@ -16,6 +16,8 @@ public class GridGui extends GenericGuiContainer<GridTE> {
     public static final int WIDTH = 171;
     public static final int HEIGHT = 176;
 
+    private Button craftButton;
+
     private static final ResourceLocation mainBackground = new ResourceLocation(EFab.MODID, "textures/gui/grid.png");
 
     public GridGui(GridTE controller, GridContainer container) {
@@ -32,7 +34,7 @@ public class GridGui extends GenericGuiContainer<GridTE> {
         Panel toplevel = new Panel(mc, this).setLayout(new PositionalLayout())
                 .setBackground(mainBackground);
 
-        Button craftButton = new Button(mc, this)
+        craftButton = new Button(mc, this)
                 .setText("Start")
                 .setLayoutHint(new PositionalLayout.PositionalHint(84, 30, 40, 16))
                 .addButtonEvent(parent -> {
@@ -51,6 +53,19 @@ public class GridGui extends GenericGuiContainer<GridTE> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int x1, int x2) {
+        tileEntity.requestProgressFromServer();
+        int ticks = tileEntity.getTicksRemaining();
+        if (ticks == 0) {
+            craftButton.setText("Start");
+        } else {
+            switch ((ticks / 5) % 5) {
+                case 0: craftButton.setText("."); break;
+                case 1: craftButton.setText(".."); break;
+                case 2: craftButton.setText("..."); break;
+                case 3: craftButton.setText("...."); break;
+                case 4: craftButton.setText("....."); break;
+            }
+        }
         drawWindow();
     }
 }
