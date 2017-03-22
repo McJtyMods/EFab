@@ -5,10 +5,11 @@ import mcjty.efab.blocks.network.EFabMessages;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
+import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 public class GridGui extends GenericGuiContainer<GridTE> {
 
@@ -30,9 +31,22 @@ public class GridGui extends GenericGuiContainer<GridTE> {
 
         Panel toplevel = new Panel(mc, this).setLayout(new PositionalLayout())
                 .setBackground(mainBackground);
+
+        Button craftButton = new Button(mc, this)
+                .setText("Start")
+                .setLayoutHint(new PositionalLayout.PositionalHint(84, 30, 40, 16))
+                .addButtonEvent(parent -> {
+                    craft();
+        });
+
+        toplevel.addChild(craftButton);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
+    }
+
+    private void craft() {
+        sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_CRAFT);
     }
 
     @Override

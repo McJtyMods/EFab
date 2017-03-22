@@ -1,21 +1,53 @@
 package mcjty.efab.blocks.grid;
 
 import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.sound.ISoundProducer;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.network.Argument;
+import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ISoundProducer, ITickable {
 
-    private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3);
+    public static final String CMD_CRAFT = "craft";
+
+    private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + 1);
+    private InventoryCrafting workInventory = new InventoryCrafting(new Container() {
+        @SuppressWarnings("NullableProblems")
+        @Override
+        public boolean canInteractWith(EntityPlayer var1) {
+            return false;
+        }
+    }, 3, 3);
 
     @Override
     public void update() {
-
+        // @todo only do this when gui is open?
+        if (!getWorld().isRemote) {
+            for (int i = 0 ; i < 9 ; i++) {
+                workInventory.setInventorySlotContents(i, inventoryHelper.getStackInSlot(i));
+            }
+            IRecipe validRecipe = RecipeManager.findValidRecipe(workInventory, getWorld(), Collections.emptySet());
+            if (validRecipe != null) {
+                ItemStack craftingResult = validRecipe.getCraftingResult(workInventory);
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, craftingResult);
+            } else {
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, ItemStackTools.getEmptyStack());
+            }
+        }
     }
 
     private void updateMachineSound() {
@@ -34,7 +66,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
+    private void startCraft() {
 
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
@@ -70,5 +104,16 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return canPlayerAccess(player);
     }
 
-
+    @Override
+    public boolean execute(EntityPlayerMP playerMP, String command, Map<String, Argument> args) {
+        boolean rc = super.execute(playerMP, command, args);
+        if (rc) {
+            return rc;
+        }
+        if (CMD_CRAFT.equals(command)) {
+            startCraft();
+            return true;
+        }
+        return false;
+    }
 }
