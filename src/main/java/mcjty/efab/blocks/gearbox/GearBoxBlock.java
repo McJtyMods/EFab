@@ -9,4 +9,9 @@ public class GearBoxBlock extends GenericEFabMultiBlockPart<GearBoxTE, EmptyCont
     public GearBoxBlock() {
         super(Material.IRON, GearBoxTE.class, EmptyContainer.class, "gearbox", false);
     }
+
+    @Override
+    public boolean hasNoRotation() {
+        return true;
+    }
 }

@@ -19,7 +19,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,7 +27,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     public static final PropertyEnum<EnumTankState> STATE = PropertyEnum.create("state", EnumTankState.class, EnumTankState.values());
 
     public TankBlock() {
-        super(Material.IRON, TankTE.class, EmptyContainer.class, "tank", false);
+        super(Material.IRON, TankTE.class, EmptyContainer.class, TankItemBlock.class, "tank", false);
     }
 
     @Override
@@ -81,10 +80,10 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
         ItemStack container = heldItem.copy().splitStack(1);
         FluidStack fluidStack = FluidTools.convertBucketToFluid(container);
         if (fluidStack != null) {
-            int filled = tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).fill(fluidStack, false);
+            int filled = tank.getHandler().fill(fluidStack, false);
             if (filled == fluidStack.amount) {
                 // Success
-                tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).fill(fluidStack, true);
+                tank.getHandler().fill(fluidStack, true);
                 if (!player.capabilities.isCreativeMode) {
                     heldItem.splitStack(1);
                     ItemStack emptyContainer = FluidTools.drainContainer(container);
@@ -95,7 +94,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     }
 
     private void extractIntoContainer(EntityPlayer player, TankTE tank) {
-        FluidStack drained = tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).drain(1, false);
+        FluidStack drained = tank.getHandler().drain(1, false);
         if (drained != null) {
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
             if (ItemStackTools.isEmpty(heldItem)) {
@@ -104,9 +103,9 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
             ItemStack container = heldItem.copy().splitStack(1);
             int capacity = FluidTools.getCapacity(drained, container);
             if (capacity != 0) {
-                drained = tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).drain(capacity, false);
+                drained = tank.getHandler().drain(capacity, false);
                 if (drained != null && drained.amount == capacity) {
-                    tank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).drain(capacity, true);
+                    tank.getHandler().drain(capacity, true);
                     ItemStack filledContainer = FluidTools.fillContainer(drained, container);
                     if (ItemStackTools.isValid(filledContainer)) {
                         heldItem.splitStack(1);
@@ -117,8 +116,6 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
             player.openContainer.detectAndSendChanges();
         }
     }
-
-
 
     @Override
     protected void clOnNeighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
