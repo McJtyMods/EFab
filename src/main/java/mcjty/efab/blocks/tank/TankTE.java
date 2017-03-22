@@ -1,6 +1,6 @@
 package mcjty.efab.blocks.tank;
 
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.efab.blocks.GenericEFabTile;
 
-public class TankTE extends GenericTileEntity {
+public class TankTE extends GenericEFabTile {
 }

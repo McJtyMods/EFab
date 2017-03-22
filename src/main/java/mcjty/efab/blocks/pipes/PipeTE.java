@@ -1,6 +1,6 @@
 package mcjty.efab.blocks.pipes;
 
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.efab.blocks.GenericEFabTile;
 
-public class PipeTE extends GenericTileEntity {
+public class PipeTE extends GenericEFabTile {
 }

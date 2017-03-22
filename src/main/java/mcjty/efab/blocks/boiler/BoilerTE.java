@@ -1,6 +1,6 @@
 package mcjty.efab.blocks.boiler;
 
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.efab.blocks.GenericEFabTile;
 
-public class BoilerTE extends GenericTileEntity {
+public class BoilerTE extends GenericEFabTile {
 }

@@ -1,6 +1,6 @@
 package mcjty.efab.blocks.gearbox;
 
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.efab.blocks.GenericEFabTile;
 
-public class GearBoxTE extends GenericTileEntity {
+public class GearBoxTE extends GenericEFabTile {
 }

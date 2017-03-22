@@ -1,35 +1,35 @@
 package mcjty.efab.blocks.grid;
 
-import mcjty.efab.EFab;
-import mcjty.efab.network.EFabMessages;
+import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
+import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.sound.ISoundProducer;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.network.Argument;
-import mcjty.lib.network.PacketRequestIntegerFromServer;
 import mcjty.lib.tools.ItemStackTools;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ISoundProducer, ITickable {
 
     public static final String CMD_CRAFT = "craft";
-    public static final String CMD_GETPROGRESS = "getProgress";
-    public static final String CLIENTCMD_GETPROGRESS = "getProgress";
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + 1);
     private InventoryCrafting workInventory = new InventoryCrafting(new Container() {
@@ -41,7 +41,18 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }, 3, 3);
 
     private int ticksRemaining = 0;
+    private int totalTicks = 0;
     private ItemStack craftingOutput = ItemStackTools.getEmptyStack();
+
+    // Client side only and contains the last error from the server
+    private String errorFromServer = "";
+
+    // Transient information that is calculated on demand
+    private boolean dirty = true;       // Our cached multiblock info is invalid
+    private final Set<BlockPos> boilers = new HashSet<>();
+    private final Set<BlockPos> tanks = new HashSet<>();
+    private final Set<BlockPos> gearBoxes = new HashSet<>();
+    private Set<RecipeTier> supportedTiers = null;
 
     @Override
     public void update() {
@@ -63,6 +74,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
                 if (ticksRemaining <= 0) {
                     ticksRemaining = 0;
+                    totalTicks = 0;
                     // Craft finished. Consume items and do the actual crafting. If there is no room to place
                     // the craft result then nothing happens
 
@@ -210,11 +222,55 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
+    private void findMultiBlockParts(BlockPos current, Set<BlockPos> visited) {
+        if (visited.contains(current)) {
+            return;
+        }
+        visited.add(current);
+        for (EnumFacing dir : EnumFacing.VALUES) {
+            BlockPos p = current.offset(dir);
+            Block block = getWorld().getBlockState(p).getBlock();
+            if (block == ModBlocks.gridBlock) {
+                TileEntity te = getWorld().getTileEntity(p);
+                if (te instanceof GridTE) {
+                    ((GridTE) te).invalidateMultiBlockCache();
+                }
+                findMultiBlockParts(p, visited);
+            } else if (block instanceof GenericEFabMultiBlockPart) {
+                if (block == ModBlocks.boilerBlock) {
+                    boilers.add(p);
+                } else if (block == ModBlocks.gearBoxBlock) {
+                    gearBoxes.add(p);
+                } else if (block == ModBlocks.tankBlock) {
+                    tanks.add(p);
+                }
+                findMultiBlockParts(p, visited);
+            }
+        }
+    }
+
+
+    private void checkMultiBlockCache() {
+        if (dirty) {
+            dirty = false;
+            boilers.clear();
+            tanks.clear();
+            gearBoxes.clear();
+            findMultiBlockParts(getPos(), new HashSet<>());
+        }
+    }
+
+    public void invalidateMultiBlockCache() {
+        dirty = true;
+        supportedTiers = null;
+    }
+
     private void startCraft() {
         IEFabRecipe recipe = findCurrentRecipe();
         if (recipe != null) {
             craftingOutput = getCurrentOutput(recipe);
             ticksRemaining = recipe.getCraftTime();
+            totalTicks = recipe.getCraftTime();
             markDirtyQuick();
         }
     }
@@ -223,6 +279,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         ticksRemaining = tagCompound.getInteger("ticks");
+        totalTicks = tagCompound.getInteger("total");
         if (tagCompound.hasKey("output")) {
             craftingOutput = ItemStackTools.loadFromNBT(tagCompound.getCompoundTag("output"));
         } else {
@@ -234,6 +291,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("ticks", ticksRemaining);
+        tagCompound.setInteger("total", totalTicks);
         if (ItemStackTools.isValid(craftingOutput)) {
             NBTTagCompound out = new NBTTagCompound();
             craftingOutput.writeToNBT(out);
@@ -269,35 +327,51 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return ticksRemaining;
     }
 
-    public void requestProgressFromServer() {
-        EFabMessages.INSTANCE.sendToServer(new PacketRequestIntegerFromServer(EFab.MODID, getPos(),
-                CMD_GETPROGRESS,
-                CLIENTCMD_GETPROGRESS));
+    public int getTotalTicks() {
+        return totalTicks;
     }
 
-    @Override
-    public Integer executeWithResultInteger(String command, Map<String, Argument> args) {
-        Integer rc = super.executeWithResultInteger(command, args);
-        if (rc != null) {
-            return rc;
+    public String getErrorState() {
+        if (getWorld().isRemote) {
+            return errorFromServer;
         }
-        if (CMD_GETPROGRESS.equals(command)) {
-            return ticksRemaining;
+
+        IEFabRecipe recipe = findCurrentRecipe();
+        if (recipe == null) {
+            return "";
         }
-        return null;
+
+        Set<RecipeTier> supported = getSupportedTiers();
+        for (RecipeTier tier : recipe.getRequiredTiers()) {
+            if (!supported.contains(tier)) {
+                return tier.getMissingError();
+            }
+        }
+        return "";
     }
 
-    @Override
-    public boolean execute(String command, Integer result) {
-        boolean rc = super.execute(command, result);
-        if (rc) {
-            return true;
+    private Set<RecipeTier> getSupportedTiers() {
+        if (supportedTiers == null) {
+            supportedTiers = EnumSet.noneOf(RecipeTier.class);
+            checkMultiBlockCache();
+            if (!boilers.isEmpty()) {
+                supportedTiers.add(RecipeTier.STEAM);
+            }
+            if (!gearBoxes.isEmpty()) {
+                supportedTiers.add(RecipeTier.GEARBOX);
+            }
+            if (!tanks.isEmpty()) {
+                supportedTiers.add(RecipeTier.LIQUID);
+            }
         }
-        if (CLIENTCMD_GETPROGRESS.equals(command)) {
-            ticksRemaining = result;
-            return true;
-        }
-        return false;
+        return supportedTiers;
+    }
+
+    // Called client-side only
+    public void syncFromServer(int ticks, int total, String error) {
+        ticksRemaining = ticks;
+        totalTicks = total;
+        errorFromServer = error;
     }
 
     @Override

@@ -2,6 +2,7 @@ package mcjty.efab.blocks.grid;
 
 import mcjty.efab.EFab;
 import mcjty.efab.network.EFabMessages;
+import mcjty.efab.network.PacketGetGridStatus;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
@@ -9,7 +10,7 @@ import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class GridGui extends GenericGuiContainer<GridTE> {
 
@@ -53,17 +54,26 @@ public class GridGui extends GenericGuiContainer<GridTE> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int x1, int x2) {
-        tileEntity.requestProgressFromServer();
-        int ticks = tileEntity.getTicksRemaining();
-        if (ticks == 0) {
-            craftButton.setText("Start");
+        EFabMessages.INSTANCE.sendToServer(new PacketGetGridStatus(tileEntity.getPos()));
+        String errorState = tileEntity.getErrorState();
+        if (!errorState.isEmpty()) {
+            craftButton.setText("ERROR");
+            craftButton.setColor(0xffff0000);
+            craftButton.setTooltips(errorState);
+            craftButton.setEnabled(false);
         } else {
-            switch ((ticks / 5) % 5) {
-                case 0: craftButton.setText("."); break;
-                case 1: craftButton.setText(".."); break;
-                case 2: craftButton.setText("..."); break;
-                case 3: craftButton.setText("...."); break;
-                case 4: craftButton.setText("....."); break;
+            int ticks = tileEntity.getTicksRemaining();
+            if (ticks == 0) {
+                craftButton.setText("Start");
+                craftButton.setTooltips("Start craft operation");
+                craftButton.setEnabled(true);
+            } else {
+                craftButton.setTooltips("Craft operation in progress");
+                craftButton.setEnabled(false);
+                int total = tileEntity.getTotalTicks();
+                if (total > 0) {
+                    craftButton.setText((total-ticks) * 100 / total + "%");
+                }
             }
         }
         drawWindow();
