@@ -4,6 +4,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,19 +25,21 @@ public class RecipeManager {
         shapelessRecipes.add(recipe);
     }
 
-    public static IEFabRecipe findValidRecipe(InventoryCrafting inventoryCrafting, World world) {
+    @Nonnull
+    public static List<IEFabRecipe> findValidRecipes(InventoryCrafting inventoryCrafting, World world) {
+        List<IEFabRecipe> recipes = new ArrayList<>();
         for (EFabShapedRecipe recipe : shapedRecipes) {
             if (recipe.matches(inventoryCrafting, world)) {
-                return recipe;
+                recipes.add(recipe);
             }
         }
 
         for (EFabShapelessRecipe recipe : shapelessRecipes) {
             if (recipe.matches(inventoryCrafting, world)) {
-                return recipe;
+                recipes.add(recipe);
             }
         }
-        return null;
+        return recipes;
     }
 
 }

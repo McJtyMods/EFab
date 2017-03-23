@@ -15,12 +15,19 @@ public class StandardRecipes {
                 new ItemStack(Blocks.COBBLESTONE), ItemStackTools.getEmptyStack(), new ItemStack(Blocks.COBBLESTONE),
                 new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE)
         }, new ItemStack(Blocks.FURNACE)));
+
         RecipeManager.registerRecipe(new EFabShapelessRecipe(new ItemStack[] {
                 new ItemStack(Items.BUCKET)
         }, new ItemStack(Items.WATER_BUCKET))
                 .time(40)
                 .tier(RecipeTier.LIQUID)
                 .fluid(new FluidStack(FluidRegistry.WATER, 1000)));
+        RecipeManager.registerRecipe(new EFabShapelessRecipe(new ItemStack[] {
+                new ItemStack(Items.BUCKET)
+        }, new ItemStack(Items.LAVA_BUCKET))
+                .time(40)
+                .tier(RecipeTier.LIQUID)
+                .fluid(new FluidStack(FluidRegistry.LAVA, 1000)));
     }
 
 }

@@ -26,8 +26,10 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ISoundProducer, ITickable {
 
@@ -65,8 +67,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 ticksRemaining--;
 
                 if (ticksRemaining % 20 == 0 || ticksRemaining < 0) {
+                    IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
                     // Every 20 ticks we check if the inventory still matches what we want to craft
-                    if (!ItemStack.areItemsEqual(craftingOutput, getCurrentOutput())) {
+                    if (!ItemStack.areItemsEqual(craftingOutput, getCurrentOutput(recipe))) {
                         // Reset craft
                         ticksRemaining = -1;
                         craftingOutput = ItemStackTools.getEmptyStack();
@@ -85,8 +88,12 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         return;
                     }
 
+                    IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+                    if (recipe == null) {
+                        return;
+                    }
+
                     // Now check if we have secondary requirements like fluids
-                    IEFabRecipe recipe = findCurrentRecipe();
                     if (recipe.getRequiredFluid() != null) {
                         TankTE tank = findSuitableTank(recipe);
                         if (tank == null) {
@@ -99,7 +106,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     insertOutput(craftingOutput.copy());
 
                     // Consume items
-                    for (int i = GridContainer.SLOT_CRAFTINPUT ; i < GridContainer.SLOT_CRAFTOUTPUT ; i++) {
+                    for (int i = GridContainer.SLOT_CRAFTINPUT; i < GridContainer.SLOT_CRAFTOUTPUT; i++) {
                         decrStackSize(i, 1);
                     }
                 }
@@ -107,8 +114,12 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
+    private ItemStack getCurrentGhostOutput() {
+        return getStackInSlot(GridContainer.SLOT_GHOSTOUT);
+    }
+
     private boolean checkRoomForOutput(ItemStack output) {
-        for (int i = GridContainer.SLOT_CRAFTOUTPUT; i < GridContainer.SLOT_CRAFTOUTPUT + 3 ; i++) {
+        for (int i = GridContainer.SLOT_CRAFTOUTPUT; i < GridContainer.SLOT_CRAFTOUTPUT + 3; i++) {
             ItemStack currentStack = getStackInSlot(i);
             if (ItemStackTools.isEmpty(currentStack)) {
                 return true;
@@ -125,7 +136,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     // This function assumes there is room (i.e. check with checkRoomForOutput first)
     private void insertOutput(ItemStack output) {
-        for (int i = GridContainer.SLOT_CRAFTOUTPUT; i < GridContainer.SLOT_CRAFTOUTPUT + 3 ; i++) {
+        for (int i = GridContainer.SLOT_CRAFTOUTPUT; i < GridContainer.SLOT_CRAFTOUTPUT + 3; i++) {
             ItemStack currentStack = getStackInSlot(i);
             if (ItemStackTools.isEmpty(currentStack)) {
                 setInventorySlotContents(i, output);
@@ -145,12 +156,29 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    private void setRecipeGhostOutput() {
-        inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, getCurrentOutput());
-    }
-
-    private ItemStack getCurrentOutput() {
-        return getCurrentOutput(findCurrentRecipe());
+    /**
+     * Set the ghost output slot to one of the possible outputs for the current
+     * grid. If the output is already one of the possible outputs then nothing happens
+     */
+    private void setValidRecipeGhostOutput() {
+        ItemStack current = inventoryHelper.getStackInSlot(GridContainer.SLOT_GHOSTOUT);
+        List<IEFabRecipe> recipes = findCurrentRecipesSorted();
+        if (ItemStackTools.isEmpty(current)) {
+            if (!recipes.isEmpty()) {
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
+            }
+        } else {
+            if (recipes.isEmpty()) {
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, ItemStackTools.getEmptyStack());
+            } else {
+                for (IEFabRecipe recipe : recipes) {
+                    if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(current, recipe.cast().getRecipeOutput())) {
+                        return; // Ok, already present
+                    }
+                }
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
+            }
+        }
     }
 
     private ItemStack getCurrentOutput(@Nullable IEFabRecipe recipe) {
@@ -161,18 +189,42 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    private IEFabRecipe findCurrentRecipe() {
-        for (int i = 0 ; i < 9 ; i++) {
+    @Nonnull
+    private List<IEFabRecipe> findCurrentRecipes() {
+        for (int i = 0; i < 9; i++) {
             workInventory.setInventorySlotContents(i, inventoryHelper.getStackInSlot(i));
         }
-        return RecipeManager.findValidRecipe(workInventory, getWorld());
+        return RecipeManager.findValidRecipes(workInventory, getWorld());
+    }
+
+    // Give all current recipes. Sort recipes that are possible first.
+    @Nonnull
+    private List<IEFabRecipe> findCurrentRecipesSorted() {
+        List<IEFabRecipe> recipes = findCurrentRecipes();
+        recipes.sort((r1, r2) -> {
+            String error1 = getErrorForOutput(r1.cast().getRecipeOutput());
+            String error2 = getErrorForOutput(r2.cast().getRecipeOutput());
+            return error1.compareTo(error2);
+        });
+        return recipes;
+    }
+
+    @Nullable
+    private IEFabRecipe findRecipeForOutput(ItemStack output) {
+        List<IEFabRecipe> recipes = findCurrentRecipes();
+        for (IEFabRecipe recipe : recipes) {
+            if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, recipe.cast().getRecipeOutput())) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         getInventoryHelper().setInventorySlotContents(getInventoryStackLimit(), index, stack);
         if (index >= GridContainer.SLOT_CRAFTINPUT && index < GridContainer.SLOT_CRAFTOUTPUT) {
-            setRecipeGhostOutput();
+            setValidRecipeGhostOutput();
             // We need to update the visual crafting grid client side
             markDirtyClient();
         }
@@ -182,7 +234,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public ItemStack decrStackSize(int index, int count) {
         ItemStack stack = getInventoryHelper().decrStackSize(index, count);
         if (index >= GridContainer.SLOT_CRAFTINPUT && index < GridContainer.SLOT_CRAFTOUTPUT) {
-            setRecipeGhostOutput();
+            setValidRecipeGhostOutput();
             // We need to update the visual crafting grid client side
             markDirtyClient();
         }
@@ -193,7 +245,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public ItemStack removeStackFromSlot(int index) {
         ItemStack stack = getInventoryHelper().removeStackFromSlot(index);
         if (index >= GridContainer.SLOT_CRAFTINPUT && index < GridContainer.SLOT_CRAFTOUTPUT) {
-            setRecipeGhostOutput();
+            setValidRecipeGhostOutput();
             // We need to update the visual crafting grid client side
             markDirtyClient();
         }
@@ -274,8 +326,20 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         supportedTiers = null;
     }
 
+    /**
+     * Return all current outputs with the first outputs the ones that are actually possible
+     * given current configuration
+     */
+    @Nonnull
+    public List<ItemStack> getOutputs() {
+        return findCurrentRecipesSorted()
+                .stream()
+                .map(r -> r.cast().getRecipeOutput())
+                .collect(Collectors.toList());
+    }
+
     private void startCraft() {
-        IEFabRecipe recipe = findCurrentRecipe();
+        IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
         if (recipe != null) {
             craftingOutput = getCurrentOutput(recipe);
             ticksRemaining = recipe.getCraftTime();
@@ -365,7 +429,13 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             return errorFromServer;
         }
 
-        IEFabRecipe recipe = findCurrentRecipe();
+        ItemStack output = getCurrentGhostOutput();
+        return getErrorForOutput(output);
+    }
+
+    @Nonnull
+    private String getErrorForOutput(ItemStack output) {
+        IEFabRecipe recipe = findRecipeForOutput(output);
         if (recipe == null) {
             return "";
         }
