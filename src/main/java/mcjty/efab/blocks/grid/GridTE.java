@@ -98,13 +98,18 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     }
 
                     // Now check if we have secondary requirements like fluids
-                    if (recipe.getRequiredFluid() != null) {
-                        TankTE tank = findSuitableTank(recipe);
+                    // First loop to check
+                    for (FluidStack stack : recipe.getRequiredFluids()) {
+                        TankTE tank = findSuitableTank(stack);
                         if (tank == null) {
                             // Abort!
                             return;
                         }
-                        tank.getHandler().drain(recipe.getRequiredFluid(), true);
+                    }
+                    // Second loop to consume
+                    for (FluidStack stack : recipe.getRequiredFluids()) {
+                        TankTE tank = findSuitableTank(stack);
+                        tank.getHandler().drain(stack, true);
                     }
 
                     insertOutput(craftingOutput.copy());
@@ -442,8 +447,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return totalTicks;
     }
 
-    private TankTE findSuitableTank(IEFabRecipe recipe) {
-        if (recipe.getRequiredFluid() == null) {
+    private TankTE findSuitableTank(@Nullable FluidStack stack) {
+        if (stack == null) {
             return null;
         }
         checkMultiBlockCache();
@@ -452,8 +457,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (te instanceof TankTE) {
                 TankTE tankTE = (TankTE) te;
                 FluidStack fluid = tankTE.getFluid();
-                if (fluid != null && recipe.getRequiredFluid().getFluid() == fluid.getFluid()) {
-                    if (fluid.amount >= recipe.getRequiredFluid().amount) {
+                if (fluid != null && stack.getFluid() == fluid.getFluid()) {
+                    if (fluid.amount >= stack.amount) {
                         return tankTE;
                     }
                 }
@@ -486,9 +491,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
 
-        if (recipe.getRequiredFluid() != null) {
-            if (findSuitableTank(recipe) == null) {
-                errors.add("Not enough liquid: " + recipe.getRequiredFluid().getLocalizedName());
+        for (FluidStack stack : recipe.getRequiredFluids()) {
+            if (findSuitableTank(stack) == null) {
+                errors.add("Not enough liquid: " + stack.getLocalizedName());
             }
         }
 
@@ -509,8 +514,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
 
-        if (recipe.getRequiredFluid() != null) {
-            if (findSuitableTank(recipe) == null) {
+        for (FluidStack stack : recipe.getRequiredFluids()) {
+            if (findSuitableTank(stack) == null) {
                 return true;
             }
         }

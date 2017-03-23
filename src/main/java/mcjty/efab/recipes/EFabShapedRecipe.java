@@ -6,14 +6,12 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 public class EFabShapedRecipe extends ShapedRecipes implements IEFabRecipe {
 
     @Nonnull private final Set<RecipeTier> requiredTiers = EnumSet.noneOf(RecipeTier.class);
-    private FluidStack requiredFluid = null;
+    @Nonnull private final List<FluidStack> requiredFluids = new ArrayList<>();
     private int requiredRF = 0;
     private int craftTime = 0;
 
@@ -27,7 +25,7 @@ public class EFabShapedRecipe extends ShapedRecipes implements IEFabRecipe {
     }
 
     public EFabShapedRecipe fluid(FluidStack stack) {
-        requiredFluid = stack;
+        requiredFluids.add(stack);
         return this;
     }
 
@@ -41,10 +39,10 @@ public class EFabShapedRecipe extends ShapedRecipes implements IEFabRecipe {
         return this;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public FluidStack getRequiredFluid() {
-        return requiredFluid;
+    public Collection<FluidStack> getRequiredFluids() {
+        return requiredFluids;
     }
 
     @Override

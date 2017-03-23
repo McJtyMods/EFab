@@ -2,22 +2,17 @@ package mcjty.efab.recipes;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fluids.FluidStack;
 import scala.actors.threadpool.Arrays;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class EFabShapelessRecipe extends ShapelessRecipes implements IEFabRecipe {
 
     @Nonnull private final Set<RecipeTier> requiredTiers = EnumSet.noneOf(RecipeTier.class);
-    private FluidStack requiredFluid = null;
+    @Nonnull private final List<FluidStack> requiredFluids = new ArrayList<>();
     private int requiredRF = 0;
     private int craftTime = 0;
 
@@ -31,7 +26,7 @@ public class EFabShapelessRecipe extends ShapelessRecipes implements IEFabRecipe
     }
 
     public EFabShapelessRecipe fluid(FluidStack stack) {
-        requiredFluid = stack;
+        requiredFluids.add(stack);
         return this;
     }
 
@@ -45,10 +40,10 @@ public class EFabShapelessRecipe extends ShapelessRecipes implements IEFabRecipe
         return this;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public FluidStack getRequiredFluid() {
-        return requiredFluid;
+    public Collection<FluidStack> getRequiredFluids() {
+        return requiredFluids;
     }
 
     @Override

@@ -5,12 +5,13 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Set;
 
 public interface IEFabRecipe {
 
-    @Nullable
-    FluidStack getRequiredFluid();
+    @Nonnull
+    Collection<FluidStack> getRequiredFluids();
 
     int getRequiredRF();
 
