@@ -19,12 +19,8 @@ public class TankTE extends GenericEFabTile {
 
     public static final int MAXCAPACITY = 10000;
 
-    private FluidTank handler = new FluidTank(MAXCAPACITY);
-
-    @Override
-    public void readFromNBT(NBTTagCompound tagCompound) {
-        super.readFromNBT(tagCompound);
-    }
+    private FluidTank handler;
+    private int capacity = MAXCAPACITY;
 
     public FluidStack getFluid() {
         return getHandler().getFluid();
@@ -32,12 +28,13 @@ public class TankTE extends GenericEFabTile {
 
     public FluidTank getHandler() {
         if (handler == null) {
-            TankTE tankTE = (TankTE) getWorld().getTileEntity(pos.down());
-            if (tankTE == null) {
-                // Cannot happen!
-                return null;
+            TileEntity te = getWorld().getTileEntity(pos.down());
+            if (te instanceof TankTE) {
+                TankTE tankTE = (TankTE) te;
+                return tankTE.getHandler();
+            } else {
+                handler = new FluidTank(capacity);
             }
-            return tankTE.getHandler();
         }
         return handler;
     }
@@ -61,16 +58,18 @@ public class TankTE extends GenericEFabTile {
                 FluidTank bottomHandler = new FluidTank(MAXCAPACITY * cnt);
                 p = bottomPos;
                 while (world.getBlockState(p).getBlock() == ModBlocks.tankBlock) {
-                    TankTE te = (TankTE) world.getTileEntity(bottomPos);
+                    TankTE te = (TankTE) world.getTileEntity(p);
                     te.markDirtyQuick();
                     if (te.handler != null) {
-                        bottomHandler.fill(te.getFluid(), true);
+                        bottomHandler.fill(te.handler.getFluid(), true);
                     }
                     te.handler = null;
+                    te.capacity = 0;
                     p = p.up();
                 }
                 TankTE bottomTE = (TankTE) world.getTileEntity(bottomPos);
                 bottomTE.handler = bottomHandler;
+                bottomTE.capacity = MAXCAPACITY * cnt;
             }
         }
     }
@@ -82,7 +81,7 @@ public class TankTE extends GenericEFabTile {
             while (world.getBlockState(bottomPos.down()).getBlock() == ModBlocks.tankBlock) {
                 bottomPos = bottomPos.down();
             }
-            if (world.getBlockState(bottomPos.up()).getBlock() == ModBlocks.tankBlock) {
+            if (world.getBlockState(bottomPos.up()).getBlock() == ModBlocks.tankBlock || bottomPos.up().equals(pos)) {
                 TankTE bottomTE = (TankTE) world.getTileEntity(bottomPos);
                 // Empty the complete tank first
                 FluidStack drained = bottomTE.getHandler().drain(bottomTE.getHandler().getCapacity(), true);
@@ -91,20 +90,23 @@ public class TankTE extends GenericEFabTile {
                 int cntBelow = pos.getY() - bottomPos.getY();       // Number of tank blocks below this one
                 if (cntBelow > 0) {
                     bottomTE.handler = new FluidTank(cntBelow * MAXCAPACITY);
+                    bottomTE.capacity = cntBelow * MAXCAPACITY;
                     int accepted = bottomTE.handler.fill(drained, true);
                     drained.amount -= accepted;
                     bottomTE.markDirtyQuick();
                 }
 
                 handler = new FluidTank(MAXCAPACITY);
+                capacity = MAXCAPACITY;
                 if (drained.amount > 0) {
                     int accepted = handler.fill(drained, true);
                     drained.amount -= accepted;
                     markDirtyQuick();
                 }
 
-                TankTE topTE = (TankTE) world.getTileEntity(pos.up());
-                if (topTE != null) {
+                TileEntity te = world.getTileEntity(pos.up());
+                if (te instanceof TankTE) {
+                    TankTE topTE = (TankTE) te;
                     BlockPos p = pos.up();
                     int cnt = 0;
                     while (world.getBlockState(p).getBlock() == ModBlocks.tankBlock) {
@@ -112,6 +114,7 @@ public class TankTE extends GenericEFabTile {
                         p = p.up();
                     }
                     topTE.handler = new FluidTank(cnt * MAXCAPACITY);
+                    topTE.capacity = cnt * MAXCAPACITY;
                     if (drained.amount > 0) {
                         topTE.handler.fill(drained, true);
                     }
@@ -119,6 +122,11 @@ public class TankTE extends GenericEFabTile {
                 }
             }
         }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tagCompound) {
+        super.readFromNBT(tagCompound);
     }
 
     @Override
@@ -130,6 +138,12 @@ public class TankTE extends GenericEFabTile {
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
+        capacity = tagCompound.getInteger("capacity");
+        if (capacity > 0) {
+            handler = new FluidTank(capacity);
+        } else {
+            handler = null;
+        }
         if (tagCompound.hasKey("fluid")) {
             handler.readFromNBT(tagCompound.getCompoundTag("fluid"));
         }
@@ -138,6 +152,7 @@ public class TankTE extends GenericEFabTile {
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
+        tagCompound.setInteger("capacity", capacity);
         if (handler != null) {
             NBTTagCompound fluidTc = new NBTTagCompound();
             handler.writeToNBT(fluidTc);
