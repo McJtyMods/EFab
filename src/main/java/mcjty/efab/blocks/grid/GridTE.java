@@ -7,7 +7,7 @@ import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.RecipeTier;
-import mcjty.efab.sound.ISoundProducer;
+import mcjty.efab.sound.SoundController;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ISoundProducer, ITickable {
+public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ITickable {
 
     public static final String CMD_CRAFT = "craft";
     public static final String CMD_LEFT = "left";
@@ -77,6 +77,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         // Reset craft
                         ticksRemaining = -1;
                         craftingOutput = ItemStackTools.getEmptyStack();
+                        markDirtyClient();
                         return;
                     }
                 }
@@ -84,6 +85,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 if (ticksRemaining < 0) {
                     ticksRemaining = -1;
                     totalTicks = 0;
+                    markDirtyClient();
                     // Craft finished. Consume items and do the actual crafting. If there is no room to place
                     // the craft result then nothing happens
 
@@ -120,6 +122,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     }
                 }
             }
+        } else {
+            updateSound();
         }
     }
 
@@ -281,19 +285,25 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return index != GridContainer.SLOT_GHOSTOUT;
     }
 
-    private void updateMachineSound() {
+    private void updateSound() {
         if (GeneralConfiguration.baseMachineVolume > 0.01f) {
-//            int boilingState = getBoilingState();
-//            if (boilingState >= 1) {
-//                float vol = (boilingState-1.0f)/9.0f;
-//                if (!SoundController.isBoilingPlaying(getWorld(), pos)) {
-//                    SoundController.playBoiling(getWorld(), getPos(), vol);
-//                } else {
-//                    SoundController.updateVolume(getWorld(), getPos(), vol);
-//                }
-//            } else {
-//                SoundController.stopSound(getWorld(), getPos());
-//            }
+            if (ticksRemaining >= 0) {
+                IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+                if (recipe != null) {
+                    Set<RecipeTier> requiredTiers = recipe.getRequiredTiers();
+                    if (requiredTiers.contains(RecipeTier.LIQUID) || requiredTiers.contains(RecipeTier.STEAM)) {
+                        if (!SoundController.isSteamPlaying(getWorld(), pos)) {
+                            SoundController.playSteamSound(getWorld(), pos, 1.0f);
+                        }
+                    } else if (requiredTiers.contains(RecipeTier.GEARBOX) || requiredTiers.contains(RecipeTier.ADVANCED_GEARBOX)) {
+                        if (!SoundController.isMachinePlaying(getWorld(), pos)) {
+                            SoundController.playMachineSound(getWorld(), pos, 1.0f);
+                        }
+                    }
+                }
+            } else {
+//                SoundController.stopSound(getWorld(), pos);
+            }
         }
     }
 
@@ -387,7 +397,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             craftingOutput = getCurrentOutput(recipe);
             ticksRemaining = recipe.getCraftTime();
             totalTicks = recipe.getCraftTime();
-            markDirtyQuick();
+            markDirtyClient();
         }
     }
 
@@ -507,7 +517,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
 
         Set<RecipeTier> supported = getSupportedTiers();
-        List<String> errors = new ArrayList<>();
         for (RecipeTier tier : recipe.getRequiredTiers()) {
             if (!supported.contains(tier)) {
                 return true;

@@ -46,8 +46,8 @@ public final class SoundController {
         }
     }
 
-    private static void playSound(World worldObj, BlockPos pos, SoundEvent soundType, float volume, float baseVolume) {
-        EFabSound sound = new EFabSound(soundType, worldObj, pos, baseVolume);
+    private static void playSound(World worldObj, BlockPos pos, SoundEvent soundType, float volume, float baseVolume, int ticks) {
+        EFabSound sound = new EFabSound(soundType, worldObj, pos, baseVolume, ticks);
         sound.setVolume(volume);
         stopSound(worldObj, pos);
         Minecraft.getMinecraft().getSoundHandler().playSound(sound);
@@ -57,15 +57,15 @@ public final class SoundController {
 
 
     public static void playMachineSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, machine, volume, GeneralConfiguration.baseMachineVolume);
+        playSound(worldObj, pos, machine, volume, GeneralConfiguration.baseMachineVolume, 50);
     }
 
     public static void playSparksSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, sparks, volume, GeneralConfiguration.baseSparksVolume);
+        playSound(worldObj, pos, sparks, volume, GeneralConfiguration.baseSparksVolume, 50);
     }
 
     public static void playSteamSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, steam, volume, GeneralConfiguration.baseSteamVolume);
+        playSound(worldObj, pos, steam, volume, GeneralConfiguration.baseSteamVolume, 50);
     }
 
     public static void updateVolume(World worldObj, BlockPos pos, float volume) {
@@ -90,7 +90,13 @@ public final class SoundController {
 
     private static boolean isSoundTypePlayingAt(SoundEvent event, World world, BlockPos pos){
         EFabSound s = getSoundAt(world, pos);
-        return s != null && s.isSoundType(event);
+        if (s == null) {
+            return false;
+        }
+        if (s.isDonePlaying()) {
+            return false;
+        }
+        return s.isSoundType(event);
     }
 
     private static EFabSound getSoundAt(World world, BlockPos pos){

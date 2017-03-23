@@ -3,6 +3,7 @@ package mcjty.efab.blocks.grid;
 import mcjty.efab.blocks.GenericEFabBlockWithTE;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.proxy.GuiProxy;
+import mcjty.efab.sound.ISoundProducer;
 import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> {
+public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> implements ISoundProducer {
 
     public static PropertyBool HALF = PropertyBool.create("half");
 

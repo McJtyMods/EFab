@@ -16,6 +16,14 @@ public class StandardRecipes {
                 new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE)
         }, new ItemStack(Blocks.FURNACE)));
 
+        RecipeManager.registerRecipe(new EFabShapedRecipe(new ItemStack[] {
+                new ItemStack(Blocks.PLANKS), new ItemStack(Blocks.PLANKS), new ItemStack(Blocks.PLANKS),
+                new ItemStack(Blocks.COBBLESTONE), new ItemStack(Items.REDSTONE), new ItemStack(Blocks.COBBLESTONE),
+                new ItemStack(Blocks.COBBLESTONE), new ItemStack(Items.IRON_INGOT), new ItemStack(Blocks.COBBLESTONE)
+        }, new ItemStack(Blocks.PISTON))
+                .time(20)
+                .tier(RecipeTier.GEARBOX));
+
         RecipeManager.registerRecipe(new EFabShapelessRecipe(new ItemStack[] {
                 new ItemStack(Items.BUCKET)
         }, new ItemStack(Items.WATER_BUCKET))

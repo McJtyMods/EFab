@@ -13,8 +13,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EFabSound extends MovingSound {
 
     private final float baseVolume;
+    private int ticksRemaining;
 
-    public EFabSound(SoundEvent event, World world, BlockPos pos, float baseVolume) {
+    public EFabSound(SoundEvent event, World world, BlockPos pos, float baseVolume, int ticks) {
         super(event, SoundCategory.BLOCKS);
         this.world = world;
         this.pos = pos;
@@ -26,6 +27,7 @@ public class EFabSound extends MovingSound {
         this.repeatDelay = 0;
         this.sound = event;
         this.baseVolume = baseVolume;
+        ticksRemaining = ticks;
     }
 
     private final World world;
@@ -41,6 +43,12 @@ public class EFabSound extends MovingSound {
             return;
         }
         volume = baseVolume * vol;
+        if (ticksRemaining != -1) {
+            ticksRemaining--;
+            if (ticksRemaining <= 0) {
+                donePlaying = true;
+            }
+        }
     }
 
     public void setVolume(float volume) {
