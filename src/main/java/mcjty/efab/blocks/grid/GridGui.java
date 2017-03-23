@@ -8,9 +8,11 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.Panel;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
+import java.util.List;
 
 public class GridGui extends GenericGuiContainer<GridTE> {
 
@@ -18,6 +20,8 @@ public class GridGui extends GenericGuiContainer<GridTE> {
     public static final int HEIGHT = 176;
 
     private Button craftButton;
+    private Button leftArrow;
+    private Button rightArrow;
 
     private static final ResourceLocation mainBackground = new ResourceLocation(EFab.MODID, "textures/gui/grid.png");
 
@@ -35,14 +39,22 @@ public class GridGui extends GenericGuiContainer<GridTE> {
         Panel toplevel = new Panel(mc, this).setLayout(new PositionalLayout())
                 .setBackground(mainBackground);
 
+        leftArrow = new Button(mc, this)
+                .setText("<")
+                .setLayoutHint(new PositionalLayout.PositionalHint(82, 55, 13, 18))
+                .setVisible(false)
+                .addButtonEvent(parent -> left());
+        rightArrow = new Button(mc, this)
+                .setText(">")
+                .setLayoutHint(new PositionalLayout.PositionalHint(112, 55, 13, 18))
+                .setVisible(false)
+                .addButtonEvent(parent -> right());
         craftButton = new Button(mc, this)
                 .setText("Start")
                 .setLayoutHint(new PositionalLayout.PositionalHint(84, 30, 40, 16))
-                .addButtonEvent(parent -> {
-                    craft();
-        });
+                .addButtonEvent(parent -> craft());
 
-        toplevel.addChild(craftButton);
+        toplevel.addChild(craftButton).addChild(leftArrow).addChild(rightArrow);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
@@ -50,6 +62,14 @@ public class GridGui extends GenericGuiContainer<GridTE> {
 
     private void craft() {
         sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_CRAFT);
+    }
+
+    private void left() {
+        sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_LEFT);
+    }
+
+    private void right() {
+        sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_RIGHT);
     }
 
     @Override
@@ -75,6 +95,11 @@ public class GridGui extends GenericGuiContainer<GridTE> {
                 }
             }
         }
+
+        List<ItemStack> outputs = tileEntity.getOutputs();
+        leftArrow.setVisible(outputs.size() > 1);
+        rightArrow.setVisible(outputs.size() > 1);
+
         drawWindow();
     }
 }

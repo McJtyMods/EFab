@@ -30,10 +30,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ISoundProducer, ITickable {
 
     public static final String CMD_CRAFT = "craft";
+    public static final String CMD_LEFT = "left";
+    public static final String CMD_RIGHT = "right";
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + 1);
     private InventoryCrafting workInventory = new InventoryCrafting(new Container() {
@@ -50,6 +53,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     // Client side only and contains the last error from the server
     private String errorFromServer = "";
+    private List<ItemStack> outputsFromServer = Collections.emptyList();
 
     // Transient information that is calculated on demand
     private boolean dirty = true;       // Our cached multiblock info is invalid
@@ -332,10 +336,39 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
      */
     @Nonnull
     public List<ItemStack> getOutputs() {
-        return findCurrentRecipesSorted()
-                .stream()
-                .map(r -> r.cast().getRecipeOutput())
-                .collect(Collectors.toList());
+        if (getWorld().isRemote) {
+            return outputsFromServer;
+        } else {
+            return findCurrentRecipesSorted()
+                    .stream()
+                    .map(r -> r.cast().getRecipeOutput())
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private void left() {
+        List<IEFabRecipe> sorted = findCurrentRecipesSorted();
+        OptionalInt first = findCurrentGhost(sorted);
+        if (first.isPresent()) {
+            int i = (first.getAsInt() - 1 + sorted.size()) % sorted.size();
+            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, sorted.get(i).cast().getRecipeOutput());
+        }
+    }
+
+    private void right() {
+        List<IEFabRecipe> sorted = findCurrentRecipesSorted();
+        OptionalInt first = findCurrentGhost(sorted);
+        if (first.isPresent()) {
+            int i = (first.getAsInt() + 1) % sorted.size();
+            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, sorted.get(i).cast().getRecipeOutput());
+        }
+    }
+
+    private OptionalInt findCurrentGhost(List<IEFabRecipe> sorted) {
+        ItemStack ghostOutput = getCurrentGhostOutput();
+        return IntStream.range(0, sorted.size())
+                .filter(i -> mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(sorted.get(i).cast().getRecipeOutput(), ghostOutput))
+                .findFirst();
     }
 
     private void startCraft() {
@@ -474,10 +507,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     // Called client-side only
-    public void syncFromServer(int ticks, int total, String error) {
+    public void syncFromServer(int ticks, int total, String error, List<ItemStack> outputs) {
         ticksRemaining = ticks;
         totalTicks = total;
         errorFromServer = error;
+        outputsFromServer = outputs;
     }
 
     @Override
@@ -488,6 +522,12 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
         if (CMD_CRAFT.equals(command)) {
             startCraft();
+            return true;
+        } else if (CMD_LEFT.equals(command)) {
+            left();
+            return true;
+        } else if (CMD_RIGHT.equals(command)) {
+            right();
             return true;
         }
         return false;

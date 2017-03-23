@@ -63,7 +63,7 @@ public class PacketReturnGridStatus implements IMessage {
             EFab.proxy.addScheduledTaskClient(() -> {
                 TileEntity te = EFab.proxy.getClientWorld().getTileEntity(message.pos);
                 if (te instanceof GridTE) {
-                    ((GridTE) te).syncFromServer(message.ticks, message.total, message.error);
+                    ((GridTE) te).syncFromServer(message.ticks, message.total, message.error, message.outputs);
                 }
             });
             return null;
