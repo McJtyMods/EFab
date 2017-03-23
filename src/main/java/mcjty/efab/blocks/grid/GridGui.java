@@ -75,16 +75,16 @@ public class GridGui extends GenericGuiContainer<GridTE> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int x1, int x2) {
         EFabMessages.INSTANCE.sendToServer(new PacketGetGridStatus(tileEntity.getPos()));
-        String errorState = tileEntity.getErrorState();
+        List<String> errorState = tileEntity.getErrorState();
         if (!errorState.isEmpty()) {
             craftButton.setText("ERROR");
-            craftButton.setTooltips(errorState);
+            craftButton.setTooltips(errorState.toArray(new String[errorState.size()]));
             craftButton.setEnabled(false);
         } else {
             int ticks = tileEntity.getTicksRemaining();
             if (ticks < 0) {
                 craftButton.setText("Start");
-                craftButton.setTooltips("Start craft operation");
+                craftButton.setTooltips("Start craft operation", "Duration " + tileEntity.getTotalTicks() + " ticks");
                 craftButton.setEnabled(true);
             } else {
                 craftButton.setTooltips("Craft operation in progress");

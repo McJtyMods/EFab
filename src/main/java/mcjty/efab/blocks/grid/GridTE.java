@@ -52,7 +52,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private ItemStack craftingOutput = ItemStackTools.getEmptyStack();
 
     // Client side only and contains the last error from the server
-    private String errorFromServer = "";
+    private List<String> errorsFromServer = Collections.emptyList();
     private List<ItemStack> outputsFromServer = Collections.emptyList();
 
     // Transient information that is calculated on demand
@@ -170,10 +170,13 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (ItemStackTools.isEmpty(current)) {
             if (!recipes.isEmpty()) {
                 inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
+                totalTicks = recipes.get(0).getCraftTime();
+                markDirtyQuick();
             }
         } else {
             if (recipes.isEmpty()) {
                 inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, ItemStackTools.getEmptyStack());
+                markDirtyQuick();
             } else {
                 for (IEFabRecipe recipe : recipes) {
                     if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(current, recipe.cast().getRecipeOutput())) {
@@ -181,6 +184,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     }
                 }
                 inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
+                totalTicks = recipes.get(0).getCraftTime();
+                markDirtyQuick();
             }
         }
     }
@@ -206,9 +211,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private List<IEFabRecipe> findCurrentRecipesSorted() {
         List<IEFabRecipe> recipes = findCurrentRecipes();
         recipes.sort((r1, r2) -> {
-            String error1 = getErrorForOutput(r1.cast().getRecipeOutput());
-            String error2 = getErrorForOutput(r2.cast().getRecipeOutput());
-            return error1.compareTo(error2);
+            boolean error1 = hasErrorsForOutput(r1.cast().getRecipeOutput());
+            boolean error2 = hasErrorsForOutput(r2.cast().getRecipeOutput());
+            return error1 == error2 ? 0 : (error2 ? -1 : 1);
         });
         return recipes;
     }
@@ -457,36 +462,60 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return null;
     }
 
-    public String getErrorState() {
+    public List<String> getErrorState() {
         if (getWorld().isRemote) {
-            return errorFromServer;
+            return errorsFromServer;
         }
 
         ItemStack output = getCurrentGhostOutput();
-        return getErrorForOutput(output);
+        return getErrorsForOutput(output);
     }
 
     @Nonnull
-    private String getErrorForOutput(ItemStack output) {
+    private List<String> getErrorsForOutput(ItemStack output) {
         IEFabRecipe recipe = findRecipeForOutput(output);
         if (recipe == null) {
-            return "";
+            return Collections.emptyList();
         }
 
         Set<RecipeTier> supported = getSupportedTiers();
+        List<String> errors = new ArrayList<>();
         for (RecipeTier tier : recipe.getRequiredTiers()) {
             if (!supported.contains(tier)) {
-                return tier.getMissingError();
+                errors.add(tier.getMissingError());
             }
         }
 
         if (recipe.getRequiredFluid() != null) {
             if (findSuitableTank(recipe) == null) {
-                return "Not enough liquid: " + recipe.getRequiredFluid().getLocalizedName();
+                errors.add("Not enough liquid: " + recipe.getRequiredFluid().getLocalizedName());
             }
         }
 
-        return "";
+        return errors;
+    }
+
+    private boolean hasErrorsForOutput(ItemStack output) {
+        IEFabRecipe recipe = findRecipeForOutput(output);
+        if (recipe == null) {
+            return false;
+        }
+
+        Set<RecipeTier> supported = getSupportedTiers();
+        List<String> errors = new ArrayList<>();
+        for (RecipeTier tier : recipe.getRequiredTiers()) {
+            if (!supported.contains(tier)) {
+                return true;
+            }
+        }
+
+        if (recipe.getRequiredFluid() != null) {
+            if (findSuitableTank(recipe) == null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private Set<RecipeTier> getSupportedTiers() {
@@ -507,10 +536,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     // Called client-side only
-    public void syncFromServer(int ticks, int total, String error, List<ItemStack> outputs) {
+    public void syncFromServer(int ticks, int total, List<String> errors, List<ItemStack> outputs) {
         ticksRemaining = ticks;
         totalTicks = total;
-        errorFromServer = error;
+        errorsFromServer = errors;
         outputsFromServer = outputs;
     }
 

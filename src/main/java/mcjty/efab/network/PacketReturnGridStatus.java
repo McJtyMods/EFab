@@ -18,7 +18,7 @@ public class PacketReturnGridStatus implements IMessage {
     private BlockPos pos;
     private int ticks;
     private int total;
-    private String error;
+    private List<String> errors;
     private List<ItemStack> outputs;
 
     @Override
@@ -26,8 +26,14 @@ public class PacketReturnGridStatus implements IMessage {
         pos = NetworkTools.readPos(buf);
         ticks = buf.readInt();
         total = buf.readInt();
-        error = NetworkTools.readStringUTF8(buf);
+
         int size = buf.readInt();
+        errors = new ArrayList<>(size);
+        for (int i = 0 ; i < size ; i++) {
+            errors.add(NetworkTools.readStringUTF8(buf));
+        }
+
+        size = buf.readInt();
         outputs = new ArrayList<>(size);
         for (int i = 0 ; i < size ; i++) {
             outputs.add(NetworkTools.readItemStack(buf));
@@ -39,7 +45,10 @@ public class PacketReturnGridStatus implements IMessage {
         NetworkTools.writePos(buf, pos);
         buf.writeInt(ticks);
         buf.writeInt(total);
-        NetworkTools.writeStringUTF8(buf, error);
+        buf.writeInt(errors.size());
+        for (String error : errors) {
+            NetworkTools.writeStringUTF8(buf, error);
+        }
         buf.writeInt(outputs.size());
         for (ItemStack output : outputs) {
             NetworkTools.writeItemStack(buf, output);
@@ -53,7 +62,7 @@ public class PacketReturnGridStatus implements IMessage {
         this.pos = pos;
         this.ticks = gridTE.getTicksRemaining();
         this.total = gridTE.getTotalTicks();
-        this.error = gridTE.getErrorState();
+        this.errors = gridTE.getErrorState();
         this.outputs = gridTE.getOutputs();
     }
 
@@ -63,7 +72,7 @@ public class PacketReturnGridStatus implements IMessage {
             EFab.proxy.addScheduledTaskClient(() -> {
                 TileEntity te = EFab.proxy.getClientWorld().getTileEntity(message.pos);
                 if (te instanceof GridTE) {
-                    ((GridTE) te).syncFromServer(message.ticks, message.total, message.error, message.outputs);
+                    ((GridTE) te).syncFromServer(message.ticks, message.total, message.errors, message.outputs);
                 }
             });
             return null;
