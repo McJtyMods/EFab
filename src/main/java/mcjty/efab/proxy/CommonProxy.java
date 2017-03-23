@@ -3,17 +3,14 @@ package mcjty.efab.proxy;
 import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
-import mcjty.efab.network.EFabMessages;
 import mcjty.efab.config.GeneralConfiguration;
-import mcjty.efab.recipes.EFabShapedRecipe;
+import mcjty.efab.network.EFabMessages;
 import mcjty.efab.recipes.RecipeManager;
+import mcjty.efab.recipes.StandardRecipes;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.network.PacketHandler;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLLog;
@@ -70,11 +67,7 @@ public abstract class CommonProxy {
         NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 //        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
 //        ModRecipes.init();
-        RecipeManager.registerRecipe(new EFabShapedRecipe(new ItemStack[] {
-                new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE),
-                new ItemStack(Blocks.COBBLESTONE), ItemStackTools.getEmptyStack(), new ItemStack(Blocks.COBBLESTONE),
-                new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COBBLESTONE)
-        }, new ItemStack(Blocks.FURNACE)));
+        StandardRecipes.init();
     }
 
     public void postInit(FMLPostInitializationEvent e) {

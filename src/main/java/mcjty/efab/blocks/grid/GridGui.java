@@ -58,12 +58,11 @@ public class GridGui extends GenericGuiContainer<GridTE> {
         String errorState = tileEntity.getErrorState();
         if (!errorState.isEmpty()) {
             craftButton.setText("ERROR");
-            craftButton.setColor(0xffff0000);
             craftButton.setTooltips(errorState);
             craftButton.setEnabled(false);
         } else {
             int ticks = tileEntity.getTicksRemaining();
-            if (ticks == 0) {
+            if (ticks < 0) {
                 craftButton.setText("Start");
                 craftButton.setTooltips("Start craft operation");
                 craftButton.setEnabled(true);

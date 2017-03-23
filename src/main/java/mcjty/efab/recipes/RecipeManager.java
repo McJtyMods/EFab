@@ -24,20 +24,16 @@ public class RecipeManager {
         shapelessRecipes.add(recipe);
     }
 
-    public static IEFabRecipe findValidRecipe(InventoryCrafting inventoryCrafting, World world, Set<RecipeTier> availableTiers) {
+    public static IEFabRecipe findValidRecipe(InventoryCrafting inventoryCrafting, World world) {
         for (EFabShapedRecipe recipe : shapedRecipes) {
-            if (availableTiers.containsAll(recipe.getRequiredTiers())) {
-                if (recipe.matches(inventoryCrafting, world)) {
-                    return recipe;
-                }
+            if (recipe.matches(inventoryCrafting, world)) {
+                return recipe;
             }
         }
 
         for (EFabShapelessRecipe recipe : shapelessRecipes) {
-            if (availableTiers.containsAll(recipe.getRequiredTiers())) {
-                if (recipe.matches(inventoryCrafting, world)) {
-                    return recipe;
-                }
+            if (recipe.matches(inventoryCrafting, world)) {
+                return recipe;
             }
         }
         return null;

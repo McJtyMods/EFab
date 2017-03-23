@@ -2,6 +2,7 @@ package mcjty.efab.blocks.grid;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
@@ -23,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -40,7 +42,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }, 3, 3);
 
-    private int ticksRemaining = 0;
+    private int ticksRemaining = -1;
     private int totalTicks = 0;
     private ItemStack craftingOutput = ItemStackTools.getEmptyStack();
 
@@ -57,23 +59,23 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     @Override
     public void update() {
         if (!getWorld().isRemote) {
-            if (ticksRemaining > 0) {
+            if (ticksRemaining >= 0) {
                 markDirtyQuick();
 
                 ticksRemaining--;
 
-                if (ticksRemaining % 20 == 0 || ticksRemaining <= 0) {
+                if (ticksRemaining % 20 == 0 || ticksRemaining < 0) {
                     // Every 20 ticks we check if the inventory still matches what we want to craft
                     if (!ItemStack.areItemsEqual(craftingOutput, getCurrentOutput())) {
                         // Reset craft
-                        ticksRemaining = 0;
+                        ticksRemaining = -1;
                         craftingOutput = ItemStackTools.getEmptyStack();
                         return;
                     }
                 }
 
-                if (ticksRemaining <= 0) {
-                    ticksRemaining = 0;
+                if (ticksRemaining < 0) {
+                    ticksRemaining = -1;
                     totalTicks = 0;
                     // Craft finished. Consume items and do the actual crafting. If there is no room to place
                     // the craft result then nothing happens
@@ -81,6 +83,17 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     if (!checkRoomForOutput(craftingOutput.copy())) {
                         // Not enough room. Abort craft
                         return;
+                    }
+
+                    // Now check if we have secondary requirements like fluids
+                    IEFabRecipe recipe = findCurrentRecipe();
+                    if (recipe.getRequiredFluid() != null) {
+                        TankTE tank = findSuitableTank(recipe);
+                        if (tank == null) {
+                            // Abort!
+                            return;
+                        }
+                        tank.getHandler().drain(recipe.getRequiredFluid(), true);
                     }
 
                     insertOutput(craftingOutput.copy());
@@ -152,7 +165,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         for (int i = 0 ; i < 9 ; i++) {
             workInventory.setInventorySlotContents(i, inventoryHelper.getStackInSlot(i));
         }
-        return RecipeManager.findValidRecipe(workInventory, getWorld(), Collections.emptySet());
+        return RecipeManager.findValidRecipe(workInventory, getWorld());
     }
 
     @Override
@@ -327,6 +340,26 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return totalTicks;
     }
 
+    private TankTE findSuitableTank(IEFabRecipe recipe) {
+        if (recipe.getRequiredFluid() == null) {
+            return null;
+        }
+        checkMultiBlockCache();
+        for (BlockPos tank : tanks) {
+            TileEntity te = getWorld().getTileEntity(tank);
+            if (te instanceof TankTE) {
+                TankTE tankTE = (TankTE) te;
+                FluidStack fluid = tankTE.getFluid();
+                if (fluid != null && recipe.getRequiredFluid().getFluid() == fluid.getFluid()) {
+                    if (fluid.amount >= recipe.getRequiredFluid().amount) {
+                        return tankTE;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public String getErrorState() {
         if (getWorld().isRemote) {
             return errorFromServer;
@@ -343,13 +376,20 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 return tier.getMissingError();
             }
         }
+
+        if (recipe.getRequiredFluid() != null) {
+            if (findSuitableTank(recipe) == null) {
+                return "Not enough liquid: " + recipe.getRequiredFluid().getLocalizedName();
+            }
+        }
+
         return "";
     }
 
     private Set<RecipeTier> getSupportedTiers() {
         if (supportedTiers == null) {
-            supportedTiers = EnumSet.noneOf(RecipeTier.class);
             checkMultiBlockCache();
+            supportedTiers = EnumSet.noneOf(RecipeTier.class);
             if (!boilers.isEmpty()) {
                 supportedTiers.add(RecipeTier.STEAM);
             }
