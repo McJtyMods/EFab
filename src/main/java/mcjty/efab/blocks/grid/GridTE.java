@@ -455,9 +455,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     TileEntity te = getWorld().getTileEntity(enginePos);
                     if (te instanceof SteamEngineTE) {
                         SteamEngineTE steamEngineTE = (SteamEngineTE) te;
-                        if (steamEngineTE.getSpeed() >= GeneralConfiguration.maxSteamWheelSpeed / 2) {
-                            steamEngineTE.setSpeedBoost(GeneralConfiguration.steamWheelBoost);
-                        }
+                        steamEngineTE.setSpeedBoost(GeneralConfiguration.steamWheelBoost);
                     }
                 }
             }

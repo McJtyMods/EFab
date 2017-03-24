@@ -1,7 +1,7 @@
 package mcjty.efab.recipes;
 
 public enum RecipeTier {
-    STEAM("The boiler is missing!"),
+    STEAM("The boiler and/or steam engine is missing!"),
     GEARBOX("The gearbox is missing!"),
     ADVANCED_GEARBOX("The advanced gearbox is missing!"),
     RF("This machine does not understand RF!"),

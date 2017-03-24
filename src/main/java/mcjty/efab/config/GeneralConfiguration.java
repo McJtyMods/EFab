@@ -18,13 +18,13 @@ public class GeneralConfiguration {
 
     public static float maxBoilerTemperature = 200;
     public static float ambientBoilerTemperature = 20;
-    public static float boilerRiseTemperature = 2;
-    public static float boilerCoolTemperature = 2;
+    public static float boilerRiseTemperature = .5f;
+    public static float boilerCoolTemperature = .3f;
 
-    public static float maxSteamWheelSpeed = 30;
+    public static float maxSteamWheelSpeed = 20;
     public static int steamWheelBoost = 40;
     public static float steamWheelSpeedUp = 2;
-    public static float steamWheelSpinDown = 0.1f;
+    public static float steamWheelSpinDown = 0.3f;
 
     public static int tankCapacity = 10000;
 

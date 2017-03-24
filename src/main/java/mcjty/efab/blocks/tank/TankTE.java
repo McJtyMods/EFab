@@ -90,14 +90,16 @@ public class TankTE extends GenericEFabTile {
                 if (cntBelow > 0) {
                     bottomTE.handler = new FluidTank(cntBelow * GeneralConfiguration.tankCapacity);
                     bottomTE.capacity = cntBelow * GeneralConfiguration.tankCapacity;
-                    int accepted = bottomTE.handler.fill(drained, true);
-                    drained.amount -= accepted;
+                    if (drained != null) {
+                        int accepted = bottomTE.handler.fill(drained, true);
+                        drained.amount -= accepted;
+                    }
                     bottomTE.markDirtyQuick();
                 }
 
                 handler = new FluidTank(GeneralConfiguration.tankCapacity);
                 capacity = GeneralConfiguration.tankCapacity;
-                if (drained.amount > 0) {
+                if (drained != null && drained.amount > 0) {
                     int accepted = handler.fill(drained, true);
                     drained.amount -= accepted;
                     markDirtyQuick();
@@ -114,7 +116,7 @@ public class TankTE extends GenericEFabTile {
                     }
                     topTE.handler = new FluidTank(cnt * GeneralConfiguration.tankCapacity);
                     topTE.capacity = cnt * GeneralConfiguration.tankCapacity;
-                    if (drained.amount > 0) {
+                    if (drained != null && drained.amount > 0) {
                         topTE.handler.fill(drained, true);
                     }
                     topTE.markDirtyQuick();

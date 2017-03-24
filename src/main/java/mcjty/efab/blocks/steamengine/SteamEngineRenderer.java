@@ -81,7 +81,7 @@ public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE
 
     private float cnt = 0;
 
-    private static final int SPEEDCYCLE = 1000;
+    private static final int SPEEDCYCLE = 2000;
 
     protected void renderWheel(SteamEngineTE tileEntity) {
         GlStateManager.pushMatrix();
