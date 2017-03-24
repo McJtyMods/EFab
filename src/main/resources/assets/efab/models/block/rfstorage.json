@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "efab:blocks/rfstorage",
+    "down": "efab:blocks/rfstorage_down",
+    "up": "efab:blocks/rfstorage_up",
+    "east": "efab:blocks/rfstorage",
+    "west": "efab:blocks/rfstorage",
+    "north": "efab:blocks/rfstorage",
+    "south": "efab:blocks/rfstorage"
+  }
+}
