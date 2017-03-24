@@ -81,12 +81,17 @@ public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE
 
     private float cnt = 0;
 
+    private static final int SPEEDCYCLE = 1000;
+
     protected void renderWheel(SteamEngineTE tileEntity) {
         GlStateManager.pushMatrix();
 
         if (cnt >= 0) {
-            float t = ((long)(2000.0f * 2.0f * (((int)cnt) % 1000)) / 1000) % 2000;
+            float t = ((long)(2000.0f * 2.0f * (((int)cnt) % SPEEDCYCLE)) / SPEEDCYCLE) % 2000;
             cnt += tileEntity.getSpeed();
+            if (cnt > SPEEDCYCLE) {
+                cnt -= SPEEDCYCLE;
+            }
             GlStateManager.translate(0, .5, 0);
             GlStateManager.rotate(360.0f * t / 2000.0f, 0, 0, 1);
             GlStateManager.translate(0, -.5, 0);
