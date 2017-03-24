@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.boiler;
 
 import mcjty.efab.blocks.GenericEFabTile;
+import mcjty.efab.config.GeneralConfiguration;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -10,19 +11,20 @@ import net.minecraft.util.math.BlockPos;
 
 public class BoilerTE extends GenericEFabTile implements ITickable {
 
-    public static final int MAX_TEMPERATURE = 200;
-
-    private float temperature = 20.0f;
+    private float temperature = GeneralConfiguration.ambientBoilerTemperature;
 
     @Override
     public void update() {
         if (hasHeatBelow()) {
-            if (temperature < MAX_TEMPERATURE) {
-                temperature += 2;
+            if (temperature < GeneralConfiguration.maxBoilerTemperature) {
+                temperature += GeneralConfiguration.boilerRiseTemperature;
             }
         } else {
-            if (temperature > 20) {
-                temperature -= 2;
+            if (temperature > GeneralConfiguration.ambientBoilerTemperature) {
+                temperature -= GeneralConfiguration.boilerCoolTemperature;
+                if (temperature < GeneralConfiguration.ambientBoilerTemperature) {
+                    temperature = GeneralConfiguration.ambientBoilerTemperature;
+                }
             }
         }
         markDirtyQuick();

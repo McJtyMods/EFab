@@ -73,10 +73,14 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 markDirtyQuick();
 
                 IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+                if (recipe == null) {
+                    abortCraft();
+                    return;
+                }
 
                 ticksRemaining--;
 
-                if (recipe == null || ticksRemaining % 20 == 0 || ticksRemaining < 0) {
+                if (ticksRemaining % 20 == 0 || ticksRemaining < 0) {
                     // Every 20 ticks we check if the inventory still matches what we want to craft
                     if (!ItemStack.areItemsEqual(craftingOutput, getCurrentOutput(recipe))) {
                         // Reset craft
