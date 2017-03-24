@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.grid;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
 import mcjty.efab.blocks.rfcontrol.RfControlTE;
@@ -66,6 +67,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> tanks = new HashSet<>();
     private final Set<BlockPos> gearBoxes = new HashSet<>();
     private final Set<BlockPos> rfControls = new HashSet<>();
+    private final Set<BlockPos> rfStorages = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
     @Override
@@ -128,26 +130,34 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
         if (recipe.getRequiredRfPerTick() > 0) {
             int stillneeded = recipe.getRequiredRfPerTick();
-            for (BlockPos p : rfControls) {
-                TileEntity te = getWorld().getTileEntity(p);
-                if (te instanceof RfControlTE) {
-                    RfControlTE controlTE = (RfControlTE) te;
-                    int stored = controlTE.getEnergyStored(null);
-                    if (stored >= stillneeded) {
-                        controlTE.extractEnergy(stillneeded);
-                        stillneeded = 0;
-                        break;
-                    } else {
-                        controlTE.extractEnergy(stored);
-                        stillneeded -= stored;
-                    }
-                }
-            }
+            stillneeded = handlePowerPerTick(stillneeded, this.rfControls);
             if (stillneeded > 0) {
-                return false;
+                stillneeded = handlePowerPerTick(stillneeded, this.rfStorages);
+                if (stillneeded > 0) {
+                    return false;
+                }
             }
         }
         return true;
+    }
+
+    private int handlePowerPerTick(int stillneeded, Set<BlockPos> poses) {
+        for (BlockPos p : poses) {
+            TileEntity te = getWorld().getTileEntity(p);
+            if (te instanceof IEFabEnergyStorage) {
+                IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
+                int stored = energyStorage.getEnergyStored(null);
+                if (stored >= stillneeded) {
+                    energyStorage.extractEnergy(stillneeded);
+                    stillneeded = 0;
+                    break;
+                } else {
+                    energyStorage.extractEnergy(stored);
+                    stillneeded -= stored;
+                }
+            }
+        }
+        return stillneeded;
     }
 
     private void craftFinished(@Nonnull IEFabRecipe recipe) {
@@ -400,6 +410,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     gearBoxes.add(p);
                 } else if (block == ModBlocks.rfControlBlock) {
                     rfControls.add(p);
+                } else if (block == ModBlocks.rfStorageBlock) {
+                    rfStorages.add(p);
                 } else if (block == ModBlocks.tankBlock) {
                     tanks.add(p);
                 }
@@ -417,6 +429,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             tanks.clear();
             gearBoxes.clear();
             rfControls.clear();
+            rfStorages.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
         }
     }
@@ -604,6 +617,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (findSuitableTank(stack) == null) {
                 if (errors != null) {
                     errors.add("Not enough liquid: " + stack.getLocalizedName());
+                    errors.add("    " + stack.amount + " mb needed");
                 } else {
                     return true;
                 }
@@ -612,14 +626,32 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
         if (recipe.getRequiredRfPerTick() > 0) {
             int totavailable = 0;
+            int maxpertick = 0;
             for (BlockPos p : rfControls) {
                 TileEntity te = getWorld().getTileEntity(p);
-                if (te instanceof RfControlTE) {
-                    RfControlTE controlTE = (RfControlTE) te;
-                    totavailable += controlTE.getEnergyStored(null);
+                if (te instanceof IEFabEnergyStorage) {
+                    IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
+                    totavailable += energyStorage.getEnergyStored(null);
+                    maxpertick += energyStorage.getMaxEnergyStored(null);
                 }
             }
-            if (recipe.getRequiredRfPerTick() > totavailable) {
+            for (BlockPos p : rfStorages) {
+                TileEntity te = getWorld().getTileEntity(p);
+                if (te instanceof IEFabEnergyStorage) {
+                    IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
+                    totavailable += energyStorage.getEnergyStored(null);
+                    maxpertick += energyStorage.getMaxEnergyStored(null);
+                }
+            }
+            if (recipe.getRequiredRfPerTick() > maxpertick) {
+                if (errors != null) {
+                    errors.add("Not enough power capacity!");
+                    errors.add("    " + recipe.getRequiredRfPerTick() + "RF/t needed but only " +
+                        maxpertick + "possible");
+                } else {
+                    return true;
+                }
+            } else if (recipe.getRequiredRfPerTick() > totavailable) {
                 if (errors != null) {
                     errors.add("Not enough power!");
                 } else {

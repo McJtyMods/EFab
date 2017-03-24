@@ -1,4 +1,4 @@
-package mcjty.efab.blocks.rfcontrol;
+package mcjty.efab.blocks.rfstorage;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -11,7 +11,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEnergyReceiver, IEFabEnergyStorage {
+public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEnergyReceiver, IEFabEnergyStorage {
 
     private int energy = 0;
 
@@ -44,11 +44,11 @@ public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEn
 
     @Override
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfControlInputPerTick);
+        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfStorageInputPerTick);
         int newenergy = energy + toreceive;
-        if (newenergy > GeneralConfiguration.rfControlMax) {
-            toreceive -= newenergy - GeneralConfiguration.rfControlMax;
-            newenergy = GeneralConfiguration.rfControlMax;
+        if (newenergy > GeneralConfiguration.rfStorageMax) {
+            toreceive -= newenergy - GeneralConfiguration.rfStorageMax;
+            newenergy = GeneralConfiguration.rfStorageMax;
         }
         if (!simulate && energy != newenergy) {
             energy = newenergy;
@@ -64,12 +64,12 @@ public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEn
 
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
-        return GeneralConfiguration.rfControlMax;
+        return GeneralConfiguration.rfStorageMax;
     }
 
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
-        return from != EnumFacing.UP;
+        return true;
     }
 
     @Override
@@ -94,17 +94,17 @@ public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEn
 
                     @Override
                     public int extractEnergy(int maxExtract, boolean simulate) {
-                        return RfControlTE.this.extractEnergy(facing, maxExtract, simulate);
+                        return RFStorageTE.this.extractEnergy(facing, maxExtract, simulate);
                     }
 
                     @Override
                     public int getEnergyStored() {
-                        return RfControlTE.this.getEnergyStored(facing);
+                        return RFStorageTE.this.getEnergyStored(facing);
                     }
 
                     @Override
                     public int getMaxEnergyStored() {
-                        return RfControlTE.this.getMaxEnergyStored(facing);
+                        return RFStorageTE.this.getMaxEnergyStored(facing);
                     }
 
                     @Override
