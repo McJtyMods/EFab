@@ -4,6 +4,7 @@ tile.efab.pipes.name=Pipes
 tile.efab.grid.name=EFab Crafting Grid
 tile.efab.tank.name=Tank
 tile.efab.boiler.name=Boiler
+tile.efab.steamengine.name=Steam Engine
 
 itemGroup.EFab=EFab
 

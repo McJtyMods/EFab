@@ -2,6 +2,7 @@ package mcjty.efab.blocks.grid;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
@@ -58,6 +59,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     // Transient information that is calculated on demand
     private boolean dirty = true;       // Our cached multiblock info is invalid
     private final Set<BlockPos> boilers = new HashSet<>();
+    private final Set<BlockPos> steamEngines = new HashSet<>();
     private final Set<BlockPos> tanks = new HashSet<>();
     private final Set<BlockPos> gearBoxes = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
@@ -84,7 +86,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
                 if (ticksRemaining < 0) {
                     ticksRemaining = -1;
-                    totalTicks = 0;
                     markDirtyClient();
                     // Craft finished. Consume items and do the actual crafting. If there is no room to place
                     // the craft result then nothing happens
@@ -291,7 +292,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
                 if (recipe != null) {
                     Set<RecipeTier> requiredTiers = recipe.getRequiredTiers();
-                    if (requiredTiers.contains(RecipeTier.LIQUID) || requiredTiers.contains(RecipeTier.STEAM)) {
+                    if (requiredTiers.contains(RecipeTier.STEAM)) {
                         if (!SoundController.isSteamPlaying(getWorld(), pos)) {
                             SoundController.playSteamSound(getWorld(), pos, 1.0f);
                         }
@@ -324,6 +325,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             } else if (block instanceof GenericEFabMultiBlockPart) {
                 if (block == ModBlocks.boilerBlock) {
                     boilers.add(p);
+                } else if (block == ModBlocks.steamEngineBlock) {
+                    steamEngines.add(p);
                 } else if (block == ModBlocks.gearBoxBlock) {
                     gearBoxes.add(p);
                 } else if (block == ModBlocks.tankBlock) {
@@ -339,6 +342,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (dirty) {
             dirty = false;
             boilers.clear();
+            steamEngines.clear();
             tanks.clear();
             gearBoxes.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
@@ -371,7 +375,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         OptionalInt first = findCurrentGhost(sorted);
         if (first.isPresent()) {
             int i = (first.getAsInt() - 1 + sorted.size()) % sorted.size();
-            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, sorted.get(i).cast().getRecipeOutput());
+            IEFabRecipe recipe = sorted.get(i);
+            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput());
+            totalTicks = recipe.getCraftTime();
+            markDirtyQuick();
         }
     }
 
@@ -380,7 +387,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         OptionalInt first = findCurrentGhost(sorted);
         if (first.isPresent()) {
             int i = (first.getAsInt() + 1) % sorted.size();
-            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, sorted.get(i).cast().getRecipeOutput());
+            IEFabRecipe recipe = sorted.get(i);
+            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput());
+            totalTicks = recipe.getCraftTime();
+            markDirtyQuick();
         }
     }
 
@@ -398,6 +408,19 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             ticksRemaining = recipe.getCraftTime();
             totalTicks = recipe.getCraftTime();
             markDirtyClient();
+
+            if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
+                checkMultiBlockCache();
+                for (BlockPos enginePos : steamEngines) {
+                    TileEntity te = getWorld().getTileEntity(enginePos);
+                    if (te instanceof SteamEngineTE) {
+                        SteamEngineTE steamEngineTE = (SteamEngineTE) te;
+                        if (steamEngineTE.getSpeed() >= SteamEngineTE.MAX_SPEED / 2) {
+                            steamEngineTE.setSpeedBoost(40);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -536,7 +559,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (supportedTiers == null) {
             checkMultiBlockCache();
             supportedTiers = EnumSet.noneOf(RecipeTier.class);
-            if (!boilers.isEmpty()) {
+            if (!boilers.isEmpty() && !steamEngines.isEmpty()) {
                 supportedTiers.add(RecipeTier.STEAM);
             }
             if (!gearBoxes.isEmpty()) {
