@@ -3,6 +3,7 @@ package mcjty.efab.blocks.grid;
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
+import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.config.GeneralConfiguration;
@@ -64,6 +65,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> steamEngines = new HashSet<>();
     private final Set<BlockPos> tanks = new HashSet<>();
     private final Set<BlockPos> gearBoxes = new HashSet<>();
+    private final Set<BlockPos> rfControls = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
     @Override
@@ -110,6 +112,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     // Return false if the craft should be aborted
     private boolean craftInProgress(@Nonnull IEFabRecipe recipe) {
+        checkMultiBlockCache();
+
         if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
             // Consume a bit of water
             FluidStack stack = new FluidStack(FluidRegistry.WATER, GeneralConfiguration.waterSteamCraftingConsumption);
@@ -119,6 +123,27 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
             FluidStack drained = tank.getHandler().drain(stack, true);
             if (drained == null || drained.amount < GeneralConfiguration.waterSteamCraftingConsumption) {
+                return false;
+            }
+        }
+        if (recipe.getRequiredRfPerTick() > 0) {
+            int stillneeded = recipe.getRequiredRfPerTick();
+            for (BlockPos p : rfControls) {
+                TileEntity te = getWorld().getTileEntity(p);
+                if (te instanceof RfControlTE) {
+                    RfControlTE controlTE = (RfControlTE) te;
+                    int stored = controlTE.getEnergyStored(null);
+                    if (stored >= stillneeded) {
+                        controlTE.extractEnergy(stillneeded);
+                        stillneeded = 0;
+                        break;
+                    } else {
+                        controlTE.extractEnergy(stored);
+                        stillneeded -= stored;
+                    }
+                }
+            }
+            if (stillneeded > 0) {
                 return false;
             }
         }
@@ -340,6 +365,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         if (!SoundController.isMachinePlaying(getWorld(), pos)) {
                             SoundController.playMachineSound(getWorld(), pos, 1.0f);
                         }
+                    } else if (requiredTiers.contains(RecipeTier.RF)) {
+                        if (!SoundController.isSparksPlaying(getWorld(), pos)) {
+                            SoundController.playSparksSound(getWorld(), pos, 1.0f);
+                        }
                     }
                 }
             } else {
@@ -369,6 +398,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     steamEngines.add(p);
                 } else if (block == ModBlocks.gearBoxBlock) {
                     gearBoxes.add(p);
+                } else if (block == ModBlocks.rfControlBlock) {
+                    rfControls.add(p);
                 } else if (block == ModBlocks.tankBlock) {
                     tanks.add(p);
                 }
@@ -385,6 +416,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             steamEngines.clear();
             tanks.clear();
             gearBoxes.clear();
+            rfControls.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
         }
     }
@@ -550,6 +582,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     private boolean getErrorsForOutput(ItemStack output, @Nullable List<String> errors) {
+        checkMultiBlockCache();
+
         IEFabRecipe recipe = findRecipeForOutput(output);
         if (recipe == null) {
             return false;
@@ -570,6 +604,24 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (findSuitableTank(stack) == null) {
                 if (errors != null) {
                     errors.add("Not enough liquid: " + stack.getLocalizedName());
+                } else {
+                    return true;
+                }
+            }
+        }
+
+        if (recipe.getRequiredRfPerTick() > 0) {
+            int totavailable = 0;
+            for (BlockPos p : rfControls) {
+                TileEntity te = getWorld().getTileEntity(p);
+                if (te instanceof RfControlTE) {
+                    RfControlTE controlTE = (RfControlTE) te;
+                    totavailable += controlTE.getEnergyStored(null);
+                }
+            }
+            if (recipe.getRequiredRfPerTick() > totavailable) {
+                if (errors != null) {
+                    errors.add("Not enough power!");
                 } else {
                     return true;
                 }
@@ -619,6 +671,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
             if (!tanks.isEmpty()) {
                 supportedTiers.add(RecipeTier.LIQUID);
+            }
+            if (!rfControls.isEmpty()) {
+                supportedTiers.add(RecipeTier.RF);
             }
         }
         return supportedTiers;

@@ -12,7 +12,7 @@ public class EFabShapedRecipe extends ShapedRecipes implements IEFabRecipe {
 
     @Nonnull private final Set<RecipeTier> requiredTiers = EnumSet.noneOf(RecipeTier.class);
     @Nonnull private final List<FluidStack> requiredFluids = new ArrayList<>();
-    private int requiredRF = 0;
+    private int requiredRfPerTick = 0;
     private int craftTime = 0;
 
     public EFabShapedRecipe(ItemStack[] ingredientsIn, ItemStack output) {
@@ -29,8 +29,8 @@ public class EFabShapedRecipe extends ShapedRecipes implements IEFabRecipe {
         return this;
     }
 
-    public EFabShapedRecipe energy(int rf) {
-        requiredRF = rf;
+    public EFabShapedRecipe rfPerTick(int rf) {
+        requiredRfPerTick = rf;
         return this;
     }
 
@@ -46,8 +46,8 @@ public class EFabShapedRecipe extends ShapedRecipes implements IEFabRecipe {
     }
 
     @Override
-    public int getRequiredRF() {
-        return requiredRF;
+    public int getRequiredRfPerTick() {
+        return requiredRfPerTick;
     }
 
     @Override

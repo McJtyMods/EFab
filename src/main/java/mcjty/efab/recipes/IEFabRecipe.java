@@ -13,7 +13,7 @@ public interface IEFabRecipe {
     @Nonnull
     Collection<FluidStack> getRequiredFluids();
 
-    int getRequiredRF();
+    int getRequiredRfPerTick();
 
     int getCraftTime();
 

@@ -5,6 +5,7 @@ import mcjty.efab.blocks.boiler.BoilerBlock;
 import mcjty.efab.blocks.gearbox.GearBoxBlock;
 import mcjty.efab.blocks.grid.GridBlock;
 import mcjty.efab.blocks.pipes.PipeBlock;
+import mcjty.efab.blocks.rfcontrol.RfControlBlock;
 import mcjty.efab.blocks.steamengine.SteamEngineBlock;
 import mcjty.efab.blocks.tank.TankBlock;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,6 +20,7 @@ public class ModBlocks {
     public static TankBlock tankBlock;
     public static BoilerBlock boilerBlock;
     public static SteamEngineBlock steamEngineBlock;
+    public static RfControlBlock rfControlBlock;
 
     public static void init() {
         baseBlock = new BaseBlock();
@@ -28,6 +30,7 @@ public class ModBlocks {
         tankBlock = new TankBlock();
         boilerBlock = new BoilerBlock();
         steamEngineBlock = new SteamEngineBlock();
+        rfControlBlock = new RfControlBlock();
     }
 
     @SideOnly(Side.CLIENT)
@@ -39,5 +42,6 @@ public class ModBlocks {
         tankBlock.initModel();
         boilerBlock.initModel();
         steamEngineBlock.initModel();
+        rfControlBlock.initModel();
     }
 }

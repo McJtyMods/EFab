@@ -28,6 +28,8 @@ public class GeneralConfiguration {
 
     public static int tankCapacity = 10000;
 
+    public static int rfControlInputPerTick = 10;
+    public static int rfControlMax = 20;
 
     public static void init(Configuration cfg) {
         baseMachineVolume = cfg.getFloat("baseMachineVolume", CATEGORY_GENERAL, baseMachineVolume,
@@ -68,5 +70,10 @@ public class GeneralConfiguration {
 
         tankCapacity = cfg.getInt("tankCapacity", CATEGORY_GENERAL, tankCapacity,
                 1, 1000000, "Capacity of each tank block in MB");
+
+        rfControlInputPerTick = cfg.getInt("rfControlInputPerTick", CATEGORY_GENERAL, rfControlInputPerTick,
+                1, 1000000, "How much RF/t the RF Control block can receive");
+        rfControlMax = cfg.getInt("rfControlMax", CATEGORY_GENERAL, rfControlMax,
+                1, 10000000, "The maximum amount of RF for the RF Control block");
     }
 }
