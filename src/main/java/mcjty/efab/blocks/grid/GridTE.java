@@ -455,8 +455,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     TileEntity te = getWorld().getTileEntity(enginePos);
                     if (te instanceof SteamEngineTE) {
                         SteamEngineTE steamEngineTE = (SteamEngineTE) te;
-                        if (steamEngineTE.getSpeed() >= SteamEngineTE.MAX_SPEED / 2) {
-                            steamEngineTE.setSpeedBoost(40);
+                        if (steamEngineTE.getSpeed() >= GeneralConfiguration.maxSteamWheelSpeed / 2) {
+                            steamEngineTE.setSpeedBoost(GeneralConfiguration.steamWheelBoost);
                         }
                     }
                 }
@@ -597,7 +597,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 }
             }
 
-            if (findSuitableTank(new FluidStack(FluidRegistry.WATER, 500)) == null) {
+            if (findSuitableTank(new FluidStack(FluidRegistry.WATER, GeneralConfiguration.waterSteamStartAmount)) == null) {
                 if (errors != null) {
                     errors.add("Insufficient water to make steam!");
                 } else {

@@ -1,12 +1,11 @@
 package mcjty.efab.blocks.steamengine;
 
 import mcjty.efab.blocks.GenericEFabTile;
+import mcjty.efab.config.GeneralConfiguration;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 
 public class SteamEngineTE extends GenericEFabTile implements ITickable {
-
-    public static final float MAX_SPEED = 30.0f;
 
     private float speed = 1.0f;
     private int speedBoost = 0;
@@ -32,17 +31,17 @@ public class SteamEngineTE extends GenericEFabTile implements ITickable {
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= 0.1f;
-            if (speed > 1.0f) {
+            speed -= GeneralConfiguration.steamWheelSpinDown;
+            if (speed < 1.0f) {
                 speed = 1.0f;
             }
             markDirtyQuick();
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += 2f;
-            if (speed < MAX_SPEED) {
-                speed = MAX_SPEED;
+            speed += GeneralConfiguration.steamWheelSpeedUp;
+            if (speed > GeneralConfiguration.maxSteamWheelSpeed) {
+                speed = GeneralConfiguration.maxSteamWheelSpeed;
             }
             markDirtyQuick();
         }

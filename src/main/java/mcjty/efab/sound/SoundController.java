@@ -57,15 +57,15 @@ public final class SoundController {
 
 
     public static void playMachineSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, machine, volume, GeneralConfiguration.baseMachineVolume, 50);
+        playSound(worldObj, pos, machine, volume, GeneralConfiguration.baseMachineVolume, GeneralConfiguration.soundMachineTicks);
     }
 
     public static void playSparksSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, sparks, volume, GeneralConfiguration.baseSparksVolume, 50);
+        playSound(worldObj, pos, sparks, volume, GeneralConfiguration.baseSparksVolume, GeneralConfiguration.soundSparksTicks);
     }
 
     public static void playSteamSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, steam, volume, GeneralConfiguration.baseSteamVolume, 50);
+        playSound(worldObj, pos, steam, volume, GeneralConfiguration.baseSteamVolume, GeneralConfiguration.soundSteamTicks);
     }
 
     public static void updateVolume(World worldObj, BlockPos pos, float volume) {

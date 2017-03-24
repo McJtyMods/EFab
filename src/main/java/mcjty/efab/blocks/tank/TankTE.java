@@ -2,6 +2,7 @@ package mcjty.efab.blocks.tank;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.config.GeneralConfiguration;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -17,10 +18,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TankTE extends GenericEFabTile {
 
-    public static final int MAXCAPACITY = 10000;
-
     private FluidTank handler;
-    private int capacity = MAXCAPACITY;
+    private int capacity = GeneralConfiguration.tankCapacity;
 
     public FluidStack getFluid() {
         return getHandler().getFluid();
@@ -55,7 +54,7 @@ public class TankTE extends GenericEFabTile {
                     cnt++;
                     p = p.up();
                 }
-                FluidTank bottomHandler = new FluidTank(MAXCAPACITY * cnt);
+                FluidTank bottomHandler = new FluidTank(GeneralConfiguration.tankCapacity * cnt);
                 p = bottomPos;
                 while (world.getBlockState(p).getBlock() == ModBlocks.tankBlock) {
                     TankTE te = (TankTE) world.getTileEntity(p);
@@ -69,7 +68,7 @@ public class TankTE extends GenericEFabTile {
                 }
                 TankTE bottomTE = (TankTE) world.getTileEntity(bottomPos);
                 bottomTE.handler = bottomHandler;
-                bottomTE.capacity = MAXCAPACITY * cnt;
+                bottomTE.capacity = GeneralConfiguration.tankCapacity * cnt;
             }
         }
     }
@@ -89,15 +88,15 @@ public class TankTE extends GenericEFabTile {
                 // We have a multiblock. Need to split handlers.
                 int cntBelow = pos.getY() - bottomPos.getY();       // Number of tank blocks below this one
                 if (cntBelow > 0) {
-                    bottomTE.handler = new FluidTank(cntBelow * MAXCAPACITY);
-                    bottomTE.capacity = cntBelow * MAXCAPACITY;
+                    bottomTE.handler = new FluidTank(cntBelow * GeneralConfiguration.tankCapacity);
+                    bottomTE.capacity = cntBelow * GeneralConfiguration.tankCapacity;
                     int accepted = bottomTE.handler.fill(drained, true);
                     drained.amount -= accepted;
                     bottomTE.markDirtyQuick();
                 }
 
-                handler = new FluidTank(MAXCAPACITY);
-                capacity = MAXCAPACITY;
+                handler = new FluidTank(GeneralConfiguration.tankCapacity);
+                capacity = GeneralConfiguration.tankCapacity;
                 if (drained.amount > 0) {
                     int accepted = handler.fill(drained, true);
                     drained.amount -= accepted;
@@ -113,8 +112,8 @@ public class TankTE extends GenericEFabTile {
                         cnt++;
                         p = p.up();
                     }
-                    topTE.handler = new FluidTank(cnt * MAXCAPACITY);
-                    topTE.capacity = cnt * MAXCAPACITY;
+                    topTE.handler = new FluidTank(cnt * GeneralConfiguration.tankCapacity);
+                    topTE.capacity = cnt * GeneralConfiguration.tankCapacity;
                     if (drained.amount > 0) {
                         topTE.handler.fill(drained, true);
                     }
