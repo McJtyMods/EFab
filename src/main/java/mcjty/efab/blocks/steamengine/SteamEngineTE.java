@@ -40,7 +40,7 @@ public class SteamEngineTE extends GenericEFabTile implements ITickable {
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += 1f;
+            speed += 2f;
             if (speed < MAX_SPEED) {
                 speed = MAX_SPEED;
             }
