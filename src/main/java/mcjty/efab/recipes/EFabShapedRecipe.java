@@ -2,21 +2,21 @@ package mcjty.efab.recipes;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class EFabShapedRecipe extends ShapedRecipes implements IEFabRecipe {
+public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
 
     @Nonnull private final Set<RecipeTier> requiredTiers = EnumSet.noneOf(RecipeTier.class);
     @Nonnull private final List<FluidStack> requiredFluids = new ArrayList<>();
     private int requiredRfPerTick = 0;
     private int craftTime = 0;
 
-    public EFabShapedRecipe(ItemStack[] ingredientsIn, ItemStack output) {
-        super(3, 3, ingredientsIn, output);
+    public EFabShapedRecipe(ItemStack output, Object... recipe) {
+        super(output, recipe);
     }
 
     public EFabShapedRecipe tier(RecipeTier tier) {

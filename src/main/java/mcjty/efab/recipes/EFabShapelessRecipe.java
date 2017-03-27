@@ -2,22 +2,21 @@ package mcjty.efab.recipes;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fluids.FluidStack;
-import scala.actors.threadpool.Arrays;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class EFabShapelessRecipe extends ShapelessRecipes implements IEFabRecipe {
+public class EFabShapelessRecipe extends ShapedOreRecipe implements IEFabRecipe {
 
     @Nonnull private final Set<RecipeTier> requiredTiers = EnumSet.noneOf(RecipeTier.class);
     @Nonnull private final List<FluidStack> requiredFluids = new ArrayList<>();
     private int requiredRfPerTick = 0;
     private int craftTime = 0;
 
-    public EFabShapelessRecipe(ItemStack[] ingredientsIn, ItemStack output) {
-        super(output, Arrays.asList(ingredientsIn));
+    public EFabShapelessRecipe(ItemStack output, Object... recipe) {
+        super(output, recipe);
     }
 
     public EFabShapelessRecipe tier(RecipeTier tier) {
