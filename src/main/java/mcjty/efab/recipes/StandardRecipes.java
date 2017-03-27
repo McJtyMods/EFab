@@ -8,14 +8,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class StandardRecipes {
 
@@ -73,6 +76,22 @@ public class StandardRecipes {
         readRecipesFromStream(inputstream, file.getName());
     }
 
+    private static FluidStack jsonToFluidStack(JsonObject obj) {
+        String fluidName = obj.get("fluid").getAsString();
+        Fluid fluid = FluidRegistry.getFluid(fluidName);
+        // @todo error checking
+        int amount = obj.get("amount").getAsInt();
+        NBTTagCompound nbt = null;
+        if (obj.has("nbt")) {
+            try {
+                nbt = JsonToNBT.getTagFromJson(obj.get("nbt").getAsString());
+            } catch (NBTException e) {
+                // @todo What to do?
+            }
+        }
+        return new FluidStack(fluid, amount, nbt);
+    }
+
     private static JsonObject fluidStackToJson(FluidStack fluid) {
         JsonObject object = new JsonObject();
         object.add("fluid", new JsonPrimitive(fluid.getFluid().getName()));
@@ -82,6 +101,30 @@ public class StandardRecipes {
             object.add("nbt", new JsonPrimitive(string));
         }
         return object;
+    }
+
+    private static ItemStack jsonToItemStack(JsonObject obj) {
+        String itemName = obj.get("item").getAsString();
+        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
+        // @todo error checking
+        int amount = 1;
+        if (obj.has("amount")) {
+            amount = obj.get("amount").getAsInt();
+        }
+        int meta = 0;
+        if (obj.has("meta")) {
+            meta = obj.get("meta").getAsInt();
+        }
+        ItemStack stack = new ItemStack(item, amount, meta);
+        if (obj.has("nbt")) {
+            try {
+                NBTTagCompound nbt = JsonToNBT.getTagFromJson(obj.get("nbt").getAsString());
+                stack.setTagCompound(nbt);
+            } catch (NBTException e) {
+                // @todo What to do?
+            }
+        }
+        return stack;
     }
 
     private static JsonObject itemStackToJson(ItemStack item) {
@@ -111,13 +154,7 @@ public class StandardRecipes {
 
         JsonArray array = new JsonArray();
 
-        System.out.println("StandardRecipes.writeExample: #################");
-        RecipeManager.getShapedRecipes().forEachRemaining(recipe -> {
-            System.out.println("StandardRecipes.writeExample: 1");
-            array.add(recipeToJson(recipe));
-        });
-        RecipeManager.getShapelessRecipes().forEachRemaining(recipe -> {
-            System.out.println("StandardRecipes.writeExample: 2");
+        RecipeManager.getRecipes().forEachRemaining(recipe -> {
             array.add(recipeToJson(recipe));
         });
 
@@ -125,6 +162,57 @@ public class StandardRecipes {
         writer.print(gson.toJson(array));
 
         writer.close();
+    }
+
+    private static IEFabRecipe jsonToRecipe(JsonObject obj) {
+        String type = obj.get("type").getAsString();
+        boolean shaped = "shaped".equals(type.toLowerCase());
+
+        List<Object> input = new ArrayList<>();
+
+        JsonArray inputArray = obj.get("input").getAsJsonArray();
+        for (int i = 0 ; i < inputArray.size() ; i++) {
+            input.add(inputArray.get(i));
+        }
+
+        JsonObject inputMapObject = obj.get("inputmap").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> entry : inputMapObject.entrySet()) {
+            input.add(entry.getKey().charAt(0));
+            JsonElement value = entry.getValue();
+            if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+                input.add(value.getAsString());
+            } else if (value.isJsonObject()) {
+                input.add(jsonToItemStack(value.getAsJsonObject()));
+            }
+        }
+
+        ItemStack output = jsonToItemStack(obj.get("output").getAsJsonObject());
+        IEFabRecipe recipe;
+        if (shaped) {
+            recipe = new EFabShapedRecipe(output, input.toArray(new Object[input.size()]));
+        } else {
+            recipe = new EFabShapelessRecipe(output, input.toArray(new Object[input.size()]));
+        }
+        recipe.time(obj.get("time").getAsInt());
+        if (obj.has("tiers")) {
+            JsonArray tiersArray = obj.get("tiers").getAsJsonArray();
+            for (JsonElement element : tiersArray) {
+                RecipeTier tier = RecipeTier.valueOf(element.getAsString());
+                recipe.tier(tier);
+            }
+        }
+        if (obj.has("rfpertick")) {
+            recipe.rfPerTick(obj.get("rfpertick").getAsInt());
+        }
+        if (obj.has("fluids")) {
+            JsonArray fluidArray = obj.get("fluids").getAsJsonArray();
+            for (JsonElement element : fluidArray) {
+                FluidStack stack = jsonToFluidStack(element.getAsJsonObject());
+                recipe.fluid(stack);
+            }
+        }
+
+        return recipe;
     }
 
     private static JsonObject recipeToJson(IEFabRecipe recipe) {
@@ -193,6 +281,7 @@ public class StandardRecipes {
             Logging.logError("Error reading file: " + name);
             return;
         }
+        RecipeManager.clear();
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(br);
         for (JsonElement entry : element.getAsJsonArray()) {
@@ -200,9 +289,9 @@ public class StandardRecipes {
         }
     }
 
-    private static void readRecipe(JsonElement ruleElement) {
-        JsonElement output = ruleElement.getAsJsonObject().get("output");
-        JsonElement input = ruleElement.getAsJsonObject().get("input");
+    private static void readRecipe(JsonElement element) {
+        IEFabRecipe recipe = jsonToRecipe(element.getAsJsonObject());
+        RecipeManager.registerRecipe(recipe);
     }
 
 

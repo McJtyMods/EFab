@@ -22,6 +22,14 @@ public interface IEFabRecipe {
     @Nonnull
     Set<RecipeTier> getRequiredTiers();
 
+    IEFabRecipe tier(RecipeTier tier);
+
+    IEFabRecipe fluid(FluidStack stack);
+
+    IEFabRecipe rfPerTick(int rf);
+
+    IEFabRecipe time(int t);
+
     @Nonnull
     IRecipe cast();
 

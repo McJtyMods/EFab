@@ -45,22 +45,26 @@ public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
         return inputMap;
     }
 
-    public EFabShapedRecipe tier(RecipeTier tier) {
+    @Override
+    public IEFabRecipe tier(RecipeTier tier) {
         requiredTiers.add(tier);
         return this;
     }
 
-    public EFabShapedRecipe fluid(FluidStack stack) {
+    @Override
+    public IEFabRecipe fluid(FluidStack stack) {
         requiredFluids.add(stack);
         return this;
     }
 
-    public EFabShapedRecipe rfPerTick(int rf) {
+    @Override
+    public IEFabRecipe rfPerTick(int rf) {
         requiredRfPerTick = rf;
         return this;
     }
 
-    public EFabShapedRecipe time(int t) {
+    @Override
+    public IEFabRecipe time(int t) {
         craftTime = t;
         return this;
     }
