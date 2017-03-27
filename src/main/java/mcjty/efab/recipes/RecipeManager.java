@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +16,14 @@ public class RecipeManager {
     private static final List<EFabShapelessRecipe> shapelessRecipes = new ArrayList<>();
 
     public static void init() {
+    }
+
+    public static Iterator<EFabShapedRecipe> getShapedRecipes() {
+        return shapedRecipes.iterator();
+    }
+
+    public static Iterator<EFabShapelessRecipe> getShapelessRecipes() {
+        return shapelessRecipes.iterator();
     }
 
     public static void registerRecipe(EFabShapedRecipe recipe) {

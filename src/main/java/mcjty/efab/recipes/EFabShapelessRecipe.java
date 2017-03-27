@@ -15,8 +15,34 @@ public class EFabShapelessRecipe extends ShapedOreRecipe implements IEFabRecipe 
     private int requiredRfPerTick = 0;
     private int craftTime = 0;
 
+    private List<String> inputs = new ArrayList<>();
+    private Map<String,Object> inputMap = new HashMap<>();
+
     public EFabShapelessRecipe(ItemStack output, Object... recipe) {
         super(output, recipe);
+
+        int idx = 0;
+        while (idx < recipe.length) {
+            Object o = recipe[idx];
+            idx++;
+            if (o instanceof String) {
+                inputs.add((String) o);
+            } else if (o instanceof Character) {
+                Object item = recipe[idx];
+                idx++;
+                inputMap.put(String.valueOf(o), item);
+            }
+        }
+    }
+
+    @Override
+    public List<String> getInputs() {
+        return inputs;
+    }
+
+    @Override
+    public Map<String, Object> getInputMap() {
+        return inputMap;
     }
 
     public EFabShapelessRecipe tier(RecipeTier tier) {

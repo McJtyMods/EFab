@@ -67,11 +67,13 @@ public abstract class CommonProxy {
         NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 //        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
 //        ModRecipes.init();
-        StandardRecipes.init();
     }
 
     public void postInit(FMLPostInitializationEvent e) {
         mainConfig = null;
+        StandardRecipes.init();
+        File file = new File(modConfigDir.getPath(), "efab_recipes.json");
+        StandardRecipes.readRecipesConfig(file);
     }
 
     public World getClientWorld() {
