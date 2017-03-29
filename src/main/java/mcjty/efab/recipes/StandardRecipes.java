@@ -172,7 +172,7 @@ public class StandardRecipes {
 
         JsonArray inputArray = obj.get("input").getAsJsonArray();
         for (int i = 0 ; i < inputArray.size() ; i++) {
-            input.add(inputArray.get(i));
+            input.add(inputArray.get(i).getAsString());
         }
 
         JsonObject inputMapObject = obj.get("inputmap").getAsJsonObject();

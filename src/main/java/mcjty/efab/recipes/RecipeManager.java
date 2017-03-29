@@ -29,13 +29,13 @@ public class RecipeManager {
 
     @Nonnull
     public static List<IEFabRecipe> findValidRecipes(InventoryCrafting inventoryCrafting, World world) {
-        List<IEFabRecipe> recipes = new ArrayList<>();
+        List<IEFabRecipe> foundRecipes = new ArrayList<>();
         for (IEFabRecipe recipe : recipes) {
             if (recipe.cast().matches(inventoryCrafting, world)) {
-                recipes.add(recipe);
+                foundRecipes.add(recipe);
             }
         }
-        return recipes;
+        return foundRecipes;
     }
 
 }
