@@ -4,6 +4,7 @@ import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.jei.grid.GridRecipeCategory;
 import mcjty.efab.jei.grid.GridRecipeHandler;
 import mcjty.efab.jei.grid.GridRecipeShapedCategory;
+import mcjty.efab.jei.grid.JEIRecipeAdapter;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.lib.jei.JeiCompatTools;
@@ -30,7 +31,7 @@ public class EFabJeiPlugin extends BlankModPlugin {
         Iterator<IEFabRecipe> recipeIterator = RecipeManager.getRecipes();
         List<IEFabRecipe> efabRecipes = new ArrayList<>();
         while (recipeIterator.hasNext()) {
-            efabRecipes.add(recipeIterator.next());
+            efabRecipes.add(new JEIRecipeAdapter(recipeIterator.next()));
         }
         JeiCompatTools.addRecipes(registry, efabRecipes);
 
