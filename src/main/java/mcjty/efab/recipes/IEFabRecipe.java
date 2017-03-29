@@ -1,5 +1,6 @@
 package mcjty.efab.recipes;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -36,4 +37,6 @@ public interface IEFabRecipe {
     List<String> getInputs();
 
     Map<String, Object> getInputMap();
+
+    List<List<ItemStack>> getInputLists();
 }

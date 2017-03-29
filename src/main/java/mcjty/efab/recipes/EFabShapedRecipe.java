@@ -36,6 +36,22 @@ public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
     }
 
     @Override
+    public List<List<ItemStack>> getInputLists() {
+        List<List<ItemStack>> inputLists = new ArrayList<>();
+        for (Object o : input) {
+            if (o instanceof ItemStack) {
+                inputLists.add(Collections.singletonList((ItemStack) o));
+            } else if (o instanceof List) {
+                inputLists.add((List) o);
+            } else {
+                System.out.println("WHAT?");
+            }
+        }
+
+        return inputLists;
+    }
+
+    @Override
     public List<String> getInputs() {
         return inputs;
     }

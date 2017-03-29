@@ -12,14 +12,14 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class GridRecipeCategory extends BlankRecipeCategory<GridCraftingRecipeWrapper> {
+public class GridRecipeShapedCategory extends BlankRecipeCategory<GridCraftingShapedRecipeWrapper> {
 
     private final IGuiHelper guiHelper;
     private final IDrawable slot;
 
-    public static final String ID = "EFabGrid";
+    public static final String ID = "EFabGridShaped";
 
-    public GridRecipeCategory(IGuiHelper guiHelper) {
+    public GridRecipeShapedCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
         slot = guiHelper.getSlotDrawable();
     }
@@ -52,7 +52,7 @@ public class GridRecipeCategory extends BlankRecipeCategory<GridCraftingRecipeWr
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, GridCraftingRecipeWrapper recipeWrapper, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, GridCraftingShapedRecipeWrapper recipeWrapper, IIngredients ingredients) {
         IGuiItemStackGroup group = recipeLayout.getItemStacks();
         group.init(0, true, 0, 0);
         group.set(0, ingredients.getInputs(ItemStack.class).get(0));
