@@ -1,14 +1,16 @@
 package mcjty.efab.jei.grid;
 
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 
-public class GridRecipeWrapper extends BlankRecipeWrapper {
+public class GridRecipeWrapper implements IShapedCraftingRecipeWrapper {
 
     private final Item item;
 
@@ -28,7 +30,7 @@ public class GridRecipeWrapper extends BlankRecipeWrapper {
 
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-        super.drawInfo(minecraft, recipeWidth, recipeHeight, mouseX, mouseY);
+//        super.drawInfo(minecraft, recipeWidth, recipeHeight, mouseX, mouseY);
 //        InfusingBonus bonus = LaserTileEntity.infusingBonusMap.get(item.getRegistryName().toString());
 //
 //        renderStat("Purity:", bonus.getPurityModifier(), 30);
@@ -45,4 +47,23 @@ public class GridRecipeWrapper extends BlankRecipeWrapper {
 //                0xff000000, false);
 //    }
 
+    @Override
+    public int getWidth() {
+        return 3;
+    }
+
+    @Override
+    public int getHeight() {
+        return 3;
+    }
+
+    @Override
+    public List<String> getTooltipStrings(int mouseX, int mouseY) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton) {
+        return false;
+    }
 }
