@@ -5,7 +5,27 @@
   },
   "variants": {
     "normal": [{}],
-    "inventory": [{}],
+    "inventory": [
+      {
+        "custom": { "flip-v": true },
+        "model": "efab:grid.obj",
+        "transform": {
+          "gui": {
+            "scale": 0.75,
+            "rotation": [{"y": 45}, {"z": 45}]
+          },
+          "ground": {
+            "scale": 0.55
+          },
+          "firstperson": {
+            "scale": 0.55
+          },
+          "thirdperson": {
+            "scale": 0.55
+          }
+        }
+      }
+    ],
     "facing": {
       "south": {},
       "north": { "y": 180 },
