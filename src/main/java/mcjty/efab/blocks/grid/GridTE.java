@@ -4,7 +4,6 @@ import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
-import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.config.GeneralConfiguration;
@@ -134,7 +133,12 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (stillneeded > 0) {
                 stillneeded = handlePowerPerTick(stillneeded, this.rfStorages);
                 if (stillneeded > 0) {
-                    return false;
+                    if (GeneralConfiguration.abortCraftWhenOutOfRf) {
+                        return false;
+                    } else {
+                        ticksRemaining--;   // One tick back
+                        return true;
+                    }
                 }
             }
         }
