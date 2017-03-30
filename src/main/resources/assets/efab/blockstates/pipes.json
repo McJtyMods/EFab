@@ -11,7 +11,8 @@
         "model": "efab:pipeblock.obj",
         "transform": {
           "gui": {
-            "scale": 0.75,
+            "scale": 0.9,
+            "translation": [0.4, 0.2, 0.4],
             "rotation": [{"x": 15},{"y": 45}]
           },
           "ground": {

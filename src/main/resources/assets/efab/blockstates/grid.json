@@ -11,8 +11,8 @@
         "model": "efab:grid.obj",
         "transform": {
           "gui": {
-            "scale": 0.75,
-            "rotation": [{"y": 45}, {"z": 45}]
+            "scale": 0.65,
+            "rotation": [{"y": 90}, {"z": 95}]
           },
           "ground": {
             "scale": 0.55
