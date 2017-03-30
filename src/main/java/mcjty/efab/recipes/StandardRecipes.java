@@ -1,6 +1,7 @@
 package mcjty.efab.recipes;
 
 import com.google.gson.*;
+import mcjty.efab.blocks.ModBlocks;
 import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
@@ -16,6 +17,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.io.*;
 import java.util.*;
@@ -23,6 +26,46 @@ import java.util.*;
 public class StandardRecipes {
 
     public static void init() {
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.gridBlock, " i ", "ici", " i ", 'i', "ingotIron", 'c', Blocks.CRAFTING_TABLE));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.baseBlock, 4), " i ", "isi", " i ", 'i', "ingotIron", 's', Blocks.STONE));
+
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.gearBoxBlock),
+                "iri", "rbr", "iri", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.boilerBlock),
+                "ici", "ibi", "iii", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'c', Blocks.CAULDRON)
+                .tier(RecipeTier.GEARBOX)
+                .time(20));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.tankBlock),
+                "iii", "i i", "iii", 'i', "ingotIron")
+                .tier(RecipeTier.GEARBOX)
+                .time(10));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.steamEngineBlock),
+                "ici", "ibi", "ici", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'c', Blocks.PISTON)
+                .tier(RecipeTier.GEARBOX)
+                .time(20));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.pipeBlock),
+                "ii ", "ii ", "   ", 'i', "ingotIron")
+                .tier(RecipeTier.GEARBOX)
+                .time(10));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.rfControlBlock),
+                "rrr", "rbr", "rrr", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock)
+                .tier(RecipeTier.STEAM)
+                .time(100));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.rfStorageBlock),
+                "rRr", "RbR", "rRr", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'R', Blocks.REDSTONE_BLOCK)
+                .tier(RecipeTier.STEAM)
+                .tier(RecipeTier.LIQUID)
+                .fluid(new FluidStack(FluidRegistry.LAVA, 1000))
+                .time(100));
+
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(Blocks.FURNACE),
                 "ccc", "c c", "ccc", 'c', Blocks.COBBLESTONE));
