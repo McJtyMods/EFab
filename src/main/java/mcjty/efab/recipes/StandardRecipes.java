@@ -44,7 +44,12 @@ public class StandardRecipes {
                 new ItemStack(Blocks.OBSIDIAN),
                 "ccc", "ccc", "ccc", 'c', "cobblestone")
                 .time(60)
-                .tier(RecipeTier.STEAM));
+                .tier(RecipeTier.STEAM)
+                .tier(RecipeTier.LIQUID)
+                .tier(RecipeTier.RF)
+                .rfPerTick(10)
+                .fluid(new FluidStack(FluidRegistry.WATER, 1000))
+                .fluid(new FluidStack(FluidRegistry.LAVA, 1000)));
 
         RecipeManager.registerRecipe(new EFabShapelessRecipe(
                 new ItemStack(Items.WATER_BUCKET),

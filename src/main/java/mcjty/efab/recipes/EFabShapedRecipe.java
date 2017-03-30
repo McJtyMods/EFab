@@ -44,7 +44,7 @@ public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
             } else if (o instanceof List) {
                 inputLists.add((List) o);
             } else {
-                System.out.println("WHAT?");
+                inputLists.add(Collections.emptyList());
             }
         }
 

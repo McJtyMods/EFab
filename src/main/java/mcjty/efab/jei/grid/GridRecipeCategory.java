@@ -20,8 +20,8 @@ public class GridRecipeCategory extends BlankRecipeCategory<GridCraftingRecipeWr
     private static final int craftOutputSlot = 0;
     private static final int craftInputSlot1 = 1;
 
-    public static final int width = 116;
-    public static final int height = 90; //54;
+    public static final int width = 140; //116;
+    public static final int height = 110; //54;
 
     private final IGuiHelper guiHelper;
     private final IDrawable background;
