@@ -30,7 +30,7 @@ public class EFab implements ModBase {
 
     public static final String MIN_FORGE10_VER = "12.18.2.2116";
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
-    public static final String COMPATLAYER_VER = "0.2.1";
+    public static final String COMPATLAYER_VER = "0.2.7";
 
     @SidedProxy(clientSide = "mcjty.efab.proxy.ClientProxy", serverSide = "mcjty.efab.proxy.ServerProxy")
     public static CommonProxy proxy;

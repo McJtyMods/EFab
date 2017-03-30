@@ -38,6 +38,6 @@ public class EFabJeiPlugin extends BlankModPlugin {
         registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
 
         IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
-        transferRegistry.addRecipeTransferHandler(GridContainer.class, GridRecipeCategory.ID, GridContainer.SLOT_CRAFTINPUT, 9, 0, 36);
+        transferRegistry.addRecipeTransferHandler(GridContainer.class, GridRecipeCategory.ID, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT+1, 36);
     }
 }

@@ -1,11 +1,9 @@
 package mcjty.efab.jei.grid;
 
 import mcjty.efab.EFab;
+import mcjty.lib.jei.JeiCompatTools;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.ICraftingGridHelper;
-import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.gui.IGuiItemStackGroup;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.*;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.client.Minecraft;
@@ -76,9 +74,10 @@ public class GridRecipeCategory extends BlankRecipeCategory<GridCraftingRecipeWr
         }
 
         List<List<ItemStack>> inputs = ingredients.getInputs(ItemStack.class);
-        List<List<ItemStack>> outputs = ingredients.getOutputs(ItemStack.class);
+        List<ItemStack> outputs = JeiCompatTools.getOutputs(ingredients, ItemStack.class);
 
-        craftingGridHelper.setInputs(guiItemStacks, inputs, recipeWrapper.getWidth(), recipeWrapper.getHeight());
-        guiItemStacks.set(craftOutputSlot, outputs.get(0));
+        JeiCompatTools.setInputs(craftingGridHelper, guiItemStacks, inputs, recipeWrapper.getWidth(), recipeWrapper.getHeight());
+        IGuiIngredientGroup<ItemStack> g = guiItemStacks;
+        g.set(craftOutputSlot, outputs);
     }
 }
