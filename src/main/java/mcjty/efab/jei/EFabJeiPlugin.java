@@ -1,9 +1,9 @@
 package mcjty.efab.jei;
 
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.blocks.grid.GridContainer;
 import mcjty.efab.jei.grid.GridRecipeCategory;
 import mcjty.efab.jei.grid.GridRecipeHandler;
-import mcjty.efab.jei.grid.GridTransferHandler;
 import mcjty.efab.jei.grid.JEIRecipeAdapter;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
@@ -38,9 +38,6 @@ public class EFabJeiPlugin extends BlankModPlugin {
         registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
 
         IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
-//        CompatRecipeTransferHandler.register(transferRegistry, new GridTransferHandler());
-        // Compatlayer? @todo
-        transferRegistry.addRecipeTransferHandler(new GridTransferHandler(), GridRecipeCategory.ID);
-
+        transferRegistry.addRecipeTransferHandler(GridContainer.class, GridRecipeCategory.ID, GridContainer.SLOT_CRAFTINPUT, 9, 0, 36);
     }
 }
