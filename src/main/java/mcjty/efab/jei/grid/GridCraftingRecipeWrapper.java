@@ -4,6 +4,7 @@ import mcjty.efab.recipes.IEFabRecipe;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
+import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -11,7 +12,7 @@ import net.minecraft.item.crafting.IRecipe;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements ICraftingRecipeWrapper {
+class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper {
 
     protected final IEFabRecipe recipe;
     protected final List<List<ItemStack>> inputs;
@@ -20,11 +21,19 @@ class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements ICraftingR
 
     public GridCraftingRecipeWrapper(IEFabRecipe recipe) {
         this.recipe = recipe;
-        IRecipe originalRecipe = recipe.cast();
-
 
         this.inputs = recipe.getInputLists();
-        this.output = originalRecipe.getRecipeOutput();
+        this.output = recipe.cast().getRecipeOutput();
+    }
+
+    @Override
+    public int getWidth() {
+        return 3;
+    }
+
+    @Override
+    public int getHeight() {
+        return 3;
     }
 
     @Override

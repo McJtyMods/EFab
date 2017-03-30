@@ -3,13 +3,13 @@ package mcjty.efab.jei;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.jei.grid.GridRecipeCategory;
 import mcjty.efab.jei.grid.GridRecipeHandler;
-import mcjty.efab.jei.grid.GridRecipeShapedCategory;
+import mcjty.efab.jei.grid.GridTransferHandler;
 import mcjty.efab.jei.grid.JEIRecipeAdapter;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.lib.jei.JeiCompatTools;
 import mezz.jei.api.*;
-import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -25,7 +25,7 @@ public class EFabJeiPlugin extends BlankModPlugin {
         IJeiHelpers helpers = registry.getJeiHelpers();
         IGuiHelper guiHelper = helpers.getGuiHelper();
 
-        registry.addRecipeCategories(new GridRecipeCategory(guiHelper), new GridRecipeShapedCategory(guiHelper));
+        registry.addRecipeCategories(new GridRecipeCategory(guiHelper));
         registry.addRecipeHandlers(new GridRecipeHandler());
 
         Iterator<IEFabRecipe> recipeIterator = RecipeManager.getRecipes();
@@ -36,5 +36,11 @@ public class EFabJeiPlugin extends BlankModPlugin {
         JeiCompatTools.addRecipes(registry, efabRecipes);
 
         registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
+
+        IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
+//        CompatRecipeTransferHandler.register(transferRegistry, new GridTransferHandler());
+        // Compatlayer? @todo
+        transferRegistry.addRecipeTransferHandler(new GridTransferHandler(), GridRecipeCategory.ID);
+
     }
 }
