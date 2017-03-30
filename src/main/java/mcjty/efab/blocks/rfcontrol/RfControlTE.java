@@ -7,13 +7,17 @@ import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.config.GeneralConfiguration;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEnergyReceiver, IEFabEnergyStorage {
+public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEnergyReceiver, IEFabEnergyStorage, ITickable {
 
     private int energy = 0;
+
+    // Client side only
+    private int sparks = -1;
 
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
@@ -35,6 +39,28 @@ public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEn
         energy -= amount;
         markDirtyQuick();
         return true;
+    }
+
+    @Override
+    public void update() {
+        if (getWorld().isRemote) {
+            if (sparks > 0) {
+                sparks--;
+            } else if (sparks == 0) {
+                sparks--;
+                getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
+            }
+        }
+    }
+
+    // Client side only
+    public boolean hasSpark() {
+        return sparks >= 0;
+    }
+
+    public void setSpark(int s) {
+        sparks = s;
+        getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
     }
 
     @Override

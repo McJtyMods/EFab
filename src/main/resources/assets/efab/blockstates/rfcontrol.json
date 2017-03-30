@@ -29,6 +29,14 @@
       "north": { "y": 180 },
       "east": { "y": 270 },
       "west": { "y": 90 }
+    },
+    "sparks": {
+      "false": {},
+      "true": {
+        "submodel": {
+          "g": { "textures": { "txt": "efab:blocks/sparks" }, "model": "efab:sparks" }
+        }
+      }
     }
   }
 }

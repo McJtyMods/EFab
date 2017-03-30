@@ -7,10 +7,10 @@ public class GeneralConfiguration {
     public static final String CATEGORY_GENERAL = "general";
 
     public static float baseMachineVolume = 1.0f;
-    public static float baseSparksVolume = 1.0f;
+    public static float baseSparksVolume = 0.7f;
     public static float baseSteamVolume = 1.0f;
     public static int soundMachineTicks = 50;
-    public static int soundSparksTicks = 50;
+    public static int soundSparksTicks = 25;
     public static int soundSteamTicks = 50;
 
     public static int waterSteamCraftingConsumption = 5;

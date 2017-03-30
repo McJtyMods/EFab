@@ -4,6 +4,7 @@ import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
+import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.config.GeneralConfiguration;
@@ -82,6 +83,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 }
 
                 ticksRemaining--;
+                if (totalTicks - ticksRemaining < 2) {
+                    // Send to client so it knows that the craft is progressing and that ticksRemaining is no longer equal to totalTicks
+                    markDirtyClient();
+                }
 
                 if (ticksRemaining % 20 == 0 || ticksRemaining < 0) {
                     // Every 20 ticks we check if the inventory still matches what we want to craft
@@ -365,6 +370,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return index != GridContainer.SLOT_GHOSTOUT;
     }
 
+    private Random random = new Random();
+
     private void updateSound() {
         if (GeneralConfiguration.baseMachineVolume > 0.01f) {
             if (ticksRemaining >= 0) {
@@ -381,12 +388,44 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         }
                     } else if (requiredTiers.contains(RecipeTier.RF)) {
                         if (!SoundController.isSparksPlaying(getWorld(), pos)) {
-                            SoundController.playSparksSound(getWorld(), pos, 1.0f);
+                            if ((totalTicks - ticksRemaining < 1) || (random.nextFloat() < 0.04)) {
+                                SoundController.playSparksSound(getWorld(), pos, 1.0f);
+                                List<BlockPos> positions = new ArrayList<>();
+                                findRFControlBlocks(pos, new HashSet<>(), positions);
+                                if (!positions.isEmpty()) {
+                                    BlockPos p = positions.get(random.nextInt(positions.size()));
+                                    System.out.println("p = " + p);
+                                    TileEntity te = getWorld().getTileEntity(p);
+                                    if (te instanceof RfControlTE) {
+                                        ((RfControlTE) te).setSpark(25);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             } else {
 //                SoundController.stopSound(getWorld(), pos);
+            }
+        }
+    }
+
+    // Client-side. Find rf control blocks
+    private void findRFControlBlocks(BlockPos current, Set<BlockPos> visited, List<BlockPos> positions) {
+        if (visited.contains(current)) {
+            return;
+        }
+        visited.add(current);
+        for (EnumFacing dir : EnumFacing.VALUES) {
+            BlockPos p = current.offset(dir);
+            Block block = getWorld().getBlockState(p).getBlock();
+            if (block == ModBlocks.gridBlock) {
+                findRFControlBlocks(p, visited, positions);
+            } else if (block instanceof GenericEFabMultiBlockPart) {
+                if (block == ModBlocks.rfControlBlock) {
+                    positions.add(p);
+                }
+                findRFControlBlocks(p, visited, positions);
             }
         }
     }
@@ -651,7 +690,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 if (errors != null) {
                     errors.add("Not enough power capacity!");
                     errors.add("    " + recipe.getRequiredRfPerTick() + "RF/t needed but only " +
-                        maxpertick + "possible");
+                        maxpertick + " possible");
                 } else {
                     return true;
                 }
