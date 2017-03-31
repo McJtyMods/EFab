@@ -8,6 +8,7 @@ import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.items.ModItems;
 import mcjty.efab.items.UpgradeItem;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
@@ -757,6 +758,14 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
             if (!rfControls.isEmpty()) {
                 supportedTiers.add(RecipeTier.RF);
+            }
+            for (int i = GridContainer.SLOT_UPDATES ; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
+                ItemStack stack = getStackInSlot(i);
+                if (ItemStackTools.isValid(stack)) {
+                    if (stack.getItem() == ModItems.upgradeArmory) {
+                        supportedTiers.add(RecipeTier.UPGRADE_ARMORY);
+                    }
+                }
             }
         }
         return supportedTiers;

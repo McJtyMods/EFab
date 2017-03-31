@@ -13,8 +13,8 @@ public class GridContainer extends GenericContainer {
 
     public static final int SLOT_CRAFTINPUT = 0;            // 9 slots
     public static final int SLOT_CRAFTOUTPUT = 9;           // 3 slots
-    public static final int SLOT_UPDATES = 12;              // 4 slots
-    public static final int COUNT_UPDATES = 4;
+    public static final int SLOT_UPDATES = 12;              // 9 slots
+    public static final int COUNT_UPDATES = 9;
     public static final int SLOT_GHOSTOUT = SLOT_UPDATES + COUNT_UPDATES;             // 1 slot
 
     public static final ContainerFactory factory = new ContainerFactory() {
