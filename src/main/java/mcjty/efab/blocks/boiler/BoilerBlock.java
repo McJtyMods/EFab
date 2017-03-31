@@ -8,6 +8,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -19,6 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContainer> {
 
@@ -36,6 +38,15 @@ public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContai
     @Override
     public boolean isHorizRotation() {
         return true;
+    }
+
+    @Override
+    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.clAddInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add(TextFormatting.WHITE + "This block is needed for " + TextFormatting.GREEN + "steam" + TextFormatting.WHITE + " crafting");
+        tooltip.add(TextFormatting.WHITE + "Needs a " + TextFormatting.GREEN + "steam engine" + TextFormatting.WHITE
+                + " and a " + TextFormatting.GREEN + "tank" + TextFormatting.WHITE + " with water");
+        tooltip.add(TextFormatting.WHITE + "and a heat source below (fire or lava)");
     }
 
     @Override

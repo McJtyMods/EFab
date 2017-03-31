@@ -33,6 +33,7 @@ public class GeneralConfiguration {
 
     public static int rfStorageInputPerTick = 50;
     public static int rfStorageMax = 10000;
+    public static int rfStorageInternalFlow = 30;
 
     public static boolean abortCraftWhenOutOfRf = true;
 
@@ -85,6 +86,8 @@ public class GeneralConfiguration {
                 1, 1000000, "How much RF/t the RF Storage block can receive");
         rfStorageMax = cfg.getInt("rfStorageMax", CATEGORY_GENERAL, rfStorageMax,
                 1, 10000000, "The maximum amount of RF for the RF Storage block");
+        rfStorageInternalFlow = cfg.getInt("rfStorageInternalFlow", CATEGORY_GENERAL, rfStorageInternalFlow,
+                1, 1000000, "How much RF/t the RF Storage block can contribute to crafting");
 
         abortCraftWhenOutOfRf = cfg.getBoolean("abortCraftWhenOutOfRf", CATEGORY_GENERAL, abortCraftWhenOutOfRf,
                 "If enabled the crafting will be aborted if there is not enough power. If disabled the crafting operation will wait until power becomes available");

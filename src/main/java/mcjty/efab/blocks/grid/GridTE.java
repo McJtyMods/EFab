@@ -134,9 +134,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
         if (recipe.getRequiredRfPerTick() > 0) {
             int stillneeded = recipe.getRequiredRfPerTick();
-            stillneeded = handlePowerPerTick(stillneeded, this.rfControls);
+            stillneeded = handlePowerPerTick(stillneeded, this.rfControls, GeneralConfiguration.rfControlMax);
             if (stillneeded > 0) {
-                stillneeded = handlePowerPerTick(stillneeded, this.rfStorages);
+                stillneeded = handlePowerPerTick(stillneeded, this.rfStorages, GeneralConfiguration.rfStorageInternalFlow);
                 if (stillneeded > 0) {
                     if (GeneralConfiguration.abortCraftWhenOutOfRf) {
                         return false;
@@ -150,19 +150,19 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return true;
     }
 
-    private int handlePowerPerTick(int stillneeded, Set<BlockPos> poses) {
+    private int handlePowerPerTick(int stillneeded, Set<BlockPos> poses, int maxUsage) {
         for (BlockPos p : poses) {
             TileEntity te = getWorld().getTileEntity(p);
             if (te instanceof IEFabEnergyStorage) {
                 IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
-                int stored = energyStorage.getEnergyStored(null);
-                if (stored >= stillneeded) {
+                int canUse = Math.min(maxUsage, energyStorage.getEnergyStored(null));
+                if (canUse >= stillneeded) {
                     energyStorage.extractEnergy(stillneeded);
                     stillneeded = 0;
                     break;
                 } else {
-                    energyStorage.extractEnergy(stored);
-                    stillneeded -= stored;
+                    energyStorage.extractEnergy(canUse);
+                    stillneeded -= canUse;
                 }
             }
         }

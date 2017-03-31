@@ -10,13 +10,18 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> implements ISoundProducer {
 
@@ -24,6 +29,13 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> imp
 
     public GridBlock() {
         super(Material.IRON, GridTE.class, GridContainer.class, "grid", true);
+    }
+
+    @Override
+    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.clAddInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add(TextFormatting.WHITE + "This is the basic crafting device for the fabricator");
+        tooltip.add(TextFormatting.WHITE + "Add blocks to this to extend the capabilities");
     }
 
     @Override

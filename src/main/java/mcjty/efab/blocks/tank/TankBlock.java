@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.tank;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.tools.InventoryHelper;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.tools.FluidTools;
@@ -16,11 +17,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer> {
 
@@ -33,6 +37,16 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     @Override
     public boolean hasNoRotation() {
         return true;
+    }
+
+    @Override
+    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.clAddInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add(TextFormatting.WHITE + "This tank can store " + TextFormatting.GREEN + GeneralConfiguration.tankCapacity + TextFormatting.WHITE + " mb");
+        tooltip.add(TextFormatting.WHITE + "You can combine tanks by placing them");
+        tooltip.add(TextFormatting.WHITE + "on top of each other");
+        tooltip.add(TextFormatting.WHITE + "Tanks are used for " + TextFormatting.GREEN + "liquid" + TextFormatting.WHITE + " and "
+            + TextFormatting.GREEN + "steam" + TextFormatting.WHITE + " crafting");
     }
 
     @Override
