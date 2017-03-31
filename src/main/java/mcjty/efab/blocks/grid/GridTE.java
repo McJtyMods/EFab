@@ -8,6 +8,7 @@ import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.items.UpgradeItem;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.RecipeTier;
@@ -37,13 +38,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static mcjty.efab.blocks.grid.GridContainer.COUNT_UPDATES;
+
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ITickable {
 
     public static final String CMD_CRAFT = "craft";
     public static final String CMD_LEFT = "left";
     public static final String CMD_RIGHT = "right";
 
-    private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + 4 + 1);
+    private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + COUNT_UPDATES + 1);
     private InventoryCrafting workInventory = new InventoryCrafting(new Container() {
         @SuppressWarnings("NullableProblems")
         @Override
@@ -357,6 +360,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
+        if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
+            if (ItemStackTools.isValid(stack) && stack.getItem() instanceof UpgradeItem) {
+                return true;
+            }
+        }
         return index < GridContainer.SLOT_UPDATES;
     }
 

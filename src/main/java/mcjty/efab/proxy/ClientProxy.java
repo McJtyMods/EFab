@@ -3,6 +3,7 @@ package mcjty.efab.proxy;
 import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.items.ModItems;
 import mcjty.efab.sound.SoundController;
 import mcjty.lib.McJtyLibClient;
 import mcjty.lib.tools.MinecraftTools;
@@ -24,7 +25,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(e);
         OBJLoader.INSTANCE.addDomain(EFab.MODID);
 //        ModelLoaderRegistry.registerLoader(new BakedModelLoader());
-//        ModItems.initModels();
+        ModItems.initModels();
         ModBlocks.initModels();
         SoundController.init();
         McJtyLibClient.preInit(e);

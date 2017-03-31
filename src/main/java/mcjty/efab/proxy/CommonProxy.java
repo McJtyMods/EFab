@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.items.ModItems;
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.StandardRecipes;
@@ -43,7 +44,7 @@ public abstract class CommonProxy {
         SimpleNetworkWrapper network = PacketHandler.registerMessages(EFab.MODID, "efab");
         EFabMessages.registerNetworkMessages(network);
 
-//        ModItems.init();
+        ModItems.init();
         ModBlocks.init();
     }
 
