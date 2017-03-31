@@ -41,17 +41,17 @@ public class GridGui extends GenericGuiContainer<GridTE> {
 
         leftArrow = new Button(mc, this)
                 .setText("<")
-                .setLayoutHint(new PositionalLayout.PositionalHint(82, 55, 13, 18))
+                .setLayoutHint(new PositionalLayout.PositionalHint(82, 45, 13, 18))
                 .setVisible(false)
                 .addButtonEvent(parent -> left());
         rightArrow = new Button(mc, this)
                 .setText(">")
-                .setLayoutHint(new PositionalLayout.PositionalHint(112, 55, 13, 18))
+                .setLayoutHint(new PositionalLayout.PositionalHint(112, 45, 13, 18))
                 .setVisible(false)
                 .addButtonEvent(parent -> right());
         craftButton = new Button(mc, this)
                 .setText("Start")
-                .setLayoutHint(new PositionalLayout.PositionalHint(84, 30, 40, 16))
+                .setLayoutHint(new PositionalLayout.PositionalHint(84, 20, 40, 16))
                 .addButtonEvent(parent -> craft());
 
         toplevel.addChild(craftButton).addChild(leftArrow).addChild(rightArrow);

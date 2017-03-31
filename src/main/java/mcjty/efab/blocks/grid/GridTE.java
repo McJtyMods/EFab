@@ -43,7 +43,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public static final String CMD_LEFT = "left";
     public static final String CMD_RIGHT = "right";
 
-    private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + 1);
+    private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + 4 + 1);
     private InventoryCrafting workInventory = new InventoryCrafting(new Container() {
         @SuppressWarnings("NullableProblems")
         @Override
@@ -357,17 +357,17 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return index != GridContainer.SLOT_GHOSTOUT;
+        return index < GridContainer.SLOT_UPDATES;
     }
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return index != GridContainer.SLOT_GHOSTOUT;
+        return index < GridContainer.SLOT_UPDATES;
     }
 
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-        return index != GridContainer.SLOT_GHOSTOUT;
+        return index < GridContainer.SLOT_UPDATES;
     }
 
     private Random random = new Random();
