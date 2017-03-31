@@ -64,6 +64,11 @@ public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEn
     }
 
     @Override
+    public int getMaxInternalConsumption() {
+        return GeneralConfiguration.rfControlMax;
+    }
+
+    @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         return 0;
     }

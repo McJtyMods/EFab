@@ -675,7 +675,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 if (te instanceof IEFabEnergyStorage) {
                     IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
                     totavailable += energyStorage.getEnergyStored(null);
-                    maxpertick += energyStorage.getMaxEnergyStored(null);
+                    maxpertick += energyStorage.getMaxInternalConsumption();
                 }
             }
             for (BlockPos p : rfStorages) {
@@ -683,7 +683,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 if (te instanceof IEFabEnergyStorage) {
                     IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
                     totavailable += energyStorage.getEnergyStored(null);
-                    maxpertick += energyStorage.getMaxEnergyStored(null);
+                    maxpertick += energyStorage.getMaxInternalConsumption();
                 }
             }
             if (recipe.getRequiredRfPerTick() > maxpertick) {

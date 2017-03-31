@@ -9,4 +9,6 @@ public interface IEFabEnergyStorage {
     int getEnergyStored(EnumFacing from);
 
     int getMaxEnergyStored(EnumFacing from);
+
+    int getMaxInternalConsumption();
 }

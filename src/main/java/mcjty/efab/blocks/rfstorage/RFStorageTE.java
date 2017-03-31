@@ -28,6 +28,11 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
     }
 
     @Override
+    public int getMaxInternalConsumption() {
+        return GeneralConfiguration.rfStorageInternalFlow;
+    }
+
+    @Override
     public boolean extractEnergy(int amount) {
         if (amount > energy) {
             return false;
