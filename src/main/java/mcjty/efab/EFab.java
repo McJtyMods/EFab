@@ -8,6 +8,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -37,7 +38,10 @@ public class EFab implements ModBase {
 
     @Mod.Instance(MODID)
     public static EFab instance;
+
     public static Logger logger;
+
+    public static boolean botania;
 
     public static CreativeTabs tabEFab = new CompatCreativeTabs("EFab") {
         @Override
@@ -48,6 +52,8 @@ public class EFab implements ModBase {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        botania = Loader.isModLoaded("botania") || Loader.isModLoaded("Botania");
+
         logger = event.getModLog();
         proxy.preInit(event);
     }

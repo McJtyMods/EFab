@@ -9,6 +9,7 @@ tile.efab.boiler.name=Boiler
 tile.efab.steamengine.name=Steam Engine
 tile.efab.rfcontrol.name=RF Control
 tile.efab.rfstorage.name=RF Storage
+tile.efab.manareceptacle.name=Mana Receptacle
 
 itemGroup.EFab=EFab
 

@@ -1,4 +1,4 @@
-package mcjty.efab.jei.grid;
+package mcjty.efab.compat.jei.grid;
 
 import mcjty.efab.EFab;
 import mcjty.efab.recipes.IEFabRecipe;

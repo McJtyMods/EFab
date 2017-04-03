@@ -1,10 +1,10 @@
-package mcjty.efab.jei;
+package mcjty.efab.compat.jei;
 
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.grid.GridContainer;
-import mcjty.efab.jei.grid.GridRecipeCategory;
-import mcjty.efab.jei.grid.GridRecipeHandler;
-import mcjty.efab.jei.grid.JEIRecipeAdapter;
+import mcjty.efab.compat.jei.grid.GridRecipeCategory;
+import mcjty.efab.compat.jei.grid.GridRecipeHandler;
+import mcjty.efab.compat.jei.grid.JEIRecipeAdapter;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.lib.jei.JeiCompatTools;

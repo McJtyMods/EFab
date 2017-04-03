@@ -1,4 +1,4 @@
-package mcjty.efab.jei.grid;
+package mcjty.efab.compat.jei.grid;
 
 import java.util.ArrayList;
 import java.util.List;

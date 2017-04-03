@@ -3,6 +3,7 @@ package mcjty.efab.proxy;
 import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.items.ModItems;
 import mcjty.efab.sound.SoundController;
 import mcjty.lib.McJtyLibClient;
@@ -27,6 +28,9 @@ public class ClientProxy extends CommonProxy {
 //        ModelLoaderRegistry.registerLoader(new BakedModelLoader());
         ModItems.initModels();
         ModBlocks.initModels();
+        if (EFab.botania) {
+            BotaniaSupportSetup.initModels();
+        }
         SoundController.init();
         McJtyLibClient.preInit(e);
     }

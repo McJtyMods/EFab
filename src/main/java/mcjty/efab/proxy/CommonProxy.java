@@ -3,6 +3,7 @@ package mcjty.efab.proxy;
 import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.items.ModItems;
 import mcjty.efab.network.EFabMessages;
@@ -46,6 +47,9 @@ public abstract class CommonProxy {
 
         ModItems.init();
         ModBlocks.init();
+        if (EFab.botania) {
+            BotaniaSupportSetup.preInit();
+        }
     }
 
     private void readMainConfig() {
@@ -73,6 +77,9 @@ public abstract class CommonProxy {
     public void postInit(FMLPostInitializationEvent e) {
         mainConfig = null;
         StandardRecipes.init();
+        if (EFab.botania) {
+            BotaniaSupportSetup.postInit();
+        }
         File file = new File(modConfigDir.getPath(), "efab_recipes.json");
         StandardRecipes.readRecipesConfig(file);
     }

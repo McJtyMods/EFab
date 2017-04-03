@@ -1,0 +1,29 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "efab:empty_model"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [
+      {
+        "custom": { "flip-v": true },
+        "model": "efab:sphere.obj",
+        "transform": {
+          "gui": {
+            "scale": 0.9
+          },
+          "ground": {
+            "scale": 0.55
+          },
+          "firstperson": {
+            "scale": 0.55
+          },
+          "thirdperson": {
+            "scale": 0.55
+          }
+        }
+      }
+    ]
+  }
+}

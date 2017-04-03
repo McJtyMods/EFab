@@ -1,11 +1,11 @@
-package mcjty.efab.blocks.rfcontrol;
+package mcjty.efab.blocks.manareceptacle;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
-public class RfControlRenderer extends TileEntitySpecialRenderer<RfControlTE> {
+public class ManaReceptacleRenderer extends TileEntitySpecialRenderer<ManaReceptacleTE> {
 
     @Override
-    public void renderTileEntityAt(RfControlTE te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void renderTileEntityAt(ManaReceptacleTE te, double x, double y, double z, float partialTicks, int destroyStage) {
 //        super.renderTileEntityAt(te, x, y, z, partialTicks, destroyStage);
 //
 //        GlStateManager.pushMatrix();
