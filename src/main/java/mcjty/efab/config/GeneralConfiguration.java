@@ -34,10 +34,11 @@ public class GeneralConfiguration {
     public static int rfStorageInputPerTick = 50;
     public static int rfStorageMax = 10000;
     public static int rfStorageInternalFlow = 30;
+    public static boolean abortCraftWhenOutOfRf = true;
 
     public static int maxMana = 10000;
-
-    public static boolean abortCraftWhenOutOfRf = true;
+    public static int maxManaUsage = 1000;
+    public static boolean abortCraftWhenOutOfMana = true;
 
     public static void init(Configuration cfg) {
         baseMachineVolume = cfg.getFloat("baseMachineVolume", CATEGORY_GENERAL, baseMachineVolume,
@@ -80,7 +81,12 @@ public class GeneralConfiguration {
                 1, 1000000, "Capacity of each tank block in MB");
 
         maxMana = cfg.getInt("maxMana", CATEGORY_GENERAL, maxMana,
-                1, 1000000, "Maximum amount of mana that can be stored in the mana receptacle");
+                1, 100000000, "Maximum amount of mana that can be stored in the mana receptacle");
+        maxManaUsage = cfg.getInt("maxManaUsage", CATEGORY_GENERAL, maxManaUsage,
+                1, 10000000, "Maximum amount of mana that can be used per tick per mana receptacle");
+
+        abortCraftWhenOutOfMana = cfg.getBoolean("abortCraftWhenOutOfMana", CATEGORY_GENERAL, abortCraftWhenOutOfMana,
+                "If enabled the crafting will be aborted if there is not enough mana. If disabled the crafting operation will wait until mana becomes available");
 
         rfControlInputPerTick = cfg.getInt("rfControlInputPerTick", CATEGORY_GENERAL, rfControlInputPerTick,
                 1, 1000000, "How much RF/t the RF Control block can receive");

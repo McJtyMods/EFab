@@ -18,6 +18,8 @@ public interface IEFabRecipe {
 
     int getRequiredRfPerTick();
 
+    int getRequiredManaPerTick();
+
     int getCraftTime();
 
     @Nonnull
@@ -28,6 +30,8 @@ public interface IEFabRecipe {
     IEFabRecipe fluid(FluidStack stack);
 
     IEFabRecipe rfPerTick(int rf);
+
+    IEFabRecipe manaPerTick(int mana);
 
     IEFabRecipe time(int t);
 

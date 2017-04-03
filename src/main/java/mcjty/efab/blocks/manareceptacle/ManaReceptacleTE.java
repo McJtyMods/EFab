@@ -29,6 +29,12 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver {
     @Override
     public void recieveMana(int mana) {
         this.mana = Math.min(GeneralConfiguration.maxMana, this.mana + mana);
+        markDirtyQuick();
+    }
+
+    public void consumeMana(int mana) {
+        this.mana = Math.max(0, this.mana - mana);
+        markDirtyQuick();
     }
 
     @Override

@@ -75,6 +75,14 @@ class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements IShapedCra
             y += 12;
         }
 
+        if (recipe.getRequiredManaPerTick() > 0) {
+            minecraft.fontRenderer.drawString("Mana", 0, y, Color.black.getRGB());
+            minecraft.fontRenderer.drawString("" + recipe.getRequiredManaPerTick() + " mana/tick", 28, y, Color.blue.getRGB());
+            GlStateManager.color(1, 1, 1);
+            x = 0;
+            y += 12;
+        }
+
         for (RecipeTier tier : tiers) {
             minecraft.getTextureManager().bindTexture(ICONS);
             RenderTools.drawTexturedModalRect(x, y, tier.getIconX(), tier.getIconY(), 16, 16);

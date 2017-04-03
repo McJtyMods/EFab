@@ -7,7 +7,7 @@ public enum RecipeTier {
     RF("This machine does not understand RF!", 48, 0),
     EU("This machine does not understand EU!", 80, 0),
     LIQUID("There are no tanks for liquids!", 32, 0),
-    MANA("There is no mana support!", 0, 0),
+    MANA("There is no mana support!", 96, 0),
     COMPUTING("Computing core is missing!", 0, 0),
     UPGRADE_ARMORY("The armory upgrade is needed!", 0, 0),
     UPGRADE_MAGIC("The magic upgrade is needed!", 0, 0),

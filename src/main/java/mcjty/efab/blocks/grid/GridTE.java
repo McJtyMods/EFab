@@ -1,5 +1,6 @@
 package mcjty.efab.blocks.grid;
 
+import mcjty.efab.EFab;
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.blocks.ModBlocks;
@@ -7,6 +8,7 @@ import mcjty.efab.blocks.boiler.BoilerTE;
 import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
+import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.items.ModItems;
 import mcjty.efab.items.UpgradeItem;
@@ -72,6 +74,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> gearBoxes = new HashSet<>();
     private final Set<BlockPos> rfControls = new HashSet<>();
     private final Set<BlockPos> rfStorages = new HashSet<>();
+    private final Set<BlockPos> manaReceptacles = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
     @Override
@@ -151,6 +154,18 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 }
             }
         }
+        if (EFab.botania && recipe.getRequiredManaPerTick() > 0) {
+            int stillneeded = recipe.getRequiredManaPerTick();
+            stillneeded = handleManaPerTick(stillneeded, this.manaReceptacles, GeneralConfiguration.maxManaUsage);
+            if (stillneeded > 0) {
+                if (GeneralConfiguration.abortCraftWhenOutOfMana) {
+                    return false;
+                } else {
+                    ticksRemaining--;   // One tick back
+                    return true;
+                }
+            }
+        }
         return true;
     }
 
@@ -166,6 +181,23 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     break;
                 } else {
                     energyStorage.extractEnergy(canUse);
+                    stillneeded -= canUse;
+                }
+            }
+        }
+        return stillneeded;
+    }
+
+    private int handleManaPerTick(int stillneeded, Set<BlockPos> poses, int maxUsage) {
+        for (BlockPos p : poses) {
+            if (BotaniaSupportSetup.isManaReceptacle(getWorld().getBlockState(p).getBlock())) {
+                int canUse = Math.min(maxUsage, BotaniaSupportSetup.getMana(getWorld(), p));
+                if (canUse >= stillneeded) {
+                    BotaniaSupportSetup.consumeMana(getWorld(), p, stillneeded);
+                    stillneeded = 0;
+                    break;
+                } else {
+                    BotaniaSupportSetup.consumeMana(getWorld(), p, canUse);
                     stillneeded -= canUse;
                 }
             }
@@ -466,6 +498,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     rfStorages.add(p);
                 } else if (block == ModBlocks.tankBlock) {
                     tanks.add(p);
+                } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
+                    manaReceptacles.add(p);
                 }
                 findMultiBlockParts(p, visited);
             }
@@ -482,6 +516,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             gearBoxes.clear();
             rfControls.clear();
             rfStorages.clear();
+            manaReceptacles.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
         }
     }
@@ -712,6 +747,31 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
 
+        if (EFab.botania && recipe.getRequiredManaPerTick() > 0) {
+            int totavailable = 0;
+            int maxpertick = 0;
+            for (BlockPos p : manaReceptacles) {
+                TileEntity te = getWorld().getTileEntity(p);
+                totavailable += BotaniaSupportSetup.getMana(getWorld(), p);
+                maxpertick += GeneralConfiguration.maxManaUsage;
+            }
+            if (recipe.getRequiredManaPerTick() > maxpertick) {
+                if (errors != null) {
+                    errors.add("Not enough mana capacity!");
+                    errors.add("    " + recipe.getRequiredManaPerTick() + "mana/t needed but only " +
+                            maxpertick + " possible");
+                } else {
+                    return true;
+                }
+            } else if (recipe.getRequiredManaPerTick() > totavailable) {
+                if (errors != null) {
+                    errors.add("Not enough mana!");
+                } else {
+                    return true;
+                }
+            }
+        }
+
         if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
             boolean ok = false;
             for (BlockPos boiler : boilers) {
@@ -758,6 +818,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
             if (!rfControls.isEmpty()) {
                 supportedTiers.add(RecipeTier.RF);
+            }
+            if (!manaReceptacles.isEmpty()) {
+                supportedTiers.add(RecipeTier.MANA);
             }
             for (int i = GridContainer.SLOT_UPDATES ; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
                 ItemStack stack = getStackInSlot(i);

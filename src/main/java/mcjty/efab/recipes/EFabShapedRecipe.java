@@ -13,6 +13,7 @@ public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
     @Nonnull private final Set<RecipeTier> requiredTiers = EnumSet.noneOf(RecipeTier.class);
     @Nonnull private final List<FluidStack> requiredFluids = new ArrayList<>();
     private int requiredRfPerTick = 0;
+    private int requiredManaPerTick = 0;
     private int craftTime = 0;
 
     private List<String> inputs = new ArrayList<>();
@@ -80,6 +81,12 @@ public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
     }
 
     @Override
+    public IEFabRecipe manaPerTick(int mana) {
+        requiredManaPerTick = mana;
+        return this;
+    }
+
+    @Override
     public IEFabRecipe time(int t) {
         craftTime = t;
         return this;
@@ -94,6 +101,11 @@ public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
     @Override
     public int getRequiredRfPerTick() {
         return requiredRfPerTick;
+    }
+
+    @Override
+    public int getRequiredManaPerTick() {
+        return requiredManaPerTick;
     }
 
     @Override

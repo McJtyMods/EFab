@@ -32,6 +32,11 @@ public class JEIRecipeAdapter implements IEFabRecipe {
     }
 
     @Override
+    public int getRequiredManaPerTick() {
+        return parent.getRequiredManaPerTick();
+    }
+
+    @Override
     public int getCraftTime() {
         return parent.getCraftTime();
     }
@@ -55,6 +60,11 @@ public class JEIRecipeAdapter implements IEFabRecipe {
     @Override
     public IEFabRecipe rfPerTick(int rf) {
         return parent.rfPerTick(rf);
+    }
+
+    @Override
+    public IEFabRecipe manaPerTick(int mana) {
+        return parent.manaPerTick(mana);
     }
 
     @Override

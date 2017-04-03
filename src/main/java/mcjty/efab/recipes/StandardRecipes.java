@@ -252,6 +252,9 @@ public class StandardRecipes {
         if (obj.has("rfpertick")) {
             recipe.rfPerTick(obj.get("rfpertick").getAsInt());
         }
+        if (obj.has("manapertick")) {
+            recipe.manaPerTick(obj.get("manapertick").getAsInt());
+        }
         if (obj.has("fluids")) {
             JsonArray fluidArray = obj.get("fluids").getAsJsonArray();
             for (JsonElement element : fluidArray) {
@@ -307,6 +310,9 @@ public class StandardRecipes {
 
         if (recipe.getRequiredRfPerTick() > 0) {
             obj.add("rfpertick", new JsonPrimitive(recipe.getRequiredRfPerTick()));
+        }
+        if (recipe.getRequiredManaPerTick() > 0) {
+            obj.add("manapertick", new JsonPrimitive(recipe.getRequiredManaPerTick()));
         }
 
         Collection<FluidStack> fluids = recipe.getRequiredFluids();
