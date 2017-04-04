@@ -3,10 +3,10 @@ package mcjty.efab.blocks.grid;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.IEFabEnergyStorage;
+import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
 import mcjty.efab.blocks.rfcontrol.RfControlTE;
-import mcjty.efab.blocks.steamengine.SteamEngineTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.GeneralConfiguration;
@@ -485,6 +485,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     ((GridTE) te).invalidateMultiBlockCache();
                 }
                 findMultiBlockParts(p, visited);
+            } else if (block == ModBlocks.baseBlock) {
+                findMultiBlockParts(p, visited);
             } else if (block instanceof GenericEFabMultiBlockPart) {
                 if (block == ModBlocks.boilerBlock) {
                     boilers.add(p);
@@ -585,11 +587,21 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 checkMultiBlockCache();
                 for (BlockPos enginePos : steamEngines) {
                     TileEntity te = getWorld().getTileEntity(enginePos);
-                    if (te instanceof SteamEngineTE) {
-                        SteamEngineTE steamEngineTE = (SteamEngineTE) te;
-                        steamEngineTE.setSpeedBoost(GeneralConfiguration.steamWheelBoost);
+                    if (te instanceof ISpeedBooster) {
+                        ISpeedBooster speedBooster = (ISpeedBooster) te;
+                        speedBooster.setSpeedBoost(GeneralConfiguration.steamWheelBoost);
                     }
                 }
+            }
+            if (EFab.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
+                checkMultiBlockCache();
+                for (BlockPos receptaclePos : manaReceptacles) {
+                    ISpeedBooster speedBooster = BotaniaSupportSetup.getSpeedBooster(getWorld(), getPos());
+                    if (speedBooster != null) {
+                        speedBooster.setSpeedBoost(GeneralConfiguration.manaRotationBoost);
+                    }
+                }
+
             }
         }
     }

@@ -8,7 +8,7 @@
     "inventory": [
       {
         "custom": { "flip-v": true },
-        "model": "efab:sphere.obj",
+        "model": "efab:manareceptacle.obj",
         "transform": {
           "gui": {
             "scale": 0.9

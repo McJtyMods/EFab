@@ -1,7 +1,9 @@
 package mcjty.efab.recipes;
 
 import com.google.gson.*;
+import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
+import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
@@ -65,6 +67,20 @@ public class StandardRecipes {
                 .tier(RecipeTier.LIQUID)
                 .fluid(new FluidStack(FluidRegistry.LAVA, 1000))
                 .time(100));
+        if (EFab.botania) {
+            RecipeManager.registerRecipe(new EFabShapedRecipe(
+                    new ItemStack(BotaniaSupportSetup.getManaReceptacle()),
+                    "drr", "rbd", "rdr", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'd', Items.DIAMOND)
+                    .tier(RecipeTier.RF)
+                    .rfPerTick(40)
+                    .time(100));
+            RecipeManager.registerRecipe(new EFabShapelessRecipe(
+                    new ItemStack(Blocks.DRAGON_EGG),
+                    "   ", " e ", "   ", 'e', Items.EGG)
+                    .tier(RecipeTier.MANA)
+                    .manaPerTick(20)
+                    .time(200));
+        }
 
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(Blocks.FURNACE),

@@ -40,6 +40,11 @@ public class GeneralConfiguration {
     public static int maxManaUsage = 1000;
     public static boolean abortCraftWhenOutOfMana = true;
 
+    public static float maxManaRotationSpeed = 20;
+    public static int manaRotationBoost = 40;
+    public static float manaRotationSpeedUp = 2;
+    public static float manaRotationSpinDown = 0.3f;
+
     public static void init(Configuration cfg) {
         baseMachineVolume = cfg.getFloat("baseMachineVolume", CATEGORY_GENERAL, baseMachineVolume,
                 0.0f, 1.0f, "The volume for the machine sound (0.0 is off)");
@@ -84,6 +89,15 @@ public class GeneralConfiguration {
                 1, 100000000, "Maximum amount of mana that can be stored in the mana receptacle");
         maxManaUsage = cfg.getInt("maxManaUsage", CATEGORY_GENERAL, maxManaUsage,
                 1, 10000000, "Maximum amount of mana that can be used per tick per mana receptacle");
+
+        maxManaRotationSpeed = cfg.getFloat("maxManaRotationSpeed", CATEGORY_GENERAL, maxManaRotationSpeed,
+                1.0f, 1000.0f, "Maximum speed factor for the rotating spheres of the mana receptacle during mana crafting");
+        manaRotationBoost = cfg.getInt("manaRotationBoost", CATEGORY_GENERAL, manaRotationBoost,
+                1, 100000, "Number of ticks that the rotating spheres will speed up during mana crafting");
+        manaRotationSpeedUp = cfg.getFloat("manaRotationSpeedUp", CATEGORY_GENERAL, manaRotationSpeedUp,
+                0.0f, 1000.0f, "Every tick the rotating spheres will speed up during mana crafting (and during boost)");
+        manaRotationSpinDown = cfg.getFloat("manaRotationSpinDown", CATEGORY_GENERAL, manaRotationSpinDown,
+                0.0f, 1000.0f, "If not mana crafting this is the speed at which the speed of the rotating spheres will decrease");
 
         abortCraftWhenOutOfMana = cfg.getBoolean("abortCraftWhenOutOfMana", CATEGORY_GENERAL, abortCraftWhenOutOfMana,
                 "If enabled the crafting will be aborted if there is not enough mana. If disabled the crafting operation will wait until mana becomes available");

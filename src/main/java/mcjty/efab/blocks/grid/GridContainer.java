@@ -22,7 +22,7 @@ public class GridContainer extends GenericContainer {
         protected void setup() {
             addSlotBox(new SlotDefinition(SlotType.SLOT_CONTAINER), CONTAINER_INVENTORY, SLOT_CRAFTINPUT, 23, 12, 3, 18, 3, 18);
             addSlotBox(new SlotDefinition(SlotType.SLOT_CONTAINER), CONTAINER_INVENTORY, SLOT_CRAFTOUTPUT, 132, 12, 1, 18, 3, 18);
-            addSlotBox(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, UpgradeItem.class), CONTAINER_INVENTORY, SLOT_UPDATES, 6, 72, 4, 18, 1, 18);
+            addSlotBox(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, UpgradeItem.class), CONTAINER_INVENTORY, SLOT_UPDATES, 6, 72, 9, 18, 1, 18);
             addSlot(new SlotDefinition(SlotType.SLOT_GHOSTOUT), CONTAINER_INVENTORY, SLOT_GHOSTOUT, 95, 45);
             layoutPlayerInventorySlots(6, 97);
         }

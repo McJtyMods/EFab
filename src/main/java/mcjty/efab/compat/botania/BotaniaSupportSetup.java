@@ -1,5 +1,6 @@
 package mcjty.efab.compat.botania;
 
+import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.blocks.manareceptacle.ManaReceptacleBlock;
 import mcjty.efab.blocks.manareceptacle.ManaReceptacleTE;
 import net.minecraft.block.Block;
@@ -38,10 +39,22 @@ public class BotaniaSupportSetup {
         return 0;
     }
 
+    public static ISpeedBooster getSpeedBooster(World world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof ManaReceptacleTE) {
+            return (ISpeedBooster) te;
+        }
+        return null;
+    }
+
     public static void consumeMana(World world, BlockPos pos, int amount) {
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof ManaReceptacleTE) {
             ((ManaReceptacleTE) te).consumeMana(amount);
         }
+    }
+
+    public static Block getManaReceptacle() {
+        return manaReceptacleBlock;
     }
 }
