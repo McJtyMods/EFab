@@ -5,7 +5,7 @@ public enum RecipeTier {
     GEARBOX("The gearbox is missing!", 16, 0),
     ADVANCED_GEARBOX("The advanced gearbox is missing!", 64, 0),
     RF("This machine does not understand RF!", 48, 0),
-    EU("This machine does not understand EU!", 80, 0),
+//    EU("This machine does not understand EU!", 80, 0),
     LIQUID("There are no tanks for liquids!", 32, 0),
     MANA("There is no mana support!", 96, 0),
     COMPUTING("Computing core is missing!", 0, 0),

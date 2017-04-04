@@ -40,6 +40,8 @@ public class ManaReceptacleBlock extends GenericEFabMultiBlockPart<ManaReceptacl
         super.clAddInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + GeneralConfiguration.maxMana
                 + TextFormatting.WHITE + " mana");
+        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + GeneralConfiguration.maxManaUsage
+                + TextFormatting.WHITE + " mana/t to crafting");
     }
 
     @Override

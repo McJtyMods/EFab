@@ -83,13 +83,19 @@ class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements IShapedCra
             y += 12;
         }
 
+        int cury = y;
         for (RecipeTier tier : tiers) {
             minecraft.getTextureManager().bindTexture(ICONS);
             RenderTools.drawTexturedModalRect(x, y, tier.getIconX(), tier.getIconY(), 16, 16);
             tooltips.add(new Tooltip(x, y, 16, 16).add(tier.name()));
             x += 20;
+            if (x + 18 >= 80) {
+                x = 0;
+                y += 20;
+            }
         }
 
+        y = cury;
         if (!recipe.getRequiredFluids().isEmpty()) {
             x = 80;
             for (FluidStack stack : recipe.getRequiredFluids()) {
@@ -101,9 +107,6 @@ class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements IShapedCra
                 x += 20;
             }
         }
-
-        y += 22;
-
     }
 
     @Override

@@ -71,7 +71,7 @@ public class ManaReceptacleRenderer extends TileEntitySpecialRenderer<ManaRecept
         }
         GlStateManager.rotate(360.0f * t / 2000.0f, 0, 0, 1);
 
-        t = ((long)(1500.0f * 2.0f * (((int)cnt2) % SPEEDCYCLE)) / SPEEDCYCLE) % 1500;
+        t = ((long)(1500.0f * 2.0f * (((int)cnt2) % SPEEDCYCLE2)) / SPEEDCYCLE2) % 1500;
         cnt2 += tileEntity.getSpeed();
         if (cnt2 > SPEEDCYCLE2) {
             cnt2 -= SPEEDCYCLE2;

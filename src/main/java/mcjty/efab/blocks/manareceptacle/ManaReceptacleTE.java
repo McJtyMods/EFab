@@ -99,7 +99,7 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver, 
 
     @Override
     public boolean canRecieveManaFromBursts() {
-        return true;
+        return !isFull();
     }
 
     @Override

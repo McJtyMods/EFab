@@ -10,7 +10,6 @@ import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.GeneralConfiguration;
-import mcjty.efab.items.ModItems;
 import mcjty.efab.items.UpgradeItem;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
@@ -366,6 +365,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             setValidRecipeGhostOutput();
             // We need to update the visual crafting grid client side
             markDirtyClient();
+        } else if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
+            invalidateMultiBlockCache();
         }
     }
 
@@ -376,6 +377,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             setValidRecipeGhostOutput();
             // We need to update the visual crafting grid client side
             markDirtyClient();
+        } else if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
+            invalidateMultiBlockCache();
         }
         return stack;
     }
@@ -387,6 +390,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             setValidRecipeGhostOutput();
             // We need to update the visual crafting grid client side
             markDirtyClient();
+        } else if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
+            invalidateMultiBlockCache();
         }
         return stack;
     }
@@ -435,7 +440,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                                 findRFControlBlocks(pos, new HashSet<>(), positions);
                                 if (!positions.isEmpty()) {
                                     BlockPos p = positions.get(random.nextInt(positions.size()));
-                                    System.out.println("p = " + p);
                                     TileEntity te = getWorld().getTileEntity(p);
                                     if (te instanceof RfControlTE) {
                                         ((RfControlTE) te).setSpark(25);
@@ -584,24 +588,22 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             markDirtyClient();
 
             if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
-                checkMultiBlockCache();
-                for (BlockPos enginePos : steamEngines) {
-                    TileEntity te = getWorld().getTileEntity(enginePos);
-                    if (te instanceof ISpeedBooster) {
-                        ISpeedBooster speedBooster = (ISpeedBooster) te;
-                        speedBooster.setSpeedBoost(GeneralConfiguration.steamWheelBoost);
-                    }
-                }
+                handleAnimationSpeed(GeneralConfiguration.steamWheelBoost, this.steamEngines);
             }
             if (EFab.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
-                checkMultiBlockCache();
-                for (BlockPos receptaclePos : manaReceptacles) {
-                    ISpeedBooster speedBooster = BotaniaSupportSetup.getSpeedBooster(getWorld(), getPos());
-                    if (speedBooster != null) {
-                        speedBooster.setSpeedBoost(GeneralConfiguration.manaRotationBoost);
-                    }
-                }
+                handleAnimationSpeed(GeneralConfiguration.manaRotationBoost, manaReceptacles);
 
+            }
+        }
+    }
+
+    private void handleAnimationSpeed(int boost, Set<BlockPos> posSet) {
+        checkMultiBlockCache();
+        for (BlockPos enginePos : posSet) {
+            TileEntity te = getWorld().getTileEntity(enginePos);
+            if (te instanceof ISpeedBooster) {
+                ISpeedBooster speedBooster = (ISpeedBooster) te;
+                speedBooster.setSpeedBoost(boost);
             }
         }
     }
@@ -837,8 +839,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             for (int i = GridContainer.SLOT_UPDATES ; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
                 ItemStack stack = getStackInSlot(i);
                 if (ItemStackTools.isValid(stack)) {
-                    if (stack.getItem() == ModItems.upgradeArmory) {
-                        supportedTiers.add(RecipeTier.UPGRADE_ARMORY);
+                    if (stack.getItem() instanceof UpgradeItem) {
+                        supportedTiers.add(((UpgradeItem) stack.getItem()).providesTier());
                     }
                 }
             }

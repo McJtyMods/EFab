@@ -1,6 +1,7 @@
 package mcjty.efab.items;
 
 import mcjty.efab.EFab;
+import mcjty.efab.recipes.RecipeTier;
 import mcjty.lib.compat.CompatItem;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -8,7 +9,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class UpgradeItem extends CompatItem {
+public abstract class UpgradeItem extends CompatItem {
 
     public UpgradeItem(String name) {
         super();
@@ -23,5 +24,7 @@ public class UpgradeItem extends CompatItem {
     public void initModel() {
         ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
+
+    public abstract RecipeTier providesTier();
 
 }
