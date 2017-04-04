@@ -1,5 +1,6 @@
 item.efab.upgrade_armory.name=Armory Upgrade
 item.efab.upgrade_magic.name=Magic Upgrade
+item.efab.upgrade_power.name=Power Upgrade
 
 tile.efab.base.name=EFab Base
 tile.efab.gearbox.name=Gear Box

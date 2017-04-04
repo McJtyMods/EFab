@@ -7,15 +7,18 @@ public class ModItems {
 
     public static UpgradeArmory upgradeArmory;
     public static UpgradeMagic upgradeMagic;
+    public static UpgradePower upgradePower;
 
     public static void init() {
         upgradeArmory = new UpgradeArmory();
         upgradeMagic = new UpgradeMagic();
+        upgradePower = new UpgradePower();
     }
 
     @SideOnly(Side.CLIENT)
     public static void initModels() {
         upgradeArmory.initModel();
         upgradeMagic.initModel();
+        upgradePower.initModel();
     }
 }

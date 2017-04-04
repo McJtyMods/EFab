@@ -9,9 +9,9 @@ public enum RecipeTier {
     LIQUID("There are no tanks for liquids!", 32, 0),
     MANA("There is no mana support!", 96, 0),
     COMPUTING("Computing core is missing!", 0, 0),
-    UPGRADE_ARMORY("The armory upgrade is needed!", 0, 0),
-    UPGRADE_MAGIC("The magic upgrade is needed!", 0, 0),
-    UPGRADE_ADVANCED_POWER("The advanced power upgrade is needed!", 0, 0),
+    UPGRADE_ARMORY("The armory upgrade is needed!", 144, 0),
+    UPGRADE_MAGIC("The magic upgrade is needed!", 128, 0),
+    UPGRADE_POWER("The power upgrade is needed!", 160, 0),
     UPGRADE_DIGITAL("The digital upgrade is needed!", 0, 0);
 
     private final String missingError;
