@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "efab:processor"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": {
+      "south": {},
+      "north": { "y": 180 },
+      "east": { "y": 270 },
+      "west": { "y": 90 }
+    }
+  }
+}

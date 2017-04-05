@@ -74,6 +74,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> rfControls = new HashSet<>();
     private final Set<BlockPos> rfStorages = new HashSet<>();
     private final Set<BlockPos> manaReceptacles = new HashSet<>();
+    private final Set<BlockPos> processors = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
     @Override
@@ -502,6 +503,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     rfControls.add(p);
                 } else if (block == ModBlocks.rfStorageBlock) {
                     rfStorages.add(p);
+                } else if (block == ModBlocks.processorBlock) {
+                    processors.add(p);
                 } else if (block == ModBlocks.tankBlock) {
                     tanks.add(p);
                 } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
@@ -522,6 +525,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             gearBoxes.clear();
             rfControls.clear();
             rfStorages.clear();
+            processors.clear();
             manaReceptacles.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
         }
@@ -835,6 +839,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
             if (!manaReceptacles.isEmpty()) {
                 supportedTiers.add(RecipeTier.MANA);
+            }
+            if (!processors.isEmpty()) {
+                supportedTiers.add(RecipeTier.COMPUTING);
             }
             for (int i = GridContainer.SLOT_UPDATES ; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
                 ItemStack stack = getStackInSlot(i);

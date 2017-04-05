@@ -4,7 +4,9 @@ import mcjty.efab.blocks.base.BaseBlock;
 import mcjty.efab.blocks.boiler.BoilerBlock;
 import mcjty.efab.blocks.gearbox.GearBoxBlock;
 import mcjty.efab.blocks.grid.GridBlock;
+import mcjty.efab.blocks.monitor.MonitorBlock;
 import mcjty.efab.blocks.pipes.PipeBlock;
+import mcjty.efab.blocks.processor.ProcessorBlock;
 import mcjty.efab.blocks.rfcontrol.RfControlBlock;
 import mcjty.efab.blocks.rfstorage.RFStorageBlock;
 import mcjty.efab.blocks.steamengine.SteamEngineBlock;
@@ -23,6 +25,8 @@ public class ModBlocks {
     public static SteamEngineBlock steamEngineBlock;
     public static RfControlBlock rfControlBlock;
     public static RFStorageBlock rfStorageBlock;
+    public static ProcessorBlock processorBlock;
+    public static MonitorBlock monitorBlock;
 
     public static void init() {
         baseBlock = new BaseBlock();
@@ -34,6 +38,8 @@ public class ModBlocks {
         steamEngineBlock = new SteamEngineBlock();
         rfControlBlock = new RfControlBlock();
         rfStorageBlock = new RFStorageBlock();
+        processorBlock = new ProcessorBlock();
+        monitorBlock = new MonitorBlock();
     }
 
     @SideOnly(Side.CLIENT)
@@ -47,5 +53,7 @@ public class ModBlocks {
         steamEngineBlock.initModel();
         rfControlBlock.initModel();
         rfStorageBlock.initModel();
+        processorBlock.initModel();
+        monitorBlock.initModel();
     }
 }

@@ -61,6 +61,19 @@ public class StandardRecipes {
                 .tier(RecipeTier.STEAM)
                 .time(100));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.processorBlock),
+                "rqr", "rbr", "rqr", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'q', Items.QUARTZ)
+                .tier(RecipeTier.RF)
+                .rfPerTick(10)
+                .time(100));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.monitorBlock),
+                "dqd", "qbq", "dqd", 'd', "dyeBlack", 'b', ModBlocks.baseBlock, 'q', Items.QUARTZ)
+                .tier(RecipeTier.RF)
+                .tier(RecipeTier.COMPUTING)
+                .rfPerTick(10)
+                .time(100));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.rfStorageBlock),
                 "rRr", "RbR", "rRr", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'R', Blocks.REDSTONE_BLOCK)
                 .tier(RecipeTier.STEAM)
