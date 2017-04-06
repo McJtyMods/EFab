@@ -19,8 +19,8 @@ public class RecipeManager {
     public static void init() {
     }
 
-    public static Iterator<IEFabRecipe> getRecipes() {
-        return recipes.iterator();
+    public static List<IEFabRecipe> getRecipes() {
+        return recipes;
     }
 
     public static void registerRecipe(IEFabRecipe recipe) {

@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
@@ -23,6 +24,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContainer> {
+
+    public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public BoilerBlock() {
         super(Material.IRON, BoilerTE.class, EmptyContainer.class, "boiler", false);
@@ -58,6 +61,12 @@ public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContai
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
             probeInfo.text(TextFormatting.GREEN + "Temperature: " + decimalFormat.format(boilerTE.getTemperature()));
         }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+        return EMPTY;
     }
 
 

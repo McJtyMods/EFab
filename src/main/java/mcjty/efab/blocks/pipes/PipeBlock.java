@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -19,6 +20,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.Random;
 
 public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer> {
+
+    public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public PipeBlock() {
         super(Material.IRON, PipeTE.class, EmptyContainer.class, "pipes", false);
@@ -30,6 +33,13 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
     public boolean isHorizRotation() {
         return true;
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+        return EMPTY;
+    }
+
 
     @Override
     @SideOnly(Side.CLIENT)

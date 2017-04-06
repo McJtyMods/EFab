@@ -6,7 +6,7 @@
     "up": "efab:blocks/base",
     "east": "efab:blocks/base",
     "west": "efab:blocks/base",
-    "north": "efab:blocks/base",
-    "south": "efab:blocks/processor"
+    "north": "efab:blocks/processor",
+    "south": "efab:blocks/base"
   }
 }

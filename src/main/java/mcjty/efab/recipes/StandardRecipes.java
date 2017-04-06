@@ -231,7 +231,7 @@ public class StandardRecipes {
 
         JsonArray array = new JsonArray();
 
-        RecipeManager.getRecipes().forEachRemaining(recipe -> {
+        RecipeManager.getRecipes().stream().forEach(recipe -> {
             array.add(recipeToJson(recipe));
         });
 

@@ -12,8 +12,10 @@ public class EFabMessages {
 
         // Server side
         net.registerMessage(PacketGetGridStatus.Handler.class, PacketGetGridStatus.class, PacketHandler.nextID(), Side.SERVER);
+        net.registerMessage(PacketGetMonitorText.Handler.class, PacketGetMonitorText.class, PacketHandler.nextID(), Side.SERVER);
 
         // Client side
         net.registerMessage(PacketReturnGridStatus.Handler.class, PacketReturnGridStatus.class, PacketHandler.nextID(), Side.CLIENT);
+        net.registerMessage(PacketMonitorTextReady.Handler.class, PacketMonitorTextReady.class, PacketHandler.nextID(), Side.CLIENT);
     }
 }

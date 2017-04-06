@@ -8,9 +8,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,6 +20,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 public class ManaReceptacleBlock extends GenericEFabMultiBlockPart<ManaReceptacleTE, EmptyContainer> {
+
+    public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public ManaReceptacleBlock() {
         super(Material.IRON, ManaReceptacleTE.class, EmptyContainer.class, "manareceptacle", false);
@@ -42,6 +46,12 @@ public class ManaReceptacleBlock extends GenericEFabMultiBlockPart<ManaReceptacl
                 + TextFormatting.WHITE + " mana");
         tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + GeneralConfiguration.maxManaUsage
                 + TextFormatting.WHITE + " mana/t to crafting");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+        return EMPTY;
     }
 
     @Override

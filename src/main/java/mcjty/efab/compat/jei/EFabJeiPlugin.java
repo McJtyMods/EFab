@@ -13,9 +13,8 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @JEIPlugin
 public class EFabJeiPlugin extends BlankModPlugin {
@@ -28,11 +27,7 @@ public class EFabJeiPlugin extends BlankModPlugin {
         registry.addRecipeCategories(new GridRecipeCategory(guiHelper));
         registry.addRecipeHandlers(new GridRecipeHandler());
 
-        Iterator<IEFabRecipe> recipeIterator = RecipeManager.getRecipes();
-        List<IEFabRecipe> efabRecipes = new ArrayList<>();
-        while (recipeIterator.hasNext()) {
-            efabRecipes.add(new JEIRecipeAdapter(recipeIterator.next()));
-        }
+        List<IEFabRecipe> efabRecipes = RecipeManager.getRecipes().stream().map(JEIRecipeAdapter::new).collect(Collectors.toList());
         JeiCompatTools.addRecipes(registry, efabRecipes);
 
         registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
