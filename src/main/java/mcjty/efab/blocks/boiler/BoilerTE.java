@@ -13,8 +13,19 @@ public class BoilerTE extends GenericEFabTile implements ITickable {
 
     private float temperature = GeneralConfiguration.ambientBoilerTemperature;
 
+    // Client side only for steam rendering
+    private double timer = 0;
+
     @Override
     public void update() {
+        if (getWorld().isRemote) {
+            if (timer > 0) {
+                timer--;
+            } else {
+                timer = 0;
+            }
+        }
+
         if (hasHeatBelow()) {
             if (temperature < GeneralConfiguration.maxBoilerTemperature) {
                 temperature += GeneralConfiguration.boilerRiseTemperature;
@@ -42,6 +53,13 @@ public class BoilerTE extends GenericEFabTile implements ITickable {
         return isHot(getPos().down());
     }
 
+    public void setTimer(double timer) {
+        this.timer = timer;
+    }
+
+    public double getTimer() {
+        return timer;
+    }
 
     private boolean isHot(BlockPos p) {
         IBlockState state = getWorld().getBlockState(p);

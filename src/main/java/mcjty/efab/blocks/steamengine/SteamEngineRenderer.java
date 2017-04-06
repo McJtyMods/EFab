@@ -58,7 +58,7 @@ public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE
 
     }
 
-    private static void rotateFacing(TileEntity tileEntity) {
+    public static void rotateFacing(TileEntity tileEntity) {
         IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
         EnumFacing orientation = GenericBlock.getFacingHoriz(state.getBlock().getMetaFromState(state));
         switch (orientation) {

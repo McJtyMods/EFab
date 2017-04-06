@@ -459,6 +459,15 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     if (requiredTiers.contains(RecipeTier.STEAM)) {
                         if (!SoundController.isSteamPlaying(getWorld(), pos)) {
                             SoundController.playSteamSound(getWorld(), pos, 1.0f);
+                            List<BlockPos> positions = new ArrayList<>();
+                            findBoilers(pos, new HashSet<>(), positions);
+                            if (!positions.isEmpty()) {
+                                BlockPos p = positions.get(random.nextInt(positions.size()));
+                                TileEntity te = getWorld().getTileEntity(p);
+                                if (te instanceof BoilerTE) {
+                                    ((BoilerTE) te).setTimer(3*20);
+                                }
+                            }
                         }
                     } else if (requiredTiers.contains(RecipeTier.GEARBOX) || requiredTiers.contains(RecipeTier.ADVANCED_GEARBOX)) {
                         if (!SoundController.isMachinePlaying(getWorld(), pos)) {
@@ -498,11 +507,35 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             Block block = getWorld().getBlockState(p).getBlock();
             if (block == ModBlocks.gridBlock) {
                 findRFControlBlocks(p, visited, positions);
+            } else if (block == ModBlocks.baseBlock) {
+                findRFControlBlocks(p, visited, positions);
             } else if (block instanceof GenericEFabMultiBlockPart) {
                 if (block == ModBlocks.rfControlBlock) {
                     positions.add(p);
                 }
                 findRFControlBlocks(p, visited, positions);
+            }
+        }
+    }
+
+    // Client-side. Find boilers
+    private void findBoilers(BlockPos current, Set<BlockPos> visited, List<BlockPos> positions) {
+        if (visited.contains(current)) {
+            return;
+        }
+        visited.add(current);
+        for (EnumFacing dir : EnumFacing.VALUES) {
+            BlockPos p = current.offset(dir);
+            Block block = getWorld().getBlockState(p).getBlock();
+            if (block == ModBlocks.gridBlock) {
+                findBoilers(p, visited, positions);
+            } else if (block == ModBlocks.baseBlock) {
+                findBoilers(p, visited, positions);
+            } else if (block instanceof GenericEFabMultiBlockPart) {
+                if (block == ModBlocks.boilerBlock) {
+                    positions.add(p);
+                }
+                findBoilers(p, visited, positions);
             }
         }
     }
