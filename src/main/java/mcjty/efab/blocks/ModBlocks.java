@@ -10,6 +10,7 @@ import mcjty.efab.blocks.processor.ProcessorBlock;
 import mcjty.efab.blocks.rfcontrol.RfControlBlock;
 import mcjty.efab.blocks.rfstorage.RFStorageBlock;
 import mcjty.efab.blocks.steamengine.SteamEngineBlock;
+import mcjty.efab.blocks.storage.StorageBlock;
 import mcjty.efab.blocks.tank.TankBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,6 +28,7 @@ public class ModBlocks {
     public static RFStorageBlock rfStorageBlock;
     public static ProcessorBlock processorBlock;
     public static MonitorBlock monitorBlock;
+    public static StorageBlock storageBlock;
 
     public static void init() {
         baseBlock = new BaseBlock();
@@ -40,6 +42,7 @@ public class ModBlocks {
         rfStorageBlock = new RFStorageBlock();
         processorBlock = new ProcessorBlock();
         monitorBlock = new MonitorBlock();
+        storageBlock = new StorageBlock();
     }
 
     @SideOnly(Side.CLIENT)
@@ -55,5 +58,6 @@ public class ModBlocks {
         rfStorageBlock.initModel();
         processorBlock.initModel();
         monitorBlock.initModel();
+        storageBlock.initModel();
     }
 }

@@ -35,7 +35,7 @@ public class MonitorBlock extends GenericEFabMultiBlockPart<MonitorTE, EmptyCont
     public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.clAddInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block allows you to monitor");
-        tooltip.add(TextFormatting.WHITE + "crafting operations");
+        tooltip.add(TextFormatting.WHITE + "crafting operation status");
     }
 
     @SideOnly(Side.CLIENT)
