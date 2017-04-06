@@ -59,7 +59,12 @@ public class StandardRecipes {
                 new ItemStack(ModBlocks.storageBlock),
                 "iii", " c ", "iii", 'i', "ingotIron", 'c', Blocks.CHEST)
                 .tier(RecipeTier.GEARBOX)
-                .time(10));
+                .time(40));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.crafterBlock),
+                "iii", " c ", "iii", 'i', "ingotIron", 'c', Blocks.CRAFTING_TABLE)
+                .tier(RecipeTier.GEARBOX)
+                .time(40));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.rfControlBlock),
                 "rrr", "rbr", "rrr", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock)

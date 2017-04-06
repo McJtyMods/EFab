@@ -1,0 +1,34 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "custom": { "flip-v": true }, "model": "efab:crafter.obj"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [
+      {
+        "transform": {
+          "gui": {
+            "scale": 0.65,
+            "rotation": [{"x": 15},{"y": 45}]
+          },
+          "ground": {
+            "scale": 0.55
+          },
+          "firstperson": {
+            "scale": 0.55
+          },
+          "thirdperson": {
+            "scale": 0.55
+          }
+        }
+      }
+    ],
+    "facing": {
+      "south": {},
+      "north": { "y": 180 },
+      "east": { "y": 270 },
+      "west": { "y": 90 }
+    }
+  }
+}

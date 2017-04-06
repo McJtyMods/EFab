@@ -459,6 +459,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     if (requiredTiers.contains(RecipeTier.STEAM)) {
                         if (!SoundController.isSteamPlaying(getWorld(), pos)) {
                             SoundController.playSteamSound(getWorld(), pos, 1.0f);
+                            // @todo optimize this?
                             List<BlockPos> positions = new ArrayList<>();
                             findBoilers(pos, new HashSet<>(), positions);
                             if (!positions.isEmpty()) {
@@ -477,6 +478,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         if (!SoundController.isSparksPlaying(getWorld(), pos)) {
                             if ((totalTicks - ticksRemaining < 1) || (random.nextFloat() < 0.04)) {
                                 SoundController.playSparksSound(getWorld(), pos, 1.0f);
+                                // @todo optimize this?
                                 List<BlockPos> positions = new ArrayList<>();
                                 findRFControlBlocks(pos, new HashSet<>(), positions);
                                 if (!positions.isEmpty()) {

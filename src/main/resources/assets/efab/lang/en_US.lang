@@ -15,6 +15,7 @@ tile.efab.storage.name=Item Storage
 tile.efab.manareceptacle.name=Mana Receptacle
 tile.efab.processor.name=Processor
 tile.efab.monitor.name=Monitor
+tile.efab.crafter.name=Crafter
 
 itemGroup.EFab=EFab
 

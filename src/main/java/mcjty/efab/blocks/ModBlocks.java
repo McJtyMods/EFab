@@ -2,6 +2,7 @@ package mcjty.efab.blocks;
 
 import mcjty.efab.blocks.base.BaseBlock;
 import mcjty.efab.blocks.boiler.BoilerBlock;
+import mcjty.efab.blocks.crafter.CrafterBlock;
 import mcjty.efab.blocks.gearbox.GearBoxBlock;
 import mcjty.efab.blocks.grid.GridBlock;
 import mcjty.efab.blocks.monitor.MonitorBlock;
@@ -29,6 +30,7 @@ public class ModBlocks {
     public static ProcessorBlock processorBlock;
     public static MonitorBlock monitorBlock;
     public static StorageBlock storageBlock;
+    public static CrafterBlock crafterBlock;
 
     public static void init() {
         baseBlock = new BaseBlock();
@@ -43,6 +45,7 @@ public class ModBlocks {
         processorBlock = new ProcessorBlock();
         monitorBlock = new MonitorBlock();
         storageBlock = new StorageBlock();
+        crafterBlock = new CrafterBlock();
     }
 
     @SideOnly(Side.CLIENT)
@@ -59,5 +62,6 @@ public class ModBlocks {
         processorBlock.initModel();
         monitorBlock.initModel();
         storageBlock.initModel();
+        crafterBlock.initModel();
     }
 }
