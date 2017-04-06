@@ -10,12 +10,12 @@ import net.minecraft.inventory.IInventory;
 public class StorageContainer extends GenericContainer {
     public static final String CONTAINER_INVENTORY = "container";
 
-    public static final int SLOT_STORAGE = 0;            // 18 slots
+    public static final int SLOT_STORAGE = 0;            // 3x9 slots
 
     public static final ContainerFactory factory = new ContainerFactory() {
         @Override
         protected void setup() {
-            addSlotBox(new SlotDefinition(SlotType.SLOT_CONTAINER), CONTAINER_INVENTORY, SLOT_STORAGE, 23, 12, 9, 18, 2, 18);
+            addSlotBox(new SlotDefinition(SlotType.SLOT_CONTAINER), CONTAINER_INVENTORY, SLOT_STORAGE, 6, 20, 9, 18, 3, 18);
             layoutPlayerInventorySlots(6, 97);
         }
     };

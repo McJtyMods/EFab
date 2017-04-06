@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class StorageTE extends GenericEFabTile implements DefaultSidedInventory {
 
-    private InventoryHelper inventoryHelper = new InventoryHelper(this, StorageContainer.factory, 9 * 2);
+    private InventoryHelper inventoryHelper = new InventoryHelper(this, StorageContainer.factory, 9 * 3);
 
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
