@@ -45,6 +45,8 @@ public class GenericEFabMultiBlockPart<T extends GenericEFabTile, C extends Cont
                     ((GridTE) te).invalidateMultiBlockCache();
                 }
                 invalidateGrids(world, p, visited);
+            } else if (block == ModBlocks.baseBlock) {
+                invalidateGrids(world, p, visited);
             } else if (block instanceof GenericEFabMultiBlockPart) {
                 invalidateGrids(world, p, visited);
             }

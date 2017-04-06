@@ -6,6 +6,7 @@ import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
+import mcjty.efab.blocks.monitor.MonitorTE;
 import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
@@ -31,6 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -75,11 +77,26 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> rfStorages = new HashSet<>();
     private final Set<BlockPos> manaReceptacles = new HashSet<>();
     private final Set<BlockPos> processors = new HashSet<>();
+    private final Set<BlockPos> monitors = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
+
+    private void updateMonitorStatus() {
+        if (monitors.isEmpty()) {
+            return;
+        }
+        String msg = ticksRemaining >= 0 ? ("  " + ((totalTicks-ticksRemaining) * 100 / totalTicks + "%")) : "  idle";
+        for (BlockPos monitorPos : monitors) {
+            TileEntity te = getWorld().getTileEntity(monitorPos);
+            if (te instanceof MonitorTE) {
+                ((MonitorTE) te).setCraftStatus(TextFormatting.DARK_GREEN + msg);
+            }
+        }
+    }
 
     @Override
     public void update() {
         if (!getWorld().isRemote) {
+            updateMonitorStatus();
             if (ticksRemaining >= 0) {
                 markDirtyQuick();
 
@@ -505,6 +522,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     rfStorages.add(p);
                 } else if (block == ModBlocks.processorBlock) {
                     processors.add(p);
+                } else if (block == ModBlocks.monitorBlock) {
+                    monitors.add(p);
                 } else if (block == ModBlocks.tankBlock) {
                     tanks.add(p);
                 } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
@@ -526,6 +545,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             rfControls.clear();
             rfStorages.clear();
             processors.clear();
+            monitors.clear();
             manaReceptacles.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
         }

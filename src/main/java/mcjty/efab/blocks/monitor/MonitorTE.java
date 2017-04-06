@@ -22,6 +22,7 @@ public class MonitorTE extends GenericEFabTile implements ITickable, ISpeedBoost
 
     private long lastHudTime = 0;
     private List<String> clientHudLog = new ArrayList<>();
+    private List<String> messages = null;
 
     @Override
     public float getSpeed() {
@@ -77,13 +78,20 @@ public class MonitorTE extends GenericEFabTile implements ITickable, ISpeedBoost
     }
 
     private List<String> getMessages() {
-        List<String> list = new ArrayList<>();
-        list.add(TextFormatting.DARK_GREEN + "Mode:");
-        list.add(TextFormatting.DARK_GREEN + "crafting...");
-        list.add(TextFormatting.DARK_GREEN + "test 1");
-        list.add(TextFormatting.DARK_GREEN + "test 2");
-        list.add(TextFormatting.DARK_GREEN + "test 3");
-        return list;
+        if (messages == null) {
+            messages = new ArrayList<>(5);
+            messages.add(TextFormatting.DARK_GREEN + "Status:");
+            messages.add("");
+            messages.add(TextFormatting.DARK_GREEN + "Auto:");
+            messages.add("");
+            messages.add("");
+        }
+        return messages;
+    }
+
+    public void setCraftStatus(String msg) {
+        getMessages();
+        messages.set(1, msg);
     }
 
     @Override
