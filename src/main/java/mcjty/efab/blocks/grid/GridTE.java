@@ -61,6 +61,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     private int ticksRemaining = -1;
     private int totalTicks = 0;
+    private int errorTicks = 0;            // Where there was an error this will be > 0
     private ItemStack craftingOutput = ItemStackTools.getEmptyStack();
 
     // Client side only and contains the last error from the server
@@ -84,7 +85,12 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (monitors.isEmpty()) {
             return;
         }
-        String msg = ticksRemaining >= 0 ? ("  " + ((totalTicks-ticksRemaining) * 100 / totalTicks + "%")) : "  idle";
+        String msg;
+        if (errorTicks > 0) {
+            msg = ((errorTicks /20) % 2 == 0) ? "  ERROR" : "";
+        } else {
+            msg = ticksRemaining >= 0 ? ("  " + ((totalTicks - ticksRemaining) * 100 / totalTicks + "%")) : "  idle";
+        }
         for (BlockPos monitorPos : monitors) {
             TileEntity te = getWorld().getTileEntity(monitorPos);
             if (te instanceof MonitorTE) {
@@ -96,13 +102,19 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     @Override
     public void update() {
         if (!getWorld().isRemote) {
+            if (errorTicks > 0) {
+                errorTicks++;
+                markDirtyQuick();
+            }
             updateMonitorStatus();
+
             if (ticksRemaining >= 0) {
                 markDirtyQuick();
 
                 IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
                 if (recipe == null) {
                     abortCraft();
+                    errorTicks = 1;
                     return;
                 }
 
@@ -117,6 +129,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     if (!ItemStack.areItemsEqual(craftingOutput, getCurrentOutput(recipe))) {
                         // Reset craft
                         abortCraft();
+                        errorTicks = 1;
                         return;
                     }
                 }
@@ -126,6 +139,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 } else {
                     if (!craftInProgress(recipe)) {
                         abortCraft();
+                        errorTicks = 1;
                     }
                 }
             }
@@ -604,6 +618,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     private void startCraft() {
+        errorTicks = 0;
+        markDirtyQuick();
         IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
         if (recipe != null) {
             craftingOutput = getCurrentOutput(recipe);
@@ -636,6 +652,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         ticksRemaining = tagCompound.getInteger("ticks");
+        errorTicks = tagCompound.getInteger("error");
         totalTicks = tagCompound.getInteger("total");
         if (tagCompound.hasKey("output")) {
             craftingOutput = ItemStackTools.loadFromNBT(tagCompound.getCompoundTag("output"));
@@ -648,6 +665,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setInteger("ticks", ticksRemaining);
+        tagCompound.setInteger("error", errorTicks);
         tagCompound.setInteger("total", totalTicks);
         if (ItemStackTools.isValid(craftingOutput)) {
             NBTTagCompound out = new NBTTagCompound();
