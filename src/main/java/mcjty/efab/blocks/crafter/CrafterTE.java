@@ -2,17 +2,16 @@ package mcjty.efab.blocks.crafter;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ISpeedBooster;
+import mcjty.efab.blocks.grid.GridCrafterHelper;
 import mcjty.efab.blocks.grid.GridTE;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
-import mcjty.efab.recipes.RecipeManager;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.network.Argument;
 import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,11 +20,10 @@ import net.minecraft.util.ITickable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -37,23 +35,14 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     public static final int[] SLOTS = new int[]{CrafterContainer.SLOT_CRAFTOUTPUT, CrafterContainer.SLOT_CRAFTOUTPUT + 1, CrafterContainer.SLOT_CRAFTOUTPUT + 2};
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, CrafterContainer.factory, 9 + 3 + 1);
-    private InventoryCrafting workInventory = new InventoryCrafting(new Container() {
-        @SuppressWarnings("NullableProblems")
-        @Override
-        public boolean canInteractWith(EntityPlayer var1) {
-            return false;
-        }
-    }, 3, 3);
 
     private float speed = 1.0f;
     private int speedBoost = 0;
 
     private int ticksRemaining = -1;
     private int totalTicks = 0;
-    private ItemStack craftingOutput = ItemStackTools.getEmptyStack();
 
-    // Client side only and contains the last outputs from the server
-    private List<ItemStack> outputsFromServer = Collections.emptyList();
+    private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
 
     @Override
     public float getSpeed() {
@@ -100,21 +89,13 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         if (recipe == null) {
             return ItemStackTools.getEmptyStack();
         } else {
-            return recipe.cast().getCraftingResult(workInventory);
+            return recipe.cast().getCraftingResult(crafterHelper.getWorkInventory());
         }
-    }
-
-    @Nonnull
-    private List<IEFabRecipe> findCurrentRecipes() {
-        for (int i = 0; i < 9; i++) {
-            workInventory.setInventorySlotContents(i, inventoryHelper.getStackInSlot(i));
-        }
-        return RecipeManager.findValidRecipes(workInventory, getWorld());
     }
 
     @Nullable
     private IEFabRecipe findRecipeForOutput(ItemStack output) {
-        List<IEFabRecipe> recipes = findCurrentRecipes();
+        List<IEFabRecipe> recipes = crafterHelper.findCurrentRecipes(getWorld());
         for (IEFabRecipe recipe : recipes) {
             if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, recipe.cast().getRecipeOutput())) {
                 return recipe;
@@ -129,23 +110,16 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
      */
     @Nonnull
     public List<ItemStack> getOutputs() {
-        if (getWorld().isRemote) {
-            return outputsFromServer;
-        } else {
-            return findCurrentRecipes()
-                    .stream()
-                    .map(r -> r.cast().getRecipeOutput())
-                    .collect(Collectors.toList());
-        }
+        return crafterHelper.getOutputs(getWorld());
     }
 
     private void abortCraft() {
         ticksRemaining = -1;
-        craftingOutput = ItemStackTools.getEmptyStack();
+        crafterHelper.abortCraft();
     }
 
     public boolean isCrafting() {
-        return ItemStackTools.isValid(craftingOutput);
+        return ItemStackTools.isValid(crafterHelper.getCraftingOutput());
     }
 
     public void handleCraft(GridTE grid) {
@@ -166,7 +140,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
             if (ticksRemaining % 20 == 0 || ticksRemaining < 0) {
                 // Every 20 ticks we check if the inventory still matches what we want to craft
-                if (!ItemStack.areItemsEqual(craftingOutput, getCurrentOutput(recipe))) {
+                if (!ItemStack.areItemsEqual(crafterHelper.getCraftingOutput(), getCurrentOutput(recipe))) {
                     // Reset craft
                     abortCraft();
                     return;
@@ -186,69 +160,56 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         }
     }
 
+    private List<ItemStack> condenseIngredients(InventoryCrafting workInventory) {
+        List<ItemStack> ingredients = new ArrayList<>();
+        // @todo optimize and cache this?
+        for (int i = 0 ; i < workInventory.getSizeInventory() ; i++) {
+            ItemStack stack = workInventory.getStackInSlot(i);
+            if (ItemStackTools.isValid(stack)) {
+                boolean found = false;
+                for (ItemStack ingredient : ingredients) {
+                    if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(stack, ingredient)) {
+                        ItemStackTools.incStackSize(ingredient, ItemStackTools.getStackSize(stack));
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    ingredients.add(stack.copy());
+                }
+            }
+        }
+        return ingredients;
+    }
+
+
     private void craftFinished(@Nonnull IEFabRecipe recipe, GridTE grid) {
         ticksRemaining = -1;
         markDirtyQuick();
         // Craft finished. Consume items and do the actual crafting. If there is no room to place
         // the craft result then nothing happens
 
-        if (!checkRoomForOutput(craftingOutput.copy())) {
+        if (!checkRoomForOutput(crafterHelper.getCraftingOutput().copy())) {
             // Not enough room. Abort craft
             return;
         }
 
-        if (grid.checkFinalCraftRequirements(recipe)) {
+        List<ItemStack> ingredients = condenseIngredients(crafterHelper.getWorkInventory());
+        if (grid.checkFinalCraftRequirements(recipe, ingredients)) {
             return;
         }
 
-        List<ItemStack> ingredients = grid.condenseIngredients(workInventory);
-        if (!grid.checkIngredients(ingredients)) {
-            // Ingredients are missing
-            return;
-        }
-        grid.consumeIngredients(ingredients);
-
-        insertOutput(craftingOutput.copy());
-        craftingOutput = ItemStackTools.getEmptyStack();
+        insertOutput(crafterHelper.getCraftingOutput().copy());
+        crafterHelper.abortCraft();
     }
 
-    // @todo common with GridTE?
     private boolean checkRoomForOutput(ItemStack output) {
-        for (int i = CrafterContainer.SLOT_CRAFTOUTPUT; i < CrafterContainer.SLOT_CRAFTOUTPUT + 3; i++) {
-            ItemStack currentStack = getStackInSlot(i);
-            if (ItemStackTools.isEmpty(currentStack)) {
-                return true;
-            } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
-                int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
-                if (remaining >= ItemStackTools.getStackSize(output)) {
-                    return true;
-                }
-                ItemStackTools.incStackSize(output, -remaining);
-            }
-        }
-        return false;
+        return crafterHelper.checkRoomForOutput(output, CrafterContainer.SLOT_CRAFTOUTPUT, CrafterContainer.SLOT_CRAFTOUTPUT+3);
     }
 
     // This function assumes there is room (i.e. check with checkRoomForOutput first)
     private void insertOutput(ItemStack output) {
-        for (int i = CrafterContainer.SLOT_CRAFTOUTPUT; i < CrafterContainer.SLOT_CRAFTOUTPUT + 3; i++) {
-            ItemStack currentStack = getStackInSlot(i);
-            if (ItemStackTools.isEmpty(currentStack)) {
-                setInventorySlotContents(i, output);
-                return;
-            } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
-                int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
-                if (remaining >= ItemStackTools.getStackSize(output)) {
-                    ItemStackTools.setStackSize(output, ItemStackTools.getStackSize(output) + ItemStackTools.getStackSize(currentStack));
-                    setInventorySlotContents(i, output);
-                    return;
-                } else {
-                    ItemStackTools.setStackSize(currentStack, currentStack.getMaxStackSize());
-                    setInventorySlotContents(i, currentStack);
-                }
-                ItemStackTools.incStackSize(output, -remaining);
-            }
-        }
+        crafterHelper.insertOutput(output, CrafterContainer.SLOT_CRAFTOUTPUT, CrafterContainer.SLOT_CRAFTOUTPUT+3);
     }
 
     public boolean startCraft(GridTE grid) {
@@ -258,12 +219,12 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
             if (error) {
                 return false; // Don't start
             }
-            List<ItemStack> ingredients = grid.condenseIngredients(workInventory);
+            List<ItemStack> ingredients = condenseIngredients(crafterHelper.getWorkInventory());
             if (!grid.checkIngredients(ingredients)) {
                 return false;
             }
 
-            craftingOutput = getCurrentOutput(recipe);
+            crafterHelper.setCraftingOutput(getCurrentOutput(recipe));
             ticksRemaining = recipe.getCraftTime();
             totalTicks = recipe.getCraftTime();
             markDirtyQuick();
@@ -279,7 +240,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
      */
     private void setValidRecipeGhostOutput() {
         ItemStack current = inventoryHelper.getStackInSlot(CrafterContainer.SLOT_GHOSTOUT);
-        List<IEFabRecipe> recipes = findCurrentRecipes();
+        List<IEFabRecipe> recipes = crafterHelper.findCurrentRecipes(getWorld());
         if (ItemStackTools.isEmpty(current)) {
             if (!recipes.isEmpty()) {
                 inventoryHelper.setStackInSlot(CrafterContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
@@ -337,7 +298,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     // Called client-side only
     public void syncFromServer(List<ItemStack> outputs) {
-        outputsFromServer = outputs;
+        crafterHelper.syncFromServer(outputs);
     }
 
     @Override
@@ -384,11 +345,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         speedBoost = tagCompound.getInteger("boost");
         ticksRemaining = tagCompound.getInteger("ticks");
         totalTicks = tagCompound.getInteger("total");
-        if (tagCompound.hasKey("output")) {
-            craftingOutput = ItemStackTools.loadFromNBT(tagCompound.getCompoundTag("output"));
-        } else {
-            craftingOutput = ItemStackTools.getEmptyStack();
-        }
+        crafterHelper.readFromNBT(tagCompound);
     }
 
     @Override
@@ -397,16 +354,12 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         tagCompound.setInteger("boost", speedBoost);
         tagCompound.setInteger("ticks", ticksRemaining);
         tagCompound.setInteger("total", totalTicks);
-        if (ItemStackTools.isValid(craftingOutput)) {
-            NBTTagCompound out = new NBTTagCompound();
-            craftingOutput.writeToNBT(out);
-            tagCompound.setTag("output", out);
-        }
+        crafterHelper.writeToNBT(tagCompound);
         return super.writeToNBT(tagCompound);
     }
 
     private void left() {
-        List<IEFabRecipe> sorted = findCurrentRecipes();
+        List<IEFabRecipe> sorted = crafterHelper.findCurrentRecipes(getWorld());
         OptionalInt first = findCurrentGhost(sorted);
         if (first.isPresent()) {
             int i = (first.getAsInt() - 1 + sorted.size()) % sorted.size();
@@ -417,7 +370,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     private void right() {
-        List<IEFabRecipe> sorted = findCurrentRecipes();
+        List<IEFabRecipe> sorted = crafterHelper.findCurrentRecipes(getWorld());
         OptionalInt first = findCurrentGhost(sorted);
         if (first.isPresent()) {
             int i = (first.getAsInt() + 1) % sorted.size();
