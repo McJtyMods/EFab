@@ -2,7 +2,6 @@ package mcjty.efab.blocks.crafter;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.proxy.GuiProxy;
-import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -34,11 +33,17 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
     }
 
     @Override
+    public boolean needsRedstoneCheck() {
+        return true;
+    }
+
+    @Override
     public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.clAddInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block adds auto crafting to the fabricator");
         tooltip.add(TextFormatting.WHITE + "Also needs a " + TextFormatting.GREEN + "processor" + TextFormatting.WHITE
                 + " and one or more " + TextFormatting.GREEN + "storage" + TextFormatting.WHITE + " blocks");
+        tooltip.add(TextFormatting.YELLOW + "The crafter needs a redstone signal to work!");
     }
 
     @SideOnly(Side.CLIENT)

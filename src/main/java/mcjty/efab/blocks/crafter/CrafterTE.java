@@ -49,6 +49,10 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         return speed;
     }
 
+    public boolean isOn() {
+        return powerLevel > 0;
+    }
+
     @Override
     public void setSpeed(float speed) {
         this.speed = speed;

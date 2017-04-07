@@ -30,6 +30,7 @@ public class GeneralConfiguration {
     public static int craftAnimationBoost = 40;
     public static float craftAnimationSpeedUp = 3;
     public static float craftAnimationSpinDown = 0.3f;
+    public static int crafterDelay = 10;
 
     public static int tankCapacity = 10000;
 
@@ -130,5 +131,8 @@ public class GeneralConfiguration {
                 0.0f, 1000.0f, "Every tick the animation of the crafter will speed up during auto crafting (and during boost)");
         craftAnimationSpinDown = cfg.getFloat("craftAnimationSpinDown", CATEGORY_GENERAL, craftAnimationSpinDown,
                 0.0f, 1000.0f, "If not auto crafting this is the speed at which the speed of the animation of the crafter will decrease");
+
+        crafterDelay = cfg.getInt("crafterDelay", CATEGORY_GENERAL, crafterDelay,
+                1, 100000, "Number of ticks between every auto craft operation");
     }
 }

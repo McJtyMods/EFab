@@ -42,7 +42,6 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 import static mcjty.efab.blocks.grid.GridContainer.COUNT_UPDATES;
-import static mcjty.efab.blocks.grid.GridTE.Status.*;
 
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ITickable {
 
@@ -55,6 +54,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private int ticksRemaining = -1;
     private int totalTicks = 0;
     private int errorTicks = 0;            // Where there was an error this will be > 0
+
+    private int crafterDelay = 0;
 
     // Client side only and contains the last error from the server
     private List<String> errorsFromServer = Collections.emptyList();
@@ -76,7 +77,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
 
-    private void updateMonitorStatus(int crafterStatus) {
+    private void updateMonitorStatus(String[] crafterStatus) {
         if (monitors.isEmpty()) {
             return;
         }
@@ -86,21 +87,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         } else {
             msg = TextFormatting.DARK_GREEN + (ticksRemaining >= 0 ? ("  " + ((totalTicks - ticksRemaining) * 100 / totalTicks + "%")) : "  idle");
         }
-        String craft1;
-        String craft2 = "";
-        if (crafterStatus == 0) {
-            craft1 = TextFormatting.DARK_GREEN + "  idle";
-        } else if (crafterStatus == -1) {
-            craft1 = TextFormatting.DARK_RED + "  missing!";
-        } else {
-            craft1 = TextFormatting.DARK_GREEN + "  busy";
-            craft2 = TextFormatting.DARK_GREEN + "  #" + crafterStatus;
-        }
-
         for (BlockPos monitorPos : monitors) {
             TileEntity te = getWorld().getTileEntity(monitorPos);
             if (te instanceof MonitorTE) {
-                ((MonitorTE) te).setCraftStatus(msg, craft1, craft2);
+                ((MonitorTE) te).setCraftStatus(msg, crafterStatus[0], crafterStatus[1]);
             }
         }
     }
@@ -158,40 +148,65 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    public static enum Status {
-        IDLE,
-        BUSY,
-        MISSING
-    }
+    private String[] craftingStatus = new String[] { "", "" };
 
-    private int updateCrafters() {
+    private void updateCrafters() {
         checkMultiBlockCache();
-        Status status = IDLE;
+
+        if (crafters.isEmpty()) {
+            return;
+        }
+
+        if (!getSupportedTiers().contains(RecipeTier.COMPUTING)) {
+            craftingStatus[0] = TextFormatting.DARK_RED + "  PROCESSOR";
+            craftingStatus[1] = TextFormatting.DARK_RED + "  MISSING!";
+            return;
+        }
+
+        markDirtyQuick();
+        crafterDelay--;
+        if (crafterDelay > 0) {
+            return;
+        }
+        crafterDelay = GeneralConfiguration.crafterDelay;
+
         int countBusy = 0;
+        int countOff = 0;
+        int countMissing = 0;
         for (BlockPos crafterPos : crafters) {
             TileEntity te = getWorld().getTileEntity(crafterPos);
             if (te instanceof CrafterTE) {
                 CrafterTE crafterTE = (CrafterTE) te;
-                if (crafterTE.isCrafting()) {
-                    crafterTE.setSpeedBoost(GeneralConfiguration.craftAnimationBoost);
-                    crafterTE.handleCraft(this);
-                    countBusy++;
-                    if (status != MISSING) {
-                        status = BUSY;
+                if (crafterTE.isOn()) {
+                    if (crafterTE.isCrafting()) {
+                        crafterTE.setSpeedBoost(GeneralConfiguration.craftAnimationBoost);
+                        crafterTE.handleCraft(this);
+                        countBusy++;
+                    } else {
+                        if (!crafterTE.startCraft(this)) {
+                            countMissing++;
+                        } else {
+                            countBusy++;
+                        }
                     }
                 } else {
-                    if (!crafterTE.startCraft(this)) {
-                        status = MISSING;
-                    }
+                    countOff++;
                 }
             }
         }
-        if (status == BUSY) {
-            return countBusy;
-        } else if (status == MISSING) {
-            return -1;
-        } else {
-            return 0;
+
+        int idx = 0;
+        if (countMissing > 0) {
+            craftingStatus[idx++] = TextFormatting.DARK_RED + "  " + "fail " + countMissing;
+        }
+        if (countBusy > 0) {
+            craftingStatus[idx++] = TextFormatting.DARK_GREEN + "  " + "busy " + countMissing;
+        }
+        if (countOff > 0 && idx <= 1) {
+            craftingStatus[idx++] = TextFormatting.DARK_GREEN + "  " + "off " + countOff;
+        }
+        if (idx <= 1) {
+            craftingStatus[idx] = "";
         }
     }
 
@@ -202,8 +217,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 errorTicks++;
                 markDirtyQuick();
             }
-            int crafterStatus = updateCrafters();
-            updateMonitorStatus(crafterStatus);
+            updateCrafters();
+            updateMonitorStatus(craftingStatus);
 
             if (ticksRemaining >= 0) {
                 markDirtyQuick();
@@ -769,6 +784,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         ticksRemaining = tagCompound.getInteger("ticks");
         errorTicks = tagCompound.getInteger("error");
         totalTicks = tagCompound.getInteger("total");
+        crafterDelay = tagCompound.getInteger("crafterDelay");
         crafterHelper.readFromNBT(tagCompound);
     }
 
@@ -778,6 +794,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         tagCompound.setInteger("ticks", ticksRemaining);
         tagCompound.setInteger("error", errorTicks);
         tagCompound.setInteger("total", totalTicks);
+        tagCompound.setInteger("crafterDelay", crafterDelay);
         crafterHelper.writeToNBT(tagCompound);
         return tagCompound;
     }
