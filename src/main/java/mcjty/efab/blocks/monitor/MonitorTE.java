@@ -89,9 +89,10 @@ public class MonitorTE extends GenericEFabTile implements ITickable, ISpeedBoost
         return messages;
     }
 
-    public void setCraftStatus(String msg) {
+    public void setCraftStatus(String msg, String crafterMsg) {
         getMessages();
         messages.set(1, msg);
+        messages.set(3, crafterMsg);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class GeneralConfiguration {
 
     public static float maxCraftAnimationSpeed = 20;
     public static int craftAnimationBoost = 40;
-    public static float craftAnimationSpeedUp = 2;
+    public static float craftAnimationSpeedUp = 3;
     public static float craftAnimationSpinDown = 0.3f;
 
     public static int tankCapacity = 10000;

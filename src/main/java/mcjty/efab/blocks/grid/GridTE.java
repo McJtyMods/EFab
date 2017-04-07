@@ -6,8 +6,10 @@ import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
+import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.monitor.MonitorTE;
 import mcjty.efab.blocks.rfcontrol.RfControlTE;
+import mcjty.efab.blocks.storage.StorageTE;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.GeneralConfiguration;
@@ -35,6 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,9 +82,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> manaReceptacles = new HashSet<>();
     private final Set<BlockPos> processors = new HashSet<>();
     private final Set<BlockPos> monitors = new HashSet<>();
+    private final Set<BlockPos> crafters = new HashSet<>();
+    private final Set<BlockPos> storages = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
-    private void updateMonitorStatus() {
+    private void updateMonitorStatus(String crafterStatus) {
         if (monitors.isEmpty()) {
             return;
         }
@@ -94,9 +99,103 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         for (BlockPos monitorPos : monitors) {
             TileEntity te = getWorld().getTileEntity(monitorPos);
             if (te instanceof MonitorTE) {
-                ((MonitorTE) te).setCraftStatus(TextFormatting.DARK_GREEN + msg);
+                ((MonitorTE) te).setCraftStatus(TextFormatting.DARK_GREEN + msg, crafterStatus);
             }
         }
+    }
+
+    public boolean checkIngredients(List<ItemStack> ingredients) {
+        for (ItemStack ingredient : ingredients) {
+            int needed = ItemStackTools.getStackSize(ingredient);
+            for (BlockPos storagePos : storages) {
+                TileEntity te = getWorld().getTileEntity(storagePos);
+                if (te instanceof StorageTE) {
+                    StorageTE storageTE = (StorageTE) te;
+                    for (int ii = 0; ii < storageTE.getSizeInventory() ; ii++) {
+                        ItemStack storageStack = storageTE.getStackInSlot(ii);
+                        if (ItemStackTools.isValid(storageStack) && OreDictionary.itemMatches(ingredient, storageStack, false)) {
+                            needed -= Math.min(ItemStackTools.getStackSize(storageStack), needed);
+                            if (needed <= 0) {
+                                break;
+                            }
+                        }
+                    }
+                    if (needed <= 0) {
+                        break;
+                    }
+                }
+            }
+            if (needed > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void consumeIngredients(List<ItemStack> ingredients) {
+        for (ItemStack ingredient : ingredients) {
+            int needed = ItemStackTools.getStackSize(ingredient);
+            for (BlockPos storagePos : storages) {
+                TileEntity te = getWorld().getTileEntity(storagePos);
+                if (te instanceof StorageTE) {
+                    StorageTE storageTE = (StorageTE) te;
+                    for (int ii = 0; ii < storageTE.getSizeInventory() ; ii++) {
+                        ItemStack storageStack = storageTE.getStackInSlot(ii);
+                        if (ItemStackTools.isValid(storageStack) && OreDictionary.itemMatches(ingredient, storageStack, false)) {
+                            ItemStack extracted = storageTE.decrStackSize(ii, needed);
+                            needed -= ItemStackTools.getStackSize(extracted);
+                            if (needed <= 0) {
+                                break;
+                            }
+                        }
+                    }
+                    if (needed <= 0) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public List<ItemStack> condenseIngredients(InventoryCrafting workInventory) {
+        List<ItemStack> ingredients = new ArrayList<>();
+        // @todo optimize and cache this?
+        for (int i = 0 ; i < workInventory.getSizeInventory() ; i++) {
+            ItemStack stack = workInventory.getStackInSlot(i);
+            if (ItemStackTools.isValid(stack)) {
+                boolean found = false;
+                for (ItemStack ingredient : ingredients) {
+                    if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(stack, ingredient)) {
+                        ItemStackTools.incStackSize(ingredient, ItemStackTools.getStackSize(stack));
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    ingredients.add(stack.copy());
+                }
+            }
+        }
+        return ingredients;
+    }
+
+    private String updateCrafters() {
+        checkMultiBlockCache();
+        String msg = "  idle";
+        for (BlockPos crafterPos : crafters) {
+            TileEntity te = getWorld().getTileEntity(crafterPos);
+            if (te instanceof CrafterTE) {
+                CrafterTE crafterTE = (CrafterTE) te;
+                if (crafterTE.isCrafting()) {
+                    crafterTE.setSpeedBoost(GeneralConfiguration.craftAnimationBoost);
+                    crafterTE.handleCraft(this);
+                    msg = "  busy";
+                } else {
+                    crafterTE.startCraft(this);
+                }
+            }
+        }
+        return TextFormatting.DARK_GREEN + msg;
     }
 
     @Override
@@ -106,7 +205,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 errorTicks++;
                 markDirtyQuick();
             }
-            updateMonitorStatus();
+            String crafterStatus = updateCrafters();
+            updateMonitorStatus(crafterStatus);
 
             if (ticksRemaining >= 0) {
                 markDirtyQuick();
@@ -137,7 +237,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 if (ticksRemaining < 0) {
                     craftFinished(recipe);
                 } else {
-                    if (!craftInProgress(recipe)) {
+                    CraftProgressResult result = craftInProgress(recipe);
+                    if (result == CraftProgressResult.WAIT) {
+                        ticksRemaining--;
+                    } else if (result == CraftProgressResult.ABORT) {
                         abortCraft();
                         errorTicks = 1;
                     }
@@ -154,8 +257,14 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         markDirtyClient();
     }
 
+    public enum CraftProgressResult {
+        ABORT,
+        WAIT,
+        OK
+    }
+
     // Return false if the craft should be aborted
-    private boolean craftInProgress(@Nonnull IEFabRecipe recipe) {
+    public CraftProgressResult craftInProgress(@Nonnull IEFabRecipe recipe) {
         checkMultiBlockCache();
 
         if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
@@ -163,11 +272,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             FluidStack stack = new FluidStack(FluidRegistry.WATER, GeneralConfiguration.waterSteamCraftingConsumption);
             TankTE tank = findSuitableTank(stack);
             if (tank == null) {
-                return false;
+                return CraftProgressResult.ABORT;
             }
             FluidStack drained = tank.getHandler().drain(stack, true);
             if (drained == null || drained.amount < GeneralConfiguration.waterSteamCraftingConsumption) {
-                return false;
+                return CraftProgressResult.ABORT;
             }
         }
         if (recipe.getRequiredRfPerTick() > 0) {
@@ -177,10 +286,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 stillneeded = handlePowerPerTick(stillneeded, this.rfStorages, GeneralConfiguration.rfStorageInternalFlow);
                 if (stillneeded > 0) {
                     if (GeneralConfiguration.abortCraftWhenOutOfRf) {
-                        return false;
+                        return CraftProgressResult.ABORT;
                     } else {
-                        ticksRemaining--;   // One tick back
-                        return true;
+                        return CraftProgressResult.WAIT;
                     }
                 }
             }
@@ -190,14 +298,13 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             stillneeded = handleManaPerTick(stillneeded, this.manaReceptacles, GeneralConfiguration.maxManaUsage);
             if (stillneeded > 0) {
                 if (GeneralConfiguration.abortCraftWhenOutOfMana) {
-                    return false;
+                    return CraftProgressResult.ABORT;
                 } else {
-                    ticksRemaining--;   // One tick back
-                    return true;
+                    return CraftProgressResult.WAIT;
                 }
             }
         }
-        return true;
+        return CraftProgressResult.OK;
     }
 
     private int handlePowerPerTick(int stillneeded, Set<BlockPos> poses, int maxUsage) {
@@ -260,7 +367,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     // Returns true if the final craft requirements are not ok
-    private boolean checkFinalCraftRequirements(IEFabRecipe recipe) {
+    public boolean checkFinalCraftRequirements(IEFabRecipe recipe) {
         // Now check if we have secondary requirements like fluids
         // First loop to check
         for (FluidStack stack : recipe.getRequiredFluids()) {
@@ -372,8 +479,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private List<IEFabRecipe> findCurrentRecipesSorted() {
         List<IEFabRecipe> recipes = findCurrentRecipes();
         recipes.sort((r1, r2) -> {
-            boolean error1 = getErrorsForOutput(r1.cast().getRecipeOutput(), null);
-            boolean error2 = getErrorsForOutput(r2.cast().getRecipeOutput(), null);
+            boolean error1 = getErrorsForOutput(r1, null);
+            boolean error2 = getErrorsForOutput(r2, null);
             return error1 == error2 ? 0 : (error2 ? -1 : 1);
         });
         return recipes;
@@ -573,6 +680,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     processors.add(p);
                 } else if (block == ModBlocks.monitorBlock) {
                     monitors.add(p);
+                } else if (block == ModBlocks.crafterBlock) {
+                    crafters.add(p);
+                } else if (block == ModBlocks.storageBlock) {
+                    storages.add(p);
                 } else if (block == ModBlocks.tankBlock) {
                     tanks.add(p);
                 } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
@@ -595,6 +706,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             rfStorages.clear();
             processors.clear();
             monitors.clear();
+            crafters.clear();
+            storages.clear();
             manaReceptacles.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
         }
@@ -656,7 +769,13 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         errorTicks = 0;
         markDirtyQuick();
         IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+
         if (recipe != null) {
+            boolean error = getErrorsForOutput(recipe, null);
+            if (error) {
+                return; // Don't start
+            }
+
             craftingOutput = getCurrentOutput(recipe);
             ticksRemaining = recipe.getCraftTime();
             totalTicks = recipe.getCraftTime();
@@ -767,15 +886,15 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
 
         ItemStack output = getCurrentGhostOutput();
+        IEFabRecipe recipe = findRecipeForOutput(output);
         List<String> errors = new ArrayList<>();
-        getErrorsForOutput(output, errors);
+        getErrorsForOutput(recipe, errors);
         return errors;
     }
 
-    private boolean getErrorsForOutput(ItemStack output, @Nullable List<String> errors) {
+    public boolean getErrorsForOutput(IEFabRecipe recipe, @Nullable List<String> errors) {
         checkMultiBlockCache();
 
-        IEFabRecipe recipe = findRecipeForOutput(output);
         if (recipe == null) {
             return false;
         }

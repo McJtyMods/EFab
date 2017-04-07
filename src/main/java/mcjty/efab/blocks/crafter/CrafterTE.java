@@ -2,6 +2,7 @@ package mcjty.efab.blocks.crafter;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ISpeedBooster;
+import mcjty.efab.blocks.grid.GridTE;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
@@ -46,6 +47,10 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     private float speed = 1.0f;
     private int speedBoost = 0;
+
+    private int ticksRemaining = -1;
+    private int totalTicks = 0;
+    private ItemStack craftingOutput = ItemStackTools.getEmptyStack();
 
     // Client side only and contains the last outputs from the server
     private List<ItemStack> outputsFromServer = Collections.emptyList();
@@ -134,6 +139,139 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         }
     }
 
+    private void abortCraft() {
+        ticksRemaining = -1;
+        craftingOutput = ItemStackTools.getEmptyStack();
+    }
+
+    public boolean isCrafting() {
+        return ItemStackTools.isValid(craftingOutput);
+    }
+
+    public void handleCraft(GridTE grid) {
+        if (ticksRemaining >= 0) {
+            markDirtyQuick();
+
+            IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+            if (recipe == null) {
+                abortCraft();
+                return;
+            }
+
+            ticksRemaining--;
+            if (totalTicks - ticksRemaining < 2) {
+                // Send to client so it knows that the craft is progressing and that ticksRemaining is no longer equal to totalTicks
+                markDirtyClient();
+            }
+
+            if (ticksRemaining % 20 == 0 || ticksRemaining < 0) {
+                // Every 20 ticks we check if the inventory still matches what we want to craft
+                if (!ItemStack.areItemsEqual(craftingOutput, getCurrentOutput(recipe))) {
+                    // Reset craft
+                    abortCraft();
+                    return;
+                }
+            }
+
+            if (ticksRemaining < 0) {
+                craftFinished(recipe, grid);
+            } else {
+                GridTE.CraftProgressResult result = grid.craftInProgress(recipe);
+                if (result == GridTE.CraftProgressResult.WAIT) {
+                    ticksRemaining--;
+                } else if (result == GridTE.CraftProgressResult.ABORT) {
+                    abortCraft();
+                }
+            }
+        }
+    }
+
+    private void craftFinished(@Nonnull IEFabRecipe recipe, GridTE grid) {
+        ticksRemaining = -1;
+        markDirtyQuick();
+        // Craft finished. Consume items and do the actual crafting. If there is no room to place
+        // the craft result then nothing happens
+
+        if (!checkRoomForOutput(craftingOutput.copy())) {
+            // Not enough room. Abort craft
+            return;
+        }
+
+        if (grid.checkFinalCraftRequirements(recipe)) {
+            return;
+        }
+
+        List<ItemStack> ingredients = grid.condenseIngredients(workInventory);
+        if (!grid.checkIngredients(ingredients)) {
+            // Ingredients are missing
+            return;
+        }
+        grid.consumeIngredients(ingredients);
+
+        insertOutput(craftingOutput.copy());
+        craftingOutput = ItemStackTools.getEmptyStack();
+    }
+
+    // @todo common with GridTE?
+    private boolean checkRoomForOutput(ItemStack output) {
+        for (int i = CrafterContainer.SLOT_CRAFTOUTPUT; i < CrafterContainer.SLOT_CRAFTOUTPUT + 3; i++) {
+            ItemStack currentStack = getStackInSlot(i);
+            if (ItemStackTools.isEmpty(currentStack)) {
+                return true;
+            } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
+                int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
+                if (remaining >= ItemStackTools.getStackSize(output)) {
+                    return true;
+                }
+                ItemStackTools.incStackSize(output, -remaining);
+            }
+        }
+        return false;
+    }
+
+    // This function assumes there is room (i.e. check with checkRoomForOutput first)
+    private void insertOutput(ItemStack output) {
+        for (int i = CrafterContainer.SLOT_CRAFTOUTPUT; i < CrafterContainer.SLOT_CRAFTOUTPUT + 3; i++) {
+            ItemStack currentStack = getStackInSlot(i);
+            if (ItemStackTools.isEmpty(currentStack)) {
+                setInventorySlotContents(i, output);
+                return;
+            } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
+                int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
+                if (remaining >= ItemStackTools.getStackSize(output)) {
+                    ItemStackTools.setStackSize(output, ItemStackTools.getStackSize(output) + ItemStackTools.getStackSize(currentStack));
+                    setInventorySlotContents(i, output);
+                    return;
+                } else {
+                    ItemStackTools.setStackSize(currentStack, currentStack.getMaxStackSize());
+                    setInventorySlotContents(i, currentStack);
+                }
+                ItemStackTools.incStackSize(output, -remaining);
+            }
+        }
+    }
+
+    public boolean startCraft(GridTE grid) {
+        IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+        if (recipe != null) {
+            boolean error = grid.getErrorsForOutput(recipe, null);
+            if (error) {
+                return false; // Don't start
+            }
+            List<ItemStack> ingredients = grid.condenseIngredients(workInventory);
+            if (!grid.checkIngredients(ingredients)) {
+                return false;
+            }
+
+            craftingOutput = getCurrentOutput(recipe);
+            ticksRemaining = recipe.getCraftTime();
+            totalTicks = recipe.getCraftTime();
+            markDirtyQuick();
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Set the ghost output slot to one of the possible outputs for the current
@@ -203,18 +341,6 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     @Override
-    public void readRestorableFromNBT(NBTTagCompound tagCompound) {
-        super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound, inventoryHelper);
-    }
-
-    @Override
-    public void writeRestorableToNBT(NBTTagCompound tagCompound) {
-        super.writeRestorableToNBT(tagCompound);
-        writeBufferToNBT(tagCompound, inventoryHelper);
-    }
-
-    @Override
     public InventoryHelper getInventoryHelper() {
         return inventoryHelper;
     }
@@ -240,16 +366,42 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     @Override
+    public void readRestorableFromNBT(NBTTagCompound tagCompound) {
+        super.readRestorableFromNBT(tagCompound);
+        readBufferFromNBT(tagCompound, inventoryHelper);
+    }
+
+    @Override
+    public void writeRestorableToNBT(NBTTagCompound tagCompound) {
+        super.writeRestorableToNBT(tagCompound);
+        writeBufferToNBT(tagCompound, inventoryHelper);
+    }
+
+    @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         speed = tagCompound.getFloat("speed");
         speedBoost = tagCompound.getInteger("boost");
+        ticksRemaining = tagCompound.getInteger("ticks");
+        totalTicks = tagCompound.getInteger("total");
+        if (tagCompound.hasKey("output")) {
+            craftingOutput = ItemStackTools.loadFromNBT(tagCompound.getCompoundTag("output"));
+        } else {
+            craftingOutput = ItemStackTools.getEmptyStack();
+        }
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         tagCompound.setFloat("speed", speed);
         tagCompound.setInteger("boost", speedBoost);
+        tagCompound.setInteger("ticks", ticksRemaining);
+        tagCompound.setInteger("total", totalTicks);
+        if (ItemStackTools.isValid(craftingOutput)) {
+            NBTTagCompound out = new NBTTagCompound();
+            craftingOutput.writeToNBT(out);
+            tagCompound.setTag("output", out);
+        }
         return super.writeToNBT(tagCompound);
     }
 
