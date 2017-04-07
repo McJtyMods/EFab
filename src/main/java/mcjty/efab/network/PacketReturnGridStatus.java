@@ -2,6 +2,7 @@ package mcjty.efab.network;
 
 import io.netty.buffer.ByteBuf;
 import mcjty.efab.EFab;
+import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.grid.GridTE;
 import mcjty.lib.network.NetworkTools;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PacketReturnGridStatus implements IMessage {
@@ -66,6 +68,14 @@ public class PacketReturnGridStatus implements IMessage {
         this.outputs = gridTE.getOutputs();
     }
 
+    public PacketReturnGridStatus(BlockPos pos, CrafterTE gridTE) {
+        this.pos = pos;
+        this.ticks = 0;
+        this.total = 0;
+        this.errors = Collections.emptyList();
+        this.outputs = gridTE.getOutputs();
+    }
+
     public static class Handler implements IMessageHandler<PacketReturnGridStatus, IMessage> {
         @Override
         public IMessage onMessage(PacketReturnGridStatus message, MessageContext ctx) {
@@ -73,6 +83,8 @@ public class PacketReturnGridStatus implements IMessage {
                 TileEntity te = EFab.proxy.getClientWorld().getTileEntity(message.pos);
                 if (te instanceof GridTE) {
                     ((GridTE) te).syncFromServer(message.ticks, message.total, message.errors, message.outputs);
+                } else if (te instanceof CrafterTE) {
+                    ((CrafterTE) te).syncFromServer(message.outputs);
                 }
             });
             return null;

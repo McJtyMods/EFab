@@ -1,7 +1,9 @@
 package mcjty.efab.blocks.crafter;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.efab.proxy.GuiProxy;
 import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,12 +20,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, EmptyContainer> {
+public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterContainer> {
 
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public CrafterBlock() {
-        super(Material.IRON, CrafterTE.class, EmptyContainer.class, "crafter", false);
+        super(Material.IRON, CrafterTE.class, CrafterContainer.class, "crafter", false);
     }
 
     @Override
@@ -45,6 +47,18 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, EmptyCont
         super.initModel();
         ClientRegistry.bindTileEntitySpecialRenderer(CrafterTE.class, new CrafterRenderer());
     }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Class<? extends GenericGuiContainer> getGuiClass() {
+        return CrafterGui.class;
+    }
+
+    @Override
+    public int getGuiID() {
+        return GuiProxy.GUI_CRAFTER;
+    }
+
 
     @Override
     @SideOnly(Side.CLIENT)

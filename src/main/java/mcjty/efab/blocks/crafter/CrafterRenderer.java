@@ -99,6 +99,7 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
     }
 
     private float cnt = 0;
+    private float cnt2 = 0;
 
     private static final int SPEEDCYCLE = 2000;
     private static final int SPEEDCYCLE2 = 2500;
@@ -123,31 +124,35 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
         GlStateManager.popMatrix();
 
 
-        int t2 = (2000 * 2 * (((int)cnt) % SPEEDCYCLE) / SPEEDCYCLE) % 2000;
+        int t2 = (2000 * (((int)cnt) % SPEEDCYCLE) / SPEEDCYCLE) % 2000;
         float offs;
         if (t2 <= 1000) {
-            offs = t2 / 2000.0f;
+            offs = t2 / 2900.0f;
         } else {
-            offs = (2000-t2) / 2000.0f;
+            offs = (2000-t2) / 2900.0f;
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(-tileEntity.getPos().getX()-.5, -tileEntity.getPos().getY() - 1 + offs, -tileEntity.getPos().getZ() - .4);
+        GlStateManager.translate(-tileEntity.getPos().getX()-.5, -tileEntity.getPos().getY() - 1 + offs + .1, -tileEntity.getPos().getZ() - .4);
 
         renderModel(tileEntity, getBakedPipeModel());
 
         GlStateManager.popMatrix();
 
 
-        t2 = (2000 * 2 * (((int)(cnt * 1.3f)) % SPEEDCYCLE) / SPEEDCYCLE) % 2000;
+        t2 = (2000 * (((int)cnt2) % SPEEDCYCLE2) / SPEEDCYCLE2) % 2000;
+        cnt2 += tileEntity.getSpeed();
+        if (cnt2 > SPEEDCYCLE2) {
+            cnt2 -= SPEEDCYCLE2;
+        }
         if (t2 <= 1000) {
-            offs = t2 / 2000.0f;
+            offs = t2 / 2900.0f;
         } else {
-            offs = (2000-t2) / 2000.0f;
+            offs = (2000-t2) / 2900.0f;
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(-tileEntity.getPos().getX(), -tileEntity.getPos().getY() - 1 + offs, -tileEntity.getPos().getZ() - .4);
+        GlStateManager.translate(-tileEntity.getPos().getX(), -tileEntity.getPos().getY() - 1 + offs + .1, -tileEntity.getPos().getZ() - .4);
 
         renderModel(tileEntity, getBakedPipeModel());
 

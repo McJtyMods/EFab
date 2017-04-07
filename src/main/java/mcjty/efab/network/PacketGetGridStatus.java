@@ -1,6 +1,7 @@
 package mcjty.efab.network;
 
 import io.netty.buffer.ByteBuf;
+import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.grid.GridTE;
 import mcjty.lib.network.NetworkTools;
 import net.minecraft.tileentity.TileEntity;
@@ -44,6 +45,10 @@ public class PacketGetGridStatus implements IMessage {
             if (te instanceof GridTE) {
                 GridTE gridTE = (GridTE) te;
                 PacketReturnGridStatus returnMessage = new PacketReturnGridStatus(message.pos, gridTE);
+                EFabMessages.INSTANCE.sendTo(returnMessage, ctx.getServerHandler().player);
+            } else if (te instanceof CrafterTE) {
+                CrafterTE crafterTE = (CrafterTE) te;
+                PacketReturnGridStatus returnMessage = new PacketReturnGridStatus(message.pos, crafterTE);
                 EFabMessages.INSTANCE.sendTo(returnMessage, ctx.getServerHandler().player);
             }
         }

@@ -26,6 +26,11 @@ public class GeneralConfiguration {
     public static float steamWheelSpeedUp = 2;
     public static float steamWheelSpinDown = 0.3f;
 
+    public static float maxCraftAnimationSpeed = 20;
+    public static int craftAnimationBoost = 40;
+    public static float craftAnimationSpeedUp = 2;
+    public static float craftAnimationSpinDown = 0.3f;
+
     public static int tankCapacity = 10000;
 
     public static int rfControlInputPerTick = 10;
@@ -116,5 +121,14 @@ public class GeneralConfiguration {
 
         abortCraftWhenOutOfRf = cfg.getBoolean("abortCraftWhenOutOfRf", CATEGORY_GENERAL, abortCraftWhenOutOfRf,
                 "If enabled the crafting will be aborted if there is not enough power. If disabled the crafting operation will wait until power becomes available");
+
+        maxCraftAnimationSpeed = cfg.getFloat("maxCraftAnimationSpeed", CATEGORY_GENERAL, maxCraftAnimationSpeed,
+                1.0f, 1000.0f, "Maximum speed factor for the animation of the crafter during auto crafting");
+        craftAnimationBoost = cfg.getInt("craftAnimationBoost", CATEGORY_GENERAL, craftAnimationBoost,
+                1, 100000, "Number of ticks that the animation of the crafter will speed up during auto crafting");
+        craftAnimationSpeedUp = cfg.getFloat("craftAnimationSpeedUp", CATEGORY_GENERAL, craftAnimationSpeedUp,
+                0.0f, 1000.0f, "Every tick the animation of the crafter will speed up during auto crafting (and during boost)");
+        craftAnimationSpinDown = cfg.getFloat("craftAnimationSpinDown", CATEGORY_GENERAL, craftAnimationSpinDown,
+                0.0f, 1000.0f, "If not auto crafting this is the speed at which the speed of the animation of the crafter will decrease");
     }
 }
