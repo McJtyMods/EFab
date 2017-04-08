@@ -42,6 +42,8 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     private int ticksRemaining = -1;
     private int totalTicks = 0;
 
+    private String lastError = "";
+
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
 
     @Override
@@ -126,12 +128,21 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         return ticksRemaining >= 0 && ItemStackTools.isValid(crafterHelper.getCraftingOutput());
     }
 
+    public String getLastError() {
+        return lastError;
+    }
+
+    public void setLastError(String lastError) {
+        this.lastError = lastError;
+    }
+
     public void handleCraft(GridTE grid) {
         if (ticksRemaining >= 0) {
             markDirtyQuick();
 
             IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
             if (recipe == null) {
+                lastError = "No recipe";
                 abortCraft();
                 return;
             }
@@ -188,6 +199,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
 
     private void craftFinished(@Nonnull IEFabRecipe recipe, GridTE grid) {
+        lastError = "";
         ticksRemaining = -1;
         markDirtyQuick();
         // Craft finished. Consume items and do the actual crafting. If there is no room to place
@@ -226,22 +238,28 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     public IEFabRecipe checkCraft(GridTE grid) {
         IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
         if (recipe != null) {
-            boolean error = grid.getErrorsForOutput(recipe, null);
+            List<String> errors = new ArrayList<>();
+            boolean error = grid.getErrorsForOutput(recipe, errors);
             if (error) {
+                lastError = errors.get(0);
                 return null; // Don't start
             }
             List<ItemStack> ingredients = condenseIngredients(crafterHelper.getWorkInventory());
             if (!grid.checkIngredients(ingredients)) {
+                lastError = "Ingredients missing";
                 return null;
             }
-
 
             if (!checkRoomForOutput(crafterHelper.getCraftingOutput().copy())) {
                 // Not enough room. Abort craft
+                lastError = "Not enough room for output";
                 return null;
             }
 
+            lastError = "";
             return recipe;
+        } else {
+            lastError = "No recipe";
         }
         return null;
     }
@@ -309,7 +327,8 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     // Called client-side only
-    public void syncFromServer(List<ItemStack> outputs) {
+    public void syncFromServer(List<String> errors, List<ItemStack> outputs) {
+        lastError = errors.isEmpty() ? "" : errors.get(0);
         crafterHelper.syncFromServer(outputs);
     }
 

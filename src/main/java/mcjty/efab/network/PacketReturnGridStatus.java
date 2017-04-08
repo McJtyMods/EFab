@@ -68,12 +68,12 @@ public class PacketReturnGridStatus implements IMessage {
         this.outputs = gridTE.getOutputs();
     }
 
-    public PacketReturnGridStatus(BlockPos pos, CrafterTE gridTE) {
+    public PacketReturnGridStatus(BlockPos pos, CrafterTE crafterTE) {
         this.pos = pos;
         this.ticks = 0;
         this.total = 0;
-        this.errors = Collections.emptyList();
-        this.outputs = gridTE.getOutputs();
+        this.errors = Collections.singletonList(crafterTE.getLastError());
+        this.outputs = crafterTE.getOutputs();
     }
 
     public static class Handler implements IMessageHandler<PacketReturnGridStatus, IMessage> {
@@ -84,7 +84,7 @@ public class PacketReturnGridStatus implements IMessage {
                 if (te instanceof GridTE) {
                     ((GridTE) te).syncFromServer(message.ticks, message.total, message.errors, message.outputs);
                 } else if (te instanceof CrafterTE) {
-                    ((CrafterTE) te).syncFromServer(message.outputs);
+                    ((CrafterTE) te).syncFromServer(message.errors, message.outputs);
                 }
             });
             return null;

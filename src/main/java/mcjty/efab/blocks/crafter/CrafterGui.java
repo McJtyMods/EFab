@@ -7,6 +7,7 @@ import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Button;
+import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +22,7 @@ public class CrafterGui extends GenericGuiContainer<CrafterTE> {
 
     private Button leftArrow;
     private Button rightArrow;
+    private Label errorLabel;
 
     private static final ResourceLocation mainBackground = new ResourceLocation(EFab.MODID, "textures/gui/crafter.png");
 
@@ -48,8 +50,13 @@ public class CrafterGui extends GenericGuiContainer<CrafterTE> {
                 .setLayoutHint(new PositionalLayout.PositionalHint(112, 45, 13, 18))
                 .setVisible(false)
                 .addButtonEvent(parent -> right());
+        errorLabel = new Label(mc, this)
+                .setText("")
+                .setColor(0xffff0000);
+        errorLabel
+                .setLayoutHint(new PositionalLayout.PositionalHint(6, 70, 160, 20));
 
-        toplevel.addChild(leftArrow).addChild(rightArrow);
+        toplevel.addChild(leftArrow).addChild(rightArrow).addChild(errorLabel);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
@@ -66,26 +73,8 @@ public class CrafterGui extends GenericGuiContainer<CrafterTE> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int x1, int x2) {
         EFabMessages.INSTANCE.sendToServer(new PacketGetGridStatus(tileEntity.getPos()));
-//        List<String> errorState = tileEntity.getErrorState();
-//        if (!errorState.isEmpty()) {
-//            craftButton.setText("ERROR");
-//            craftButton.setTooltips(errorState.toArray(new String[errorState.size()]));
-//            craftButton.setEnabled(false);
-//        } else {
-//            int ticks = tileEntity.getTicksRemaining();
-//            if (ticks < 0) {
-//                craftButton.setText("Start");
-//                craftButton.setTooltips("Start craft operation", "Duration " + tileEntity.getTotalTicks() + " ticks");
-//                craftButton.setEnabled(true);
-//            } else {
-//                craftButton.setTooltips("Craft operation in progress");
-//                craftButton.setEnabled(false);
-//                int total = tileEntity.getTotalTicks();
-//                if (total > 0) {
-//                    craftButton.setText((total-ticks) * 100 / total + "%");
-//                }
-//            }
-//        }
+        String lastError = tileEntity.getLastError();
+        errorLabel.setText(lastError);
 
         List<ItemStack> outputs = tileEntity.getOutputs();
         leftArrow.setVisible(outputs.size() > 1);

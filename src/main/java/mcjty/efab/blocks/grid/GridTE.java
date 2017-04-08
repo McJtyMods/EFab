@@ -191,6 +191,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         }
                     }
                 } else {
+                    crafterTE.setLastError("No redstone signal");
                     countOff++;
                 }
             }
