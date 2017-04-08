@@ -93,6 +93,7 @@ public class MonitorTE extends GenericEFabTile implements ITickable, ISpeedBoost
         getMessages();
         messages.set(1, msg);
         messages.set(3, crafterMsg);
+        messages.set(4, crafter2Msg);
     }
 
     @Override

@@ -164,11 +164,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
 
         markDirtyQuick();
-        crafterDelay--;
-        if (crafterDelay > 0) {
-            return;
-        }
-        crafterDelay = GeneralConfiguration.crafterDelay;
 
         int countBusy = 0;
         int countOff = 0;
@@ -183,10 +178,16 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         crafterTE.handleCraft(this);
                         countBusy++;
                     } else {
-                        if (!crafterTE.startCraft(this)) {
+                        IEFabRecipe recipe = crafterTE.checkCraft(this);
+                        if (recipe == null) {
                             countMissing++;
                         } else {
-                            countBusy++;
+                            crafterDelay--;
+                            if (crafterDelay <= 0) {
+                                crafterDelay = GeneralConfiguration.crafterDelay;
+                                crafterTE.startCraft(recipe);
+                                countBusy++;
+                            }
                         }
                     }
                 } else {
@@ -200,7 +201,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             craftingStatus[idx++] = TextFormatting.DARK_RED + "  " + "fail " + countMissing;
         }
         if (countBusy > 0) {
-            craftingStatus[idx++] = TextFormatting.DARK_GREEN + "  " + "busy " + countMissing;
+            craftingStatus[idx++] = TextFormatting.DARK_GREEN + "  " + "busy " + countBusy;
         }
         if (countOff > 0 && idx <= 1) {
             craftingStatus[idx++] = TextFormatting.DARK_GREEN + "  " + "off " + countOff;

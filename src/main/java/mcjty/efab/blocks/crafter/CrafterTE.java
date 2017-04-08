@@ -123,7 +123,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     public boolean isCrafting() {
-        return ItemStackTools.isValid(crafterHelper.getCraftingOutput());
+        return ticksRemaining >= 0 && ItemStackTools.isValid(crafterHelper.getCraftingOutput());
     }
 
     public void handleCraft(GridTE grid) {
@@ -216,27 +216,35 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         crafterHelper.insertOutput(output, CrafterContainer.SLOT_CRAFTOUTPUT, CrafterContainer.SLOT_CRAFTOUTPUT+3);
     }
 
-    public boolean startCraft(GridTE grid) {
+    public void startCraft(IEFabRecipe recipe) {
+        crafterHelper.setCraftingOutput(getCurrentOutput(recipe));
+        ticksRemaining = recipe.getCraftTime();
+        totalTicks = recipe.getCraftTime();
+        markDirtyQuick();
+    }
+
+    public IEFabRecipe checkCraft(GridTE grid) {
         IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
         if (recipe != null) {
             boolean error = grid.getErrorsForOutput(recipe, null);
             if (error) {
-                return false; // Don't start
+                return null; // Don't start
             }
             List<ItemStack> ingredients = condenseIngredients(crafterHelper.getWorkInventory());
             if (!grid.checkIngredients(ingredients)) {
-                return false;
+                return null;
             }
 
-            crafterHelper.setCraftingOutput(getCurrentOutput(recipe));
-            ticksRemaining = recipe.getCraftTime();
-            totalTicks = recipe.getCraftTime();
-            markDirtyQuick();
-            return true;
-        }
-        return false;
-    }
 
+            if (!checkRoomForOutput(crafterHelper.getCraftingOutput().copy())) {
+                // Not enough room. Abort craft
+                return null;
+            }
+
+            return recipe;
+        }
+        return null;
+    }
 
     /**
      * Set the ghost output slot to one of the possible outputs for the current
