@@ -9,9 +9,11 @@ public class GeneralConfiguration {
     public static float baseMachineVolume = 1.0f;
     public static float baseSparksVolume = 0.7f;
     public static float baseSteamVolume = 1.0f;
+    public static float baseBeepsVolume = 0.5f;
     public static int soundMachineTicks = 50;
     public static int soundSparksTicks = 25;
     public static int soundSteamTicks = 50;
+    public static int soundBeepsTicks = 10;
 
     public static int waterSteamCraftingConsumption = 5;
     public static int waterSteamStartAmount = 500;
@@ -58,12 +60,16 @@ public class GeneralConfiguration {
                 0.0f, 1.0f, "The volume for the sparks sound (0.0 is off)");
         baseSteamVolume = cfg.getFloat("baseSteamVolume", CATEGORY_GENERAL, baseSteamVolume,
                 0.0f, 1.0f, "The volume for the steam sound (0.0 is off)");
+        baseBeepsVolume = cfg.getFloat("baseBeepsVolume", CATEGORY_GENERAL, baseBeepsVolume,
+                0.0f, 1.0f, "The volume for the beeps sound (0.0 is off)");
         soundMachineTicks = cfg.getInt("soundMachineTicks", CATEGORY_GENERAL, soundMachineTicks,
                 0, 1000000, "Amount of ticks that the gearbox sound should play");
         soundSparksTicks = cfg.getInt("soundSparksTicks", CATEGORY_GENERAL, soundSparksTicks,
                 0, 1000000, "Amount of ticks that the sparks sound should play");
         soundSteamTicks = cfg.getInt("soundSteamTicks", CATEGORY_GENERAL, soundSteamTicks,
                 0, 1000000, "Amount of ticks that the steam sound should play");
+        soundBeepsTicks = cfg.getInt("soundBeepsTicks", CATEGORY_GENERAL, soundBeepsTicks,
+                0, 1000000, "Amount of ticks that the beeps sound should play");
 
         waterSteamCraftingConsumption = cfg.getInt("waterSteamCraftingConsumption", CATEGORY_GENERAL, waterSteamCraftingConsumption,
                 0, 1000000, "Amount of water per tick that is being consumed during a steam crafting operation");

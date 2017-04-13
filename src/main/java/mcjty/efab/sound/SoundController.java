@@ -22,11 +22,15 @@ public final class SoundController {
     private static SoundEvent machine;
     private static SoundEvent sparks;
     private static SoundEvent steam;
+    private static SoundEvent beeps1;
+    private static SoundEvent beeps2;
 
     public static void init() {
         machine = registerSound(new ResourceLocation(EFab.MODID, "machine"));
         sparks = registerSound(new ResourceLocation(EFab.MODID, "sparks"));
         steam = registerSound(new ResourceLocation(EFab.MODID, "steam"));
+        beeps1 = registerSound(new ResourceLocation(EFab.MODID, "beeps1"));
+        beeps2 = registerSound(new ResourceLocation(EFab.MODID, "beeps2"));
     }
 
     private static final Map<Pair<Integer, BlockPos>, EFabSound> sounds = Maps.newHashMap();
@@ -68,6 +72,14 @@ public final class SoundController {
         playSound(worldObj, pos, steam, volume, GeneralConfiguration.baseSteamVolume, GeneralConfiguration.soundSteamTicks);
     }
 
+    public static void playBeeps1Sound(World worldObj, BlockPos pos, float volume) {
+        playSound(worldObj, pos, beeps1, volume, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
+    }
+
+    public static void playBeeps2Sound(World worldObj, BlockPos pos, float volume) {
+        playSound(worldObj, pos, beeps2, volume, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
+    }
+
     public static void updateVolume(World worldObj, BlockPos pos, float volume) {
         EFabSound sound = getSoundAt(worldObj, pos);
         if (sound != null) {
@@ -87,6 +99,9 @@ public final class SoundController {
         return isSoundTypePlayingAt(steam, worldObj, pos);
     }
 
+    public static boolean isBeepsPlaying(World worldObj, BlockPos pos) {
+        return isSoundTypePlayingAt(beeps1, worldObj, pos) || isSoundTypePlayingAt(beeps2, worldObj, pos);
+    }
 
     private static boolean isSoundTypePlayingAt(SoundEvent event, World world, BlockPos pos){
         EFabSound s = getSoundAt(world, pos);
