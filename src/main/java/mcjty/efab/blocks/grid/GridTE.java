@@ -168,7 +168,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         int countBusy = 0;
         int countOff = 0;
         int countMissing = 0;
-        for (BlockPos crafterPos : crafters) {
+        for (BlockPos crafterPos : new HashSet<>(crafters)) {
             TileEntity te = getWorld().getTileEntity(crafterPos);
             if (te instanceof CrafterTE) {
                 CrafterTE crafterTE = (CrafterTE) te;
