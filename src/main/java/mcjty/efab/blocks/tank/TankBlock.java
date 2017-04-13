@@ -4,6 +4,7 @@ import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.tools.InventoryHelper;
 import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.tools.ChatTools;
 import mcjty.lib.tools.FluidTools;
 import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.Block;
@@ -18,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -87,10 +89,10 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-            if (ItemStackTools.isValid(heldItem)) {
-                TileEntity te = world.getTileEntity(pos);
-                if (te instanceof TankTE) {
-                    TankTE tankTE = (TankTE) te;
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TankTE) {
+                TankTE tankTE = (TankTE) te;
+                if (ItemStackTools.isValid(heldItem)) {
                     if (FluidTools.isEmptyContainer(heldItem)) {
                         extractIntoContainer(player, tankTE);
                         return true;
@@ -98,6 +100,12 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
                         fillFromContainer(player, world, tankTE);
                         return true;
                     }
+                }
+                FluidStack fluid = tankTE.getFluid();
+                if (fluid == null || fluid.amount <= 0) {
+                    ChatTools.addChatMessage(player, new TextComponentString("Tank is empty"));
+                } else {
+                    ChatTools.addChatMessage(player, new TextComponentString("Tank contains " + fluid.amount + "mb of " + fluid.getLocalizedName()));
                 }
             }
         }
