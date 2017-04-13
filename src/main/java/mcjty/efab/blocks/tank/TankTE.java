@@ -18,11 +18,18 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TankTE extends GenericEFabTile {
 
-    private FluidTank handler;
+    private EFabFluidTank handler;
     private int capacity = GeneralConfiguration.tankCapacity;
+
+    private String clientFluidName = "";
 
     public FluidStack getFluid() {
         return getHandler().getFluid();
+    }
+
+
+    public String getClientFluidName() {
+        return clientFluidName;
     }
 
     public FluidTank getHandler() {
@@ -32,7 +39,7 @@ public class TankTE extends GenericEFabTile {
                 TankTE tankTE = (TankTE) te;
                 return tankTE.getHandler();
             } else {
-                handler = new FluidTank(capacity);
+                handler = new EFabFluidTank(capacity, this);
             }
         }
         return handler;
@@ -54,7 +61,7 @@ public class TankTE extends GenericEFabTile {
                     cnt++;
                     p = p.up();
                 }
-                FluidTank bottomHandler = new FluidTank(GeneralConfiguration.tankCapacity * cnt);
+                EFabFluidTank bottomHandler = new EFabFluidTank(GeneralConfiguration.tankCapacity * cnt, this);
                 p = bottomPos;
                 while (world.getBlockState(p).getBlock() == ModBlocks.tankBlock) {
                     TankTE te = (TankTE) world.getTileEntity(p);
@@ -70,6 +77,7 @@ public class TankTE extends GenericEFabTile {
                 bottomTE.handler = bottomHandler;
                 bottomTE.capacity = GeneralConfiguration.tankCapacity * cnt;
             }
+            markDirtyClient();
         }
     }
 
@@ -88,7 +96,7 @@ public class TankTE extends GenericEFabTile {
                 // We have a multiblock. Need to split handlers.
                 int cntBelow = pos.getY() - bottomPos.getY();       // Number of tank blocks below this one
                 if (cntBelow > 0) {
-                    bottomTE.handler = new FluidTank(cntBelow * GeneralConfiguration.tankCapacity);
+                    bottomTE.handler = new EFabFluidTank(cntBelow * GeneralConfiguration.tankCapacity, this);
                     bottomTE.capacity = cntBelow * GeneralConfiguration.tankCapacity;
                     if (drained != null) {
                         int accepted = bottomTE.handler.fill(drained, true);
@@ -97,7 +105,7 @@ public class TankTE extends GenericEFabTile {
                     bottomTE.markDirtyQuick();
                 }
 
-                handler = new FluidTank(GeneralConfiguration.tankCapacity);
+                handler = new EFabFluidTank(GeneralConfiguration.tankCapacity, this);
                 capacity = GeneralConfiguration.tankCapacity;
                 if (drained != null && drained.amount > 0) {
                     int accepted = handler.fill(drained, true);
@@ -114,7 +122,7 @@ public class TankTE extends GenericEFabTile {
                         cnt++;
                         p = p.up();
                     }
-                    topTE.handler = new FluidTank(cnt * GeneralConfiguration.tankCapacity);
+                    topTE.handler = new EFabFluidTank(cnt * GeneralConfiguration.tankCapacity, this);
                     topTE.capacity = cnt * GeneralConfiguration.tankCapacity;
                     if (drained != null && drained.amount > 0) {
                         topTE.handler.fill(drained, true);
@@ -122,7 +130,24 @@ public class TankTE extends GenericEFabTile {
                     topTE.markDirtyQuick();
                 }
             }
+            markDirtyClient();
         }
+    }
+
+    @Override
+    public void writeClientDataToNBT(NBTTagCompound tagCompound) {
+        super.writeToNBT(tagCompound);
+        if (getFluid() == null) {
+            tagCompound.setString("fluidName", "");
+        } else {
+            tagCompound.setString("fluidName", getFluid().getLocalizedName());
+        }
+    }
+
+    @Override
+    public void readClientDataFromNBT(NBTTagCompound tagCompound) {
+        super.readFromNBT(tagCompound);
+        clientFluidName = tagCompound.getString("fluidName");
     }
 
     @Override
@@ -141,12 +166,15 @@ public class TankTE extends GenericEFabTile {
         super.readRestorableFromNBT(tagCompound);
         capacity = tagCompound.getInteger("capacity");
         if (capacity > 0) {
-            handler = new FluidTank(capacity);
+            handler = new EFabFluidTank(capacity, this);
         } else {
             handler = null;
         }
         if (tagCompound.hasKey("fluid")) {
             handler.readFromNBT(tagCompound.getCompoundTag("fluid"));
+            if (getFluid() != null) {
+                clientFluidName = getFluid().getLocalizedName();
+            }
         }
     }
 

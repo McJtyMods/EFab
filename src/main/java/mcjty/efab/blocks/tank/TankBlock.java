@@ -16,17 +16,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer> {
+
+    public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public static final PropertyEnum<EnumTankState> STATE = PropertyEnum.create("state", EnumTankState.class, EnumTankState.values());
 
@@ -35,7 +39,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     }
 
     @Override
-    public boolean hasNoRotation() {
+    public boolean isHorizRotation() {
         return true;
     }
 
@@ -47,6 +51,20 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
         tooltip.add(TextFormatting.WHITE + "on top of each other");
         tooltip.add(TextFormatting.WHITE + "Tanks are used for " + TextFormatting.GREEN + "liquid" + TextFormatting.WHITE + " and "
             + TextFormatting.GREEN + "steam" + TextFormatting.WHITE + " crafting");
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void initModel() {
+        super.initModel();
+        ClientRegistry.bindTileEntitySpecialRenderer(TankTE.class, new TankRenderer());
+    }
+
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+        return EMPTY;
     }
 
     @Override
@@ -158,17 +176,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
 
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return super.getStateFromMeta(meta);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return 0;
-    }
-
-    @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, STATE);
+        return new BlockStateContainer(this, FACING_HORIZ, STATE);
     }
 }

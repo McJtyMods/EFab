@@ -24,6 +24,12 @@
         }
       }
     ],
+    "facing": {
+      "south": {},
+      "north": { "y": 180 },
+      "east": { "y": 270 },
+      "west": { "y": 90 }
+    },
     "state": {
       "full": { "custom": { "flip-v": true }, "model": "efab:tankfull.obj" },
       "bottom": { "custom": { "flip-v": true }, "model": "efab:tankbottom.obj" },
