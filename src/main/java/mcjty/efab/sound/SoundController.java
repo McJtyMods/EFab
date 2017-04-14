@@ -50,9 +50,8 @@ public final class SoundController {
         }
     }
 
-    private static void playSound(World worldObj, BlockPos pos, SoundEvent soundType, float volume, float baseVolume, int ticks) {
+    private static void playSound(World worldObj, BlockPos pos, SoundEvent soundType, float baseVolume, int ticks) {
         EFabSound sound = new EFabSound(soundType, worldObj, pos, baseVolume, ticks);
-        sound.setVolume(volume);
         stopSound(worldObj, pos);
         Minecraft.getMinecraft().getSoundHandler().playSound(sound);
         Pair<Integer, BlockPos> g = Pair.of(worldObj.provider.getDimension(), pos);
@@ -60,31 +59,24 @@ public final class SoundController {
     }
 
 
-    public static void playMachineSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, machine, volume, GeneralConfiguration.baseMachineVolume, GeneralConfiguration.soundMachineTicks);
+    public static void playMachineSound(World worldObj, BlockPos pos) {
+        playSound(worldObj, pos, machine, GeneralConfiguration.baseMachineVolume, GeneralConfiguration.soundMachineTicks);
     }
 
-    public static void playSparksSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, sparks, volume, GeneralConfiguration.baseSparksVolume, GeneralConfiguration.soundSparksTicks);
+    public static void playSparksSound(World worldObj, BlockPos pos) {
+        playSound(worldObj, pos, sparks, GeneralConfiguration.baseSparksVolume, GeneralConfiguration.soundSparksTicks);
     }
 
-    public static void playSteamSound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, steam, volume, GeneralConfiguration.baseSteamVolume, GeneralConfiguration.soundSteamTicks);
+    public static void playSteamSound(World worldObj, BlockPos pos) {
+        playSound(worldObj, pos, steam, GeneralConfiguration.baseSteamVolume, GeneralConfiguration.soundSteamTicks);
     }
 
-    public static void playBeeps1Sound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, beeps1, volume, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
+    public static void playBeeps1Sound(World worldObj, BlockPos pos) {
+        playSound(worldObj, pos, beeps1, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
     }
 
-    public static void playBeeps2Sound(World worldObj, BlockPos pos, float volume) {
-        playSound(worldObj, pos, beeps2, volume, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
-    }
-
-    public static void updateVolume(World worldObj, BlockPos pos, float volume) {
-        EFabSound sound = getSoundAt(worldObj, pos);
-        if (sound != null) {
-            sound.setVolume(volume);
-        }
+    public static void playBeeps2Sound(World worldObj, BlockPos pos) {
+        playSound(worldObj, pos, beeps2, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
     }
 
     public static boolean isMachinePlaying(World worldObj, BlockPos pos) {

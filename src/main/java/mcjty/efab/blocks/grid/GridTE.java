@@ -543,59 +543,58 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private Random random = new Random();
 
     private void updateSound() {
-        if (GeneralConfiguration.baseMachineVolume > 0.01f) {
-            if (ticksRemaining >= 0) {
-                IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
-                if (recipe != null) {
-                    Set<RecipeTier> requiredTiers = recipe.getRequiredTiers();
-                    if (requiredTiers.contains(RecipeTier.STEAM)) {
-                        if (!SoundController.isSteamPlaying(getWorld(), pos)) {
-                            SoundController.playSteamSound(getWorld(), pos, 1.0f);
+        if (ticksRemaining >= 0) {
+            IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+            if (recipe != null) {
+                Set<RecipeTier> requiredTiers = recipe.getRequiredTiers();
+                if (requiredTiers.contains(RecipeTier.STEAM)) {
+                    if (!SoundController.isSteamPlaying(getWorld(), pos)) {
+                        SoundController.playSteamSound(getWorld(), pos);
+                        // @todo optimize this?
+                        List<BlockPos> positions = new ArrayList<>();
+                        findBoilers(pos, new HashSet<>(), positions);
+                        if (!positions.isEmpty()) {
+                            BlockPos p = positions.get(random.nextInt(positions.size()));
+                            TileEntity te = getWorld().getTileEntity(p);
+                            if (te instanceof BoilerTE) {
+                                ((BoilerTE) te).setTimer(3 * 20);
+                            }
+                        }
+                    }
+                }
+                if (requiredTiers.contains(RecipeTier.COMPUTING)) {
+                        if (!SoundController.isBeepsPlaying(getWorld(), pos)) {
+                            if ((totalTicks - ticksRemaining < 1) || (random.nextFloat() < 0.04)) {
+                                if (random.nextInt(100) < 50) {
+                                    SoundController.playBeeps1Sound(getWorld(), pos);
+                                } else {
+                                    SoundController.playBeeps2Sound(getWorld(), pos);
+                                }
+                            }
+                        }
+                }
+                if (requiredTiers.contains(RecipeTier.GEARBOX) || requiredTiers.contains(RecipeTier.ADVANCED_GEARBOX)) {
+                    if (!SoundController.isMachinePlaying(getWorld(), pos)) {
+                        SoundController.playMachineSound(getWorld(), pos);
+                    }
+                }
+                if (requiredTiers.contains(RecipeTier.RF)) {
+                    if (!SoundController.isSparksPlaying(getWorld(), pos)) {
+                        if ((totalTicks - ticksRemaining < 1) || (random.nextFloat() < 0.04)) {
+                            SoundController.playSparksSound(getWorld(), pos);
                             // @todo optimize this?
                             List<BlockPos> positions = new ArrayList<>();
-                            findBoilers(pos, new HashSet<>(), positions);
+                            findRFControlBlocks(pos, new HashSet<>(), positions);
                             if (!positions.isEmpty()) {
                                 BlockPos p = positions.get(random.nextInt(positions.size()));
                                 TileEntity te = getWorld().getTileEntity(p);
-                                if (te instanceof BoilerTE) {
-                                    ((BoilerTE) te).setTimer(3 * 20);
-                                }
-                            }
-                        }
-                    } else if (requiredTiers.contains(RecipeTier.COMPUTING)) {
-                            if (!SoundController.isBeepsPlaying(getWorld(), pos)) {
-                                if ((totalTicks - ticksRemaining < 1) || (random.nextFloat() < 0.04)) {
-                                    if (random.nextInt(100) < 50) {
-                                        SoundController.playBeeps1Sound(getWorld(), pos, 1.0f);
-                                    } else {
-                                        SoundController.playBeeps2Sound(getWorld(), pos, 1.0f);
-                                    }
-                                }
-                            }
-                    } else if (requiredTiers.contains(RecipeTier.GEARBOX) || requiredTiers.contains(RecipeTier.ADVANCED_GEARBOX)) {
-                        if (!SoundController.isMachinePlaying(getWorld(), pos)) {
-                            SoundController.playMachineSound(getWorld(), pos, 1.0f);
-                        }
-                    } else if (requiredTiers.contains(RecipeTier.RF)) {
-                        if (!SoundController.isSparksPlaying(getWorld(), pos)) {
-                            if ((totalTicks - ticksRemaining < 1) || (random.nextFloat() < 0.04)) {
-                                SoundController.playSparksSound(getWorld(), pos, 1.0f);
-                                // @todo optimize this?
-                                List<BlockPos> positions = new ArrayList<>();
-                                findRFControlBlocks(pos, new HashSet<>(), positions);
-                                if (!positions.isEmpty()) {
-                                    BlockPos p = positions.get(random.nextInt(positions.size()));
-                                    TileEntity te = getWorld().getTileEntity(p);
-                                    if (te instanceof RfControlTE) {
-                                        ((RfControlTE) te).setSpark(25);
-                                    }
+                                if (te instanceof RfControlTE) {
+                                    ((RfControlTE) te).setSpark(25);
                                 }
                             }
                         }
                     }
                 }
-            } else {
-//                SoundController.stopSound(getWorld(), pos);
             }
         }
     }

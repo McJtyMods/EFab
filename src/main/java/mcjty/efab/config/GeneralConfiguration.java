@@ -9,11 +9,11 @@ public class GeneralConfiguration {
     public static float baseMachineVolume = 1.0f;
     public static float baseSparksVolume = 0.7f;
     public static float baseSteamVolume = 1.0f;
-    public static float baseBeepsVolume = 0.5f;
+    public static float baseBeepsVolume = 0.2f;
     public static int soundMachineTicks = 50;
     public static int soundSparksTicks = 25;
     public static int soundSteamTicks = 50;
-    public static int soundBeepsTicks = 10;
+    public static int soundBeepsTicks = 8;
 
     public static int waterSteamCraftingConsumption = 5;
     public static int waterSteamStartAmount = 500;
