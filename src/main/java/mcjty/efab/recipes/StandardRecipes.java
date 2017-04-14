@@ -149,8 +149,7 @@ public class StandardRecipes {
 
     public static void readRecipesConfig(File file) {
         if (!file.exists()) {
-            Logging.log("Created file " + file.getName());
-            writeExample(file);
+            Logging.log("efab_recipes.cfg does not exist, usting defaults");
             return;
         }
         FileInputStream inputstream;
@@ -230,7 +229,7 @@ public class StandardRecipes {
         return object;
     }
 
-    private static void writeExample(File file) {
+    public static void writeDefaults(File file) {
         PrintWriter writer;
         try {
             writer = new PrintWriter(file);

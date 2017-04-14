@@ -1,6 +1,7 @@
 package mcjty.efab;
 
 
+import mcjty.commands.CmdSaveDefaults;
 import mcjty.efab.proxy.CommonProxy;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.compat.CompatCreativeTabs;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = EFab.MODID, name = EFab.MODNAME,
@@ -66,6 +68,11 @@ public class EFab implements ModBase {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
         proxy.postInit(e);
+    }
+
+    @Mod.EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CmdSaveDefaults());
     }
 
     @Override
