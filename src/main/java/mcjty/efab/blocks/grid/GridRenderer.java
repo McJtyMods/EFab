@@ -1,8 +1,6 @@
 package mcjty.efab.blocks.grid;
 
 import mcjty.lib.container.GenericBlock;
-import mcjty.lib.tools.ItemStackTools;
-import mcjty.lib.tools.MinecraftTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -72,7 +70,7 @@ public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
 
     private static void renderHandle(GridTE te, int x, int y, boolean half) {
         ItemStack stackInSlot = te.getStackInSlot(y * 3 + x);
-        if (ItemStackTools.isValid(stackInSlot)) {
+        if (!stackInSlot.isEmpty()) {
             renderItemStackInWorld(new Vec3d(x * .3-.3, .1 + (half ? 0.2 : 1), y * .3-.3), stackInSlot);
         }
     }
@@ -85,7 +83,7 @@ public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
     }
 
     public static void renderItemCustom(ItemStack is, int rotation, float scale) {
-        if (ItemStackTools.isValid(is)) {
+        if (!is.isEmpty()) {
             GlStateManager.pushMatrix();
 
             GlStateManager.scale(scale, scale, scale);
@@ -104,7 +102,7 @@ public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
 //        IBakedModel ibakedmodel = renderItem.getItemModelMesher().getItemModel(is);
-        EntityPlayerSP player = MinecraftTools.getPlayer(Minecraft.getMinecraft());
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         IBakedModel ibakedmodel = renderItem.getItemModelWithOverrides(is, player.getEntityWorld(), player);
 
         textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);

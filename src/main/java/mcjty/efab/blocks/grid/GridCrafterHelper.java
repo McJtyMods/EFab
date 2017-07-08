@@ -2,7 +2,6 @@ package mcjty.efab.blocks.grid;
 
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -27,7 +26,7 @@ public class GridCrafterHelper {
         }
     }, 3, 3);
 
-    private ItemStack craftingOutput = ItemStackTools.getEmptyStack();
+    private ItemStack craftingOutput = ItemStack.EMPTY;
 
     // Client side only and contains the last outputs from the server
     private List<ItemStack> outputsFromServer = Collections.emptyList();
@@ -61,7 +60,7 @@ public class GridCrafterHelper {
     }
 
     public void abortCraft() {
-        craftingOutput = ItemStackTools.getEmptyStack();
+        craftingOutput = ItemStack.EMPTY;
     }
 
     public ItemStack getCraftingOutput() {
@@ -83,14 +82,15 @@ public class GridCrafterHelper {
     public boolean checkRoomForOutput(ItemStack output, int start, int stop) {
         for (int i = start ; i < stop ; i++) {
             ItemStack currentStack = inventory.getStackInSlot(i);
-            if (ItemStackTools.isEmpty(currentStack)) {
+            if (currentStack.isEmpty()) {
                 return true;
             } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
-                int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
-                if (remaining >= ItemStackTools.getStackSize(output)) {
+                int remaining = currentStack.getMaxStackSize() - currentStack.getCount();
+                if (remaining >= output.getCount()) {
                     return true;
                 }
-                ItemStackTools.incStackSize(output, -remaining);
+                int amount = -remaining;
+                output.grow(amount);
             }
         }
         return false;
@@ -100,34 +100,45 @@ public class GridCrafterHelper {
     public void insertOutput(ItemStack output, int start, int stop) {
         for (int i = start ; i < stop ; i++) {
             ItemStack currentStack = inventory.getStackInSlot(i);
-            if (ItemStackTools.isEmpty(currentStack)) {
+            if (currentStack.isEmpty()) {
                 inventory.setInventorySlotContents(i, output);
                 return;
             } else if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(currentStack, output)) {
-                int remaining = currentStack.getMaxStackSize() - ItemStackTools.getStackSize(currentStack);
-                if (remaining >= ItemStackTools.getStackSize(output)) {
-                    ItemStackTools.setStackSize(output, ItemStackTools.getStackSize(output) + ItemStackTools.getStackSize(currentStack));
+                int remaining = currentStack.getMaxStackSize() - currentStack.getCount();
+                if (remaining >= output.getCount()) {
+                    int amount = output.getCount() + currentStack.getCount();
+                    if (amount <= 0) {
+                        output.setCount(0);
+                    } else {
+                        output.setCount(amount);
+                    }
                     inventory.setInventorySlotContents(i, output);
                     return;
                 } else {
-                    ItemStackTools.setStackSize(currentStack, currentStack.getMaxStackSize());
+                    int amount = currentStack.getMaxStackSize();
+                    if (amount <= 0) {
+                        currentStack.setCount(0);
+                    } else {
+                        currentStack.setCount(amount);
+                    }
                     inventory.setInventorySlotContents(i, currentStack);
                 }
-                ItemStackTools.incStackSize(output, -remaining);
+                int amount = -remaining;
+                output.grow(amount);
             }
         }
     }
 
     public void readFromNBT(NBTTagCompound tagCompound) {
         if (tagCompound.hasKey("output")) {
-            craftingOutput = ItemStackTools.loadFromNBT(tagCompound.getCompoundTag("output"));
+            craftingOutput = new ItemStack(tagCompound.getCompoundTag("output"));
         } else {
-            craftingOutput = ItemStackTools.getEmptyStack();
+            craftingOutput = ItemStack.EMPTY;
         }
     }
 
     public void writeToNBT(NBTTagCompound tagCompound) {
-        if (ItemStackTools.isValid(craftingOutput)) {
+        if (!craftingOutput.isEmpty()) {
             NBTTagCompound out = new NBTTagCompound();
             craftingOutput.writeToNBT(out);
             tagCompound.setTag("output", out);

@@ -2,11 +2,9 @@ package mcjty.efab.blocks.tank;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.tools.FluidTools;
 import mcjty.efab.tools.InventoryHelper;
 import mcjty.lib.container.EmptyContainer;
-import mcjty.lib.tools.ChatTools;
-import mcjty.lib.tools.FluidTools;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -20,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
@@ -93,7 +92,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
             TileEntity te = world.getTileEntity(pos);
             if (te instanceof TankTE) {
                 TankTE tankTE = (TankTE) te;
-                if (ItemStackTools.isValid(heldItem)) {
+                if (!heldItem.isEmpty()) {
                     if (FluidTools.isEmptyContainer(heldItem)) {
                         extractIntoContainer(player, tankTE);
                         return true;
@@ -104,9 +103,19 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
                 }
                 FluidStack fluid = tankTE.getFluid();
                 if (fluid == null || fluid.amount <= 0) {
-                    ChatTools.addChatMessage(player, new TextComponentString("Tank is empty"));
+                    ITextComponent component = new TextComponentString("Tank is empty");
+                    if (player instanceof EntityPlayer) {
+                        ((EntityPlayer) player).sendStatusMessage(component, false);
+                    } else {
+                        player.sendMessage(component);
+                    }
                 } else {
-                    ChatTools.addChatMessage(player, new TextComponentString("Tank contains " + fluid.amount + "mb of " + fluid.getLocalizedName()));
+                    ITextComponent component = new TextComponentString("Tank contains " + fluid.amount + "mb of " + fluid.getLocalizedName());
+                    if (player instanceof EntityPlayer) {
+                        ((EntityPlayer) player).sendStatusMessage(component, false);
+                    } else {
+                        player.sendMessage(component);
+                    }
                 }
             }
         }
@@ -115,7 +124,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
 
     private void fillFromContainer(EntityPlayer player, World world, TankTE tank) {
         ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-        if (ItemStackTools.isEmpty(heldItem)) {
+        if (heldItem.isEmpty()) {
             return;
         }
         ItemStack container = heldItem.copy().splitStack(1);
@@ -138,7 +147,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
         FluidStack drained = tank.getHandler().drain(1, false);
         if (drained != null) {
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-            if (ItemStackTools.isEmpty(heldItem)) {
+            if (heldItem.isEmpty()) {
                 return;
             }
             ItemStack container = heldItem.copy().splitStack(1);
@@ -148,7 +157,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
                 if (drained != null && drained.amount == capacity) {
                     tank.getHandler().drain(capacity, true);
                     ItemStack filledContainer = FluidTools.fillContainer(drained, container);
-                    if (ItemStackTools.isValid(filledContainer)) {
+                    if (!filledContainer.isEmpty()) {
                         heldItem.splitStack(1);
                         InventoryHelper.giveItemToPlayer(player, filledContainer);
                     }

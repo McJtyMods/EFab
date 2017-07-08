@@ -1,15 +1,27 @@
 package mcjty.efab.compat.jei.grid;
 
 import mcjty.efab.recipes.IEFabRecipe;
-import mcjty.lib.jei.CompatRecipeHandler;
+import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
 import javax.annotation.Nonnull;
 
-public class GridRecipeHandler extends CompatRecipeHandler<IEFabRecipe> {
+public class GridRecipeHandler implements IRecipeHandler<IEFabRecipe> {
+
+    private final String id;
 
     public GridRecipeHandler() {
-        super(GridRecipeCategory.ID);
+        this.id = GridRecipeCategory.ID;
+    }
+
+    @Override
+    public String getRecipeCategoryUid(IEFabRecipe recipe) {
+        return id;
+    }
+
+    @Override
+    public boolean isRecipeValid(IEFabRecipe recipe) {
+        return true;
     }
 
     @Nonnull

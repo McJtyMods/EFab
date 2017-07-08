@@ -2,9 +2,8 @@ package mcjty.efab.network;
 
 import io.netty.buffer.ByteBuf;
 import mcjty.efab.blocks.crafter.CrafterTE;
+import mcjty.efab.tools.ItemStackList;
 import mcjty.lib.network.NetworkTools;
-import mcjty.lib.tools.ItemStackList;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -27,7 +26,7 @@ public class PacketSendRecipe implements IMessage {
             if (buf.readBoolean()) {
                 stacks.set(i, NetworkTools.readItemStack(buf));
             } else {
-                stacks.set(i, ItemStackTools.getEmptyStack());
+                stacks.set(i, ItemStack.EMPTY);
             }
         }
         if (buf.readBoolean()) {
@@ -41,7 +40,7 @@ public class PacketSendRecipe implements IMessage {
     public void toBytes(ByteBuf buf) {
         buf.writeInt(stacks.size());
         for (ItemStack stack : stacks) {
-            if (ItemStackTools.isValid(stack)) {
+            if (!stack.isEmpty()) {
                 buf.writeBoolean(true);
                 NetworkTools.writeItemStack(buf, stack);
             } else {

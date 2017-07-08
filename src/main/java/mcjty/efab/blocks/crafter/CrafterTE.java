@@ -9,7 +9,6 @@ import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.network.Argument;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryCrafting;
@@ -93,7 +92,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     private ItemStack getCurrentOutput(@Nullable IEFabRecipe recipe) {
         if (recipe == null) {
-            return ItemStackTools.getEmptyStack();
+            return ItemStack.EMPTY;
         } else {
             return recipe.cast().getCraftingResult(crafterHelper.getWorkInventory());
         }
@@ -125,7 +124,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     public boolean isCrafting() {
-        return ticksRemaining >= 0 && ItemStackTools.isValid(crafterHelper.getCraftingOutput());
+        return ticksRemaining >= 0 && !crafterHelper.getCraftingOutput().isEmpty();
     }
 
     public String getLastError() {
@@ -180,11 +179,11 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         // @todo optimize and cache this?
         for (int i = 0 ; i < workInventory.getSizeInventory() ; i++) {
             ItemStack stack = workInventory.getStackInSlot(i);
-            if (ItemStackTools.isValid(stack)) {
+            if (!stack.isEmpty()) {
                 boolean found = false;
                 for (ItemStack ingredient : ingredients) {
                     if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(stack, ingredient)) {
-                        ItemStackTools.incStackSize(ingredient, ItemStackTools.getStackSize(stack));
+                        ingredient.grow(stack.getCount());
                         found = true;
                         break;
                     }
@@ -271,14 +270,14 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     private void setValidRecipeGhostOutput() {
         ItemStack current = inventoryHelper.getStackInSlot(CrafterContainer.SLOT_GHOSTOUT);
         List<IEFabRecipe> recipes = crafterHelper.findCurrentRecipes(getWorld());
-        if (ItemStackTools.isEmpty(current)) {
+        if (current.isEmpty()) {
             if (!recipes.isEmpty()) {
                 inventoryHelper.setStackInSlot(CrafterContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
                 markDirtyQuick();
             }
         } else {
             if (recipes.isEmpty()) {
-                inventoryHelper.setStackInSlot(CrafterContainer.SLOT_GHOSTOUT, ItemStackTools.getEmptyStack());
+                inventoryHelper.setStackInSlot(CrafterContainer.SLOT_GHOSTOUT, ItemStack.EMPTY);
                 markDirtyQuick();
             } else {
                 for (IEFabRecipe recipe : recipes) {

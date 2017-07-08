@@ -21,7 +21,6 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.network.Argument;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -97,15 +96,15 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     public boolean checkIngredients(List<ItemStack> ingredients) {
         for (ItemStack ingredient : ingredients) {
-            int needed = ItemStackTools.getStackSize(ingredient);
+            int needed = ingredient.getCount();
             for (BlockPos storagePos : storages) {
                 TileEntity te = getWorld().getTileEntity(storagePos);
                 if (te instanceof StorageTE) {
                     StorageTE storageTE = (StorageTE) te;
                     for (int ii = 0; ii < storageTE.getSizeInventory() ; ii++) {
                         ItemStack storageStack = storageTE.getStackInSlot(ii);
-                        if (ItemStackTools.isValid(storageStack) && OreDictionary.itemMatches(ingredient, storageStack, false)) {
-                            needed -= Math.min(ItemStackTools.getStackSize(storageStack), needed);
+                        if (!storageStack.isEmpty() && OreDictionary.itemMatches(ingredient, storageStack, false)) {
+                            needed -= Math.min(storageStack.getCount(), needed);
                             if (needed <= 0) {
                                 break;
                             }
@@ -125,16 +124,16 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     public void consumeIngredients(List<ItemStack> ingredients) {
         for (ItemStack ingredient : ingredients) {
-            int needed = ItemStackTools.getStackSize(ingredient);
+            int needed = ingredient.getCount();
             for (BlockPos storagePos : storages) {
                 TileEntity te = getWorld().getTileEntity(storagePos);
                 if (te instanceof StorageTE) {
                     StorageTE storageTE = (StorageTE) te;
                     for (int ii = 0; ii < storageTE.getSizeInventory() ; ii++) {
                         ItemStack storageStack = storageTE.getStackInSlot(ii);
-                        if (ItemStackTools.isValid(storageStack) && OreDictionary.itemMatches(ingredient, storageStack, false)) {
+                        if (!storageStack.isEmpty() && OreDictionary.itemMatches(ingredient, storageStack, false)) {
                             ItemStack extracted = storageTE.decrStackSize(ii, needed);
-                            needed -= ItemStackTools.getStackSize(extracted);
+                            needed -= extracted.getCount();
                             if (needed <= 0) {
                                 break;
                             }
@@ -428,7 +427,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private void setValidRecipeGhostOutput() {
         ItemStack current = inventoryHelper.getStackInSlot(GridContainer.SLOT_GHOSTOUT);
         List<IEFabRecipe> recipes = findCurrentRecipesSorted();
-        if (ItemStackTools.isEmpty(current)) {
+        if (current.isEmpty()) {
             if (!recipes.isEmpty()) {
                 inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
                 totalTicks = recipes.get(0).getCraftTime();
@@ -436,7 +435,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         } else {
             if (recipes.isEmpty()) {
-                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, ItemStackTools.getEmptyStack());
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, ItemStack.EMPTY);
                 markDirtyQuick();
             } else {
                 for (IEFabRecipe recipe : recipes) {
@@ -453,7 +452,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     private ItemStack getCurrentOutput(@Nullable IEFabRecipe recipe) {
         if (recipe == null) {
-            return ItemStackTools.getEmptyStack();
+            return ItemStack.EMPTY;
         } else {
             return recipe.cast().getCraftingResult(crafterHelper.getWorkInventory());
         }
@@ -523,7 +522,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
-            if (ItemStackTools.isValid(stack) && stack.getItem() instanceof UpgradeItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof UpgradeItem) {
                 return true;
             }
         }
@@ -1023,7 +1022,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
             for (int i = GridContainer.SLOT_UPDATES ; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
                 ItemStack stack = getStackInSlot(i);
-                if (ItemStackTools.isValid(stack)) {
+                if (!stack.isEmpty()) {
                     if (stack.getItem() instanceof UpgradeItem) {
                         supportedTiers.add(((UpgradeItem) stack.getItem()).providesTier());
                     }

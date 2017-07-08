@@ -4,11 +4,10 @@ package mcjty.efab;
 import mcjty.commands.CmdSaveDefaults;
 import mcjty.efab.proxy.CommonProxy;
 import mcjty.lib.base.ModBase;
-import mcjty.lib.compat.CompatCreativeTabs;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -40,10 +39,10 @@ public class EFab implements ModBase {
 
     public static boolean botania;
 
-    public static CreativeTabs tabEFab = new CompatCreativeTabs("EFab") {
+    public static CreativeTabs tabEFab = new CreativeTabs("EFab") {
         @Override
-        protected Item getItem() {
-            return Item.getItemFromBlock(Blocks.CRAFTING_TABLE);
+        public ItemStack getTabIconItem() {
+            return new ItemStack(Blocks.CRAFTING_TABLE);
         }
     };
 

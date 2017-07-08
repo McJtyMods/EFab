@@ -2,7 +2,7 @@ package mcjty.efab.blocks;
 
 import mcjty.efab.EFab;
 import mcjty.lib.McJtyRegister;
-import mcjty.lib.compat.CompatBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -12,7 +12,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class GenericEFabBlock extends CompatBlock {
+public abstract class GenericEFabBlock extends Block {
 
     public GenericEFabBlock(Material material, String name) {
         super(material);

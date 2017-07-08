@@ -10,8 +10,7 @@ import mcjty.efab.network.EFabMessages;
 import mcjty.efab.network.PacketSendRecipe;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
-import mcjty.lib.jei.JeiCompatTools;
-import mcjty.lib.tools.ItemStackList;
+import mcjty.efab.tools.ItemStackList;
 import mezz.jei.api.*;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -41,7 +40,7 @@ public class EFabJeiPlugin extends BlankModPlugin {
         registry.addRecipeHandlers(new GridRecipeHandler());
 
         List<IEFabRecipe> efabRecipes = RecipeManager.getRecipes().stream().map(JEIRecipeAdapter::new).collect(Collectors.toList());
-        JeiCompatTools.addRecipes(registry, efabRecipes);
+        registry.addRecipes(efabRecipes);
 
         registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
         registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID);

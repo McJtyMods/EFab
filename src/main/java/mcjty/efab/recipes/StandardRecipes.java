@@ -4,7 +4,6 @@ import com.google.gson.*;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
-import mcjty.lib.tools.ItemStackTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -19,8 +18,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.io.*;
 import java.util.*;
@@ -216,8 +213,8 @@ public class StandardRecipes {
     private static JsonObject itemStackToJson(ItemStack item) {
         JsonObject object = new JsonObject();
         object.add("item", new JsonPrimitive(item.getItem().getRegistryName().toString()));
-        if (ItemStackTools.getStackSize(item) != 1) {
-            object.add("amount", new JsonPrimitive(ItemStackTools.getStackSize(item)));
+        if (item.getCount() != 1) {
+            object.add("amount", new JsonPrimitive(item.getCount()));
         }
         if (item.getItemDamage() != 0) {
             object.add("meta", new JsonPrimitive(item.getItemDamage()));

@@ -1,7 +1,6 @@
 package mcjty.efab.blocks.tank;
 
 import mcjty.lib.container.GenericItemBlock;
-import mcjty.lib.tools.ChatTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -33,14 +33,24 @@ public class TankItemBlock extends GenericItemBlock {
                     if (tedown instanceof TankTE) {
                         if (!fluid.isFluidEqual(((TankTE) tedown).getFluid())) {
                             // Not compatible
-                            ChatTools.addChatMessage(player, new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!"));
+                            ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
+                            if (player instanceof EntityPlayer) {
+                                ((EntityPlayer) player).sendStatusMessage(component, false);
+                            } else {
+                                player.sendMessage(component);
+                            }
                             return false;
                         }
                     }
                     TileEntity teup = world.getTileEntity(pos.up());
                     if (teup instanceof TankTE) {
                         if (!fluid.isFluidEqual(((TankTE) teup).getFluid())) {
-                            ChatTools.addChatMessage(player, new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!"));
+                            ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
+                            if (player instanceof EntityPlayer) {
+                                ((EntityPlayer) player).sendStatusMessage(component, false);
+                            } else {
+                                player.sendMessage(component);
+                            }
                             return false;
                         }
                     }
@@ -55,7 +65,12 @@ public class TankItemBlock extends GenericItemBlock {
             FluidStack fluidDown = ((TankTE) tedown).getFluid();
             FluidStack fluidUp = ((TankTE) teup).getFluid();
             if (fluidDown != null && fluidUp != null && !fluidDown.isFluidEqual(fluidUp)) {
-                ChatTools.addChatMessage(player, new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!"));
+                ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
+                if (player instanceof EntityPlayer) {
+                    ((EntityPlayer) player).sendStatusMessage(component, false);
+                } else {
+                    player.sendMessage(component);
+                }
                 return false;
             }
         }
