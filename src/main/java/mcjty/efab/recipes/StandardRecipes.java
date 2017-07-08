@@ -29,15 +29,15 @@ public class StandardRecipes {
 
     public static void init() {
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.gridBlock, " i ", "ici", " i ", 'i', "ingotIron", 'c', Blocks.CRAFTING_TABLE));
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.baseBlock, 4), " i ", "isi", " i ", 'i', "ingotIron", 's', Blocks.STONE));
+//        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.gridBlock, " i ", "ici", " i ", 'i', "ingotIron", 'c', Blocks.CRAFTING_TABLE));
+//        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.baseBlock, 4), " i ", "isi", " i ", 'i', "ingotIron", 's', Blocks.STONE));
 
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.gearBoxBlock),
                 "iri", "rbr", "iri", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.boilerBlock),
-                "ici", "ibi", "iii", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'c', Blocks.CAULDRON)
+                "ici", "ibi", "iii", 'i', "ingotIron", 'b', ModBlocks.baseBlock, 'c', Blocks.CAULDRON)
                 .tier(RecipeTier.GEARBOX)
                 .time(20));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
@@ -47,7 +47,7 @@ public class StandardRecipes {
                 .time(10));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.steamEngineBlock),
-                "ici", "ibi", "ici", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'c', Blocks.PISTON)
+                "ici", "ibi", "ici", 'i', "ingotIron", 'b', ModBlocks.baseBlock, 'c', Blocks.PISTON)
                 .tier(RecipeTier.GEARBOX)
                 .time(20));
         RecipeManager.registerRecipe(new EFabShapedRecipe(

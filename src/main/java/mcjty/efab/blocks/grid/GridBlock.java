@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -32,8 +33,8 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> imp
     }
 
     @Override
-    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.clAddInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This is the basic crafting device for the fabricator");
         tooltip.add(TextFormatting.WHITE + "Add blocks to this to extend the capabilities");
     }
@@ -78,8 +79,8 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> imp
     }
 
     @Override
-    protected void clOnNeighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
-        super.clOnNeighborChanged(state, world, pos, blockIn);
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        super.neighborChanged(state, world, pos, blockIn, fromPos);
         // @todo: on 1.11 we could have used the position from which the update is coming
         world.markBlockRangeForRenderUpdate(pos, pos);
     }

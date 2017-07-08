@@ -1,6 +1,7 @@
 package mcjty.efab.blocks;
 
 import mcjty.efab.EFab;
+import mcjty.lib.McJtyRegister;
 import mcjty.lib.compat.CompatBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -8,7 +9,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,9 +22,7 @@ public abstract class GenericEFabBlock extends CompatBlock {
         setHardness(2.0f);
         setSoundType(SoundType.METAL);
         setHarvestLevel("pickaxe", 0);
-
-        GameRegistry.register(this);
-        GameRegistry.register(new ItemBlock(this), getRegistryName());
+        McJtyRegister.registerLater(this, EFab.instance, ItemBlock.class, null);
     }
 
     @SideOnly(Side.CLIENT)

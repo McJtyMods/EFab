@@ -10,15 +10,21 @@ import mcjty.efab.network.EFabMessages;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.StandardRecipes;
 import mcjty.lib.McJtyLib;
+import mcjty.lib.McJtyRegister;
 import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.network.PacketHandler;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Level;
@@ -32,6 +38,7 @@ public abstract class CommonProxy {
     private Configuration mainConfig;
 
     public void preInit(FMLPreInitializationEvent e) {
+        MinecraftForge.EVENT_BUS.register(this);
         McJtyLib.preInit(e);
 
         RecipeManager.init();
@@ -51,6 +58,18 @@ public abstract class CommonProxy {
             BotaniaSupportSetup.preInit();
         }
     }
+
+    @SubscribeEvent
+    public void registerBlocks(RegistryEvent.Register<Block> event) {
+        McJtyRegister.registerBlocks(EFab.instance, event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public void registerItems(RegistryEvent.Register<Item> event) {
+        McJtyRegister.registerItems(EFab.instance, event.getRegistry());
+    }
+
+
 
     private void readMainConfig() {
         Configuration cfg = mainConfig;

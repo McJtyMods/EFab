@@ -1,9 +1,9 @@
 package mcjty.efab.render;
 
 import mcjty.efab.EFab;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -12,7 +12,7 @@ public class ParticleRenderer {
 
     public static ResourceLocation particles = new ResourceLocation(EFab.MODID, "textures/effects/particles.png");
 
-    public static void renderParticleSystem(VertexBuffer buffer) {
+    public static void renderParticleSystem(BufferBuilder buffer) {
         long time = System.currentTimeMillis();
 
         int brightness = 240;
@@ -44,7 +44,7 @@ public class ParticleRenderer {
         RenderTools.rotateToPlayer();
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 
         renderParticleSystem(buffer);

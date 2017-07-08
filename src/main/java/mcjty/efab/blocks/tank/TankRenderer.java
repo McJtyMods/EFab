@@ -18,8 +18,8 @@ import java.util.List;
 public class TankRenderer extends TileEntitySpecialRenderer<TankTE> {
 
     @Override
-    public void renderTileEntityAt(TankTE te, double x, double y, double z, float partialTicks, int destroyStage) {
-        super.renderTileEntityAt(te, x, y, z, partialTicks, destroyStage);
+    public void render(TankTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
         Block block = te.getWorld().getBlockState(te.getPos().down()).getBlock();
         if (block != ModBlocks.tankBlock) {

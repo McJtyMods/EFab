@@ -5,11 +5,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 
 public class ModTools {
     public static String getModidForBlock(Block block) {
-        ResourceLocation nameForObject = GameData.getBlockRegistry().getNameForObject(block);
+        ResourceLocation nameForObject = block.getRegistryName();
         if (nameForObject == null) {
             return "?";
         }
@@ -17,7 +16,7 @@ public class ModTools {
     }
 
     public static String getModidForItem(Item item) {
-        ResourceLocation nameForObject = GameData.getItemRegistry().getNameForObject(item);
+        ResourceLocation nameForObject = item.getRegistryName();
         if (nameForObject == null) {
             return "?";
         }

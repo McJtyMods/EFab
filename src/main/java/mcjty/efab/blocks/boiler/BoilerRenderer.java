@@ -2,16 +2,14 @@ package mcjty.efab.blocks.boiler;
 
 import mcjty.efab.blocks.steamengine.SteamEngineRenderer;
 import mcjty.efab.render.ParticleRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class BoilerRenderer extends TileEntitySpecialRenderer<BoilerTE> {
@@ -43,7 +41,7 @@ public class BoilerRenderer extends TileEntitySpecialRenderer<BoilerTE> {
     };
 
     @Override
-    public void renderTileEntityAt(BoilerTE te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(BoilerTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         this.bindTexture(ParticleRenderer.particles);
 
         if (te.getTimer() > 0) {
@@ -64,7 +62,7 @@ public class BoilerRenderer extends TileEntitySpecialRenderer<BoilerTE> {
             SteamEngineRenderer.rotateFacing(te);
 
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 
             for (Particle particle : particles) {

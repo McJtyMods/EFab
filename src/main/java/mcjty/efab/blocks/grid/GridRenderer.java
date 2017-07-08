@@ -20,10 +20,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 
 public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
-
     @Override
-    public void renderTileEntityAt(GridTE te, double x, double y, double z, float partialTicks, int destroyStage) {
-        super.renderTileEntityAt(te, x, y, z, partialTicks, destroyStage);
+    public void render(GridTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
         GlStateManager.pushMatrix();
 
@@ -80,9 +79,9 @@ public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
 
     private static void renderItemStackInWorld(Vec3d offset, ItemStack stack) {
         net.minecraft.client.renderer.RenderHelper.enableStandardItemLighting();
-        GlStateManager.translate(offset.xCoord, offset.yCoord, offset.zCoord);
+        GlStateManager.translate(offset.x, offset.y, offset.z);
         renderItemCustom(stack, 0, 0.1f);
-        GlStateManager.translate(-offset.xCoord, -offset.yCoord, -offset.zCoord);
+        GlStateManager.translate(-offset.x, -offset.y, -offset.z);
     }
 
     public static void renderItemCustom(ItemStack is, int rotation, float scale) {

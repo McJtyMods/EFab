@@ -5,7 +5,7 @@ import mcjty.efab.config.GeneralConfiguration;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -40,8 +40,8 @@ public class ManaReceptacleBlock extends GenericEFabMultiBlockPart<ManaReceptacl
     }
 
     @Override
-    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.clAddInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + GeneralConfiguration.maxMana
                 + TextFormatting.WHITE + " mana");
         tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + GeneralConfiguration.maxManaUsage

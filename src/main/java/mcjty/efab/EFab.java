@@ -20,20 +20,15 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(modid = EFab.MODID, name = EFab.MODNAME,
         dependencies =
-                        "required-after:compatlayer@[" + EFab.COMPATLAYER_VER + ",);" +
-                        "after:Forge@[" + EFab.MIN_FORGE10_VER + ",);" +
                         "after:forge@[" + EFab.MIN_FORGE11_VER + ",)",
-        version = EFab.MODVERSION,
-        acceptedMinecraftVersions = "[1.10,1.12)")
+        version = EFab.MODVERSION)
 public class EFab implements ModBase {
 
     public static final String MODID = "efab";
     public static final String MODNAME = "EFab";
     public static final String MODVERSION = "0.0.4";
 
-    public static final String MIN_FORGE10_VER = "12.18.2.2116";
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
-    public static final String COMPATLAYER_VER = "0.2.7";
 
     @SidedProxy(clientSide = "mcjty.efab.proxy.ClientProxy", serverSide = "mcjty.efab.proxy.ServerProxy")
     public static CommonProxy proxy;

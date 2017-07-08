@@ -4,6 +4,7 @@ import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -32,8 +33,8 @@ public class MonitorBlock extends GenericEFabMultiBlockPart<MonitorTE, EmptyCont
     }
 
     @Override
-    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.clAddInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block allows you to monitor");
         tooltip.add(TextFormatting.WHITE + "crafting operation status");
     }

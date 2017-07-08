@@ -1,7 +1,9 @@
 package mcjty.efab.recipes;
 
+import mcjty.efab.EFab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -20,7 +22,7 @@ public class EFabShapelessRecipe extends ShapedOreRecipe implements IEFabRecipe 
     private Map<String,Object> inputMap = new HashMap<>();
 
     public EFabShapelessRecipe(ItemStack output, Object... recipe) {
-        super(output, recipe);
+        super(new ResourceLocation(EFab.MODID, "shapeless"), output, recipe);
 
         int idx = 0;
         while (idx < recipe.length) {

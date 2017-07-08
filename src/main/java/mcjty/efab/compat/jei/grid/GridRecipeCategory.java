@@ -80,4 +80,9 @@ public class GridRecipeCategory extends BlankRecipeCategory<GridCraftingRecipeWr
         IGuiIngredientGroup<ItemStack> g = guiItemStacks;
         g.set(craftOutputSlot, outputs);
     }
+
+    @Override
+    public String getModName() {
+        return EFab.MODNAME;
+    }
 }

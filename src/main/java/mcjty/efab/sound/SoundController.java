@@ -9,9 +9,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
@@ -25,19 +25,19 @@ public final class SoundController {
     private static SoundEvent beeps1;
     private static SoundEvent beeps2;
 
-    public static void init() {
-        machine = registerSound(new ResourceLocation(EFab.MODID, "machine"));
-        sparks = registerSound(new ResourceLocation(EFab.MODID, "sparks"));
-        steam = registerSound(new ResourceLocation(EFab.MODID, "steam"));
-        beeps1 = registerSound(new ResourceLocation(EFab.MODID, "beeps1"));
-        beeps2 = registerSound(new ResourceLocation(EFab.MODID, "beeps2"));
+    public static void init(IForgeRegistry<SoundEvent> registry) {
+        machine = registerSound(registry, new ResourceLocation(EFab.MODID, "machine"));
+        sparks = registerSound(registry, new ResourceLocation(EFab.MODID, "sparks"));
+        steam = registerSound(registry, new ResourceLocation(EFab.MODID, "steam"));
+        beeps1 = registerSound(registry, new ResourceLocation(EFab.MODID, "beeps1"));
+        beeps2 = registerSound(registry, new ResourceLocation(EFab.MODID, "beeps2"));
     }
 
     private static final Map<Pair<Integer, BlockPos>, EFabSound> sounds = Maps.newHashMap();
 
-    private static SoundEvent registerSound(ResourceLocation rl){
+    private static SoundEvent registerSound(IForgeRegistry<SoundEvent> registry, ResourceLocation rl) {
         SoundEvent ret = new SoundEvent(rl).setRegistryName(rl);
-        ((FMLControlledNamespacedRegistry) SoundEvent.REGISTRY).register(ret);
+        registry.register(ret);
         return ret;
     }
 

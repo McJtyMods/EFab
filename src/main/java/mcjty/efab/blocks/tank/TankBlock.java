@@ -12,6 +12,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -46,8 +47,8 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     }
 
     @Override
-    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.clAddInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This tank can store " + TextFormatting.GREEN + GeneralConfiguration.tankCapacity + TextFormatting.WHITE + " mb");
         tooltip.add(TextFormatting.WHITE + "You can combine tanks by placing them");
         tooltip.add(TextFormatting.WHITE + "on top of each other");
@@ -86,7 +87,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     }
 
     @Override
-    protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
             TileEntity te = world.getTileEntity(pos);
@@ -158,8 +159,8 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     }
 
     @Override
-    protected void clOnNeighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
-        super.clOnNeighborChanged(state, world, pos, blockIn);
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        super.neighborChanged(state, world, pos, blockIn, fromPos);
         // @todo: on 1.11 we could have used the position from which the update is coming
         world.markBlockRangeForRenderUpdate(pos, pos);
     }

@@ -16,9 +16,8 @@ import java.util.List;
 public class MonitorRenderer extends TileEntitySpecialRenderer<MonitorTE> {
 
     @Override
-    public void renderTileEntityAt(MonitorTE te, double x, double y, double z, float partialTicks, int destroyStage) {
-        super.renderTileEntityAt(te, x, y, z, partialTicks, destroyStage);
-
+    public void render(MonitorTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
         renderHud(te, x, y, z);
     }
 

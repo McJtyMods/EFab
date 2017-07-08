@@ -41,10 +41,9 @@ public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE
     }
 
 
-
     @Override
-    public void renderTileEntityAt(SteamEngineTE te, double x, double y, double z, float partialTicks, int destroyStage) {
-        super.renderTileEntityAt(te, x, y, z, partialTicks, destroyStage);
+    public void render(SteamEngineTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
         GlStateManager.pushMatrix();
 

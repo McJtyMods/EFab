@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.rfstorage;
 
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.config.GeneralConfiguration;
@@ -10,7 +10,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.Optional;
 
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux"),
+        @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux")
+})
 public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEnergyReceiver, IEFabEnergyStorage {
 
     private int energy = 0;
@@ -42,13 +47,19 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
         return true;
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         return 0;
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+        return receiveEnergyInternal(maxReceive, simulate);
+    }
+
+    private int receiveEnergyInternal(int maxReceive, boolean simulate) {
         int toreceive = Math.min(maxReceive, GeneralConfiguration.rfStorageInputPerTick);
         int newenergy = energy + toreceive;
         if (newenergy > GeneralConfiguration.rfStorageMax) {
@@ -62,16 +73,19 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
         return toreceive;
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public int getEnergyStored(EnumFacing from) {
         return energy;
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
         return GeneralConfiguration.rfStorageMax;
     }
 
+    @Optional.Method(modid = "redstoneflux")
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
         return true;
@@ -94,22 +108,22 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
                 handler = new IEnergyStorage() {
                     @Override
                     public int receiveEnergy(int maxReceive, boolean simulate) {
-                        return 0;
+                        return receiveEnergyInternal(maxReceive, simulate);
                     }
 
                     @Override
                     public int extractEnergy(int maxExtract, boolean simulate) {
-                        return RFStorageTE.this.extractEnergy(facing, maxExtract, simulate);
+                        return 0;
                     }
 
                     @Override
                     public int getEnergyStored() {
-                        return RFStorageTE.this.getEnergyStored(facing);
+                        return RFStorageTE.this.energy;
                     }
 
                     @Override
                     public int getMaxEnergyStored() {
-                        return RFStorageTE.this.getMaxEnergyStored(facing);
+                        return GeneralConfiguration.rfStorageMax;
                     }
 
                     @Override

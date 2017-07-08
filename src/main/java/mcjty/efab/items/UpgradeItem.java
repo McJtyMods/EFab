@@ -2,14 +2,14 @@ package mcjty.efab.items;
 
 import mcjty.efab.EFab;
 import mcjty.efab.recipes.RecipeTier;
-import mcjty.lib.compat.CompatItem;
+import mcjty.lib.McJtyRegister;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class UpgradeItem extends CompatItem {
+public abstract class UpgradeItem extends Item {
 
     public UpgradeItem(String name) {
         super();
@@ -17,7 +17,7 @@ public abstract class UpgradeItem extends CompatItem {
         setRegistryName(name);
         setUnlocalizedName(EFab.MODID + "." + name);
         setCreativeTab(EFab.tabEFab);
-        GameRegistry.register(this);
+        McJtyRegister.registerLater(this, EFab.instance);
     }
 
     @SideOnly(Side.CLIENT)

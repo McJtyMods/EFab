@@ -5,6 +5,7 @@ import mcjty.efab.proxy.GuiProxy;
 import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -38,8 +39,8 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
     }
 
     @Override
-    public void clAddInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.clAddInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block adds auto crafting to the fabricator");
         tooltip.add(TextFormatting.WHITE + "Also needs a " + TextFormatting.GREEN + "processor" + TextFormatting.WHITE
                 + " and one or more " + TextFormatting.GREEN + "storage" + TextFormatting.WHITE + " blocks");
