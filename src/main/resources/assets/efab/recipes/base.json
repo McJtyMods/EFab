@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "efab:base",
+    "count": 4
+  },
+  "pattern": [
+    " i ",
+    "isi",
+    " i "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "s": {
+      "item": "minecraft:stone",
+      "data": 0
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    }
+  }
+}
