@@ -2,7 +2,7 @@ package mcjty.efab.blocks.tank;
 
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.lib.gui.HudRenderHelper;
-import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -38,7 +38,7 @@ public class TankRenderer extends TileEntitySpecialRenderer<TankTE> {
             scale = 0.8f;
         }
         List<String> log = Collections.singletonList(TextFormatting.DARK_GRAY + name);
-        EnumFacing orientation = BlockTools.getOrientationHoriz(tankTE.getBlockMetadata());
+        EnumFacing orientation = OrientationTools.getOrientationHoriz(Minecraft.getMinecraft().world.getBlockState(tankTE.getPos()));
 
         HudRenderHelper.HudPlacement hudPlacement = HudRenderHelper.HudPlacement.HUD_FRONT;
         HudRenderHelper.HudOrientation hudOrientation = HudRenderHelper.HudOrientation.HUD_SOUTH;

@@ -2,6 +2,7 @@ package mcjty.efab.blocks.storage;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.proxy.GuiProxy;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -20,8 +21,8 @@ public class StorageBlock extends GenericEFabMultiBlockPart<StorageTE, StorageCo
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

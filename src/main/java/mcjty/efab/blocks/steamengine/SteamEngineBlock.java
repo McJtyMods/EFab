@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.steamengine;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -27,8 +28,8 @@ public class SteamEngineBlock extends GenericEFabMultiBlockPart<SteamEngineTE, E
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

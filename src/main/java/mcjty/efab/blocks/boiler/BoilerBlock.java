@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.boiler;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -40,8 +41,8 @@ public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContai
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

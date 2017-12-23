@@ -2,6 +2,7 @@ package mcjty.efab.blocks.crafter;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.proxy.GuiProxy;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -28,8 +29,8 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

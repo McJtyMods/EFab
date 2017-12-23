@@ -2,6 +2,7 @@ package mcjty.efab.blocks.rfcontrol;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.config.GeneralConfiguration;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -33,8 +34,8 @@ public class RfControlBlock extends GenericEFabMultiBlockPart<RfControlTE, Empty
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

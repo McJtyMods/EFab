@@ -4,6 +4,7 @@ import mcjty.efab.blocks.GenericEFabBlockWithTE;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.proxy.GuiProxy;
 import mcjty.efab.sound.ISoundProducer;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.GenericGuiContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -39,8 +40,8 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> imp
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @SideOnly(Side.CLIENT)

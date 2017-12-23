@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.grid;
 
-import mcjty.lib.container.GenericBlock;
+import mcjty.efab.blocks.ModBlocks;
+import mcjty.lib.container.BaseBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -36,7 +37,7 @@ public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
 
     private static void rotateFacing(TileEntity tileEntity) {
         IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
-        EnumFacing orientation = GenericBlock.getFacingHoriz(state.getBlock().getMetaFromState(state));
+        EnumFacing orientation = BaseBlock.getFrontDirection(ModBlocks.gridBlock.getRotationType(), state);
         switch (orientation) {
             case NORTH:
                 GlStateManager.rotate(180, 0, 1, 0);

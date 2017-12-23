@@ -4,6 +4,7 @@ import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.tools.FluidTools;
 import mcjty.efab.tools.InventoryHelper;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -41,8 +42,8 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

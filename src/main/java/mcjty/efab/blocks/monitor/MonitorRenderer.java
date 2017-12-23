@@ -4,6 +4,7 @@ import mcjty.efab.network.EFabMessages;
 import mcjty.efab.network.PacketGetMonitorText;
 import mcjty.lib.gui.HudRenderHelper;
 import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -32,7 +33,7 @@ public class MonitorRenderer extends TileEntitySpecialRenderer<MonitorTE> {
             EFabMessages.INSTANCE.sendToServer(new PacketGetMonitorText(monitorTE.getPos()));
             monitorTE.setLastUpdateTime(t);
         }
-        EnumFacing orientation = BlockTools.getOrientationHoriz(monitorTE.getBlockMetadata());
+        EnumFacing orientation = OrientationTools.getOrientationHoriz(Minecraft.getMinecraft().world.getBlockState(monitorTE.getPos()));
 
         HudRenderHelper.HudPlacement hudPlacement = HudRenderHelper.HudPlacement.HUD_FRONT;
         HudRenderHelper.HudOrientation hudOrientation = HudRenderHelper.HudOrientation.HUD_SOUTH;

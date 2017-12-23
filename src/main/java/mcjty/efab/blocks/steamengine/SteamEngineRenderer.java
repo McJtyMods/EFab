@@ -1,7 +1,8 @@
 package mcjty.efab.blocks.steamengine;
 
 import mcjty.efab.EFab;
-import mcjty.lib.container.GenericBlock;
+import mcjty.efab.blocks.ModBlocks;
+import mcjty.lib.container.BaseBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -59,7 +60,7 @@ public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE
 
     public static void rotateFacing(TileEntity tileEntity) {
         IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
-        EnumFacing orientation = GenericBlock.getFacingHoriz(state.getBlock().getMetaFromState(state));
+        EnumFacing orientation = BaseBlock.getFrontDirection(ModBlocks.steamEngineBlock.getRotationType(), state);
         switch (orientation) {
             case NORTH:
                 GlStateManager.rotate(180, 0, 1, 0);

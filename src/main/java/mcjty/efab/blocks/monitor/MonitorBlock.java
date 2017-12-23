@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.monitor;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -27,8 +28,8 @@ public class MonitorBlock extends GenericEFabMultiBlockPart<MonitorTE, EmptyCont
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

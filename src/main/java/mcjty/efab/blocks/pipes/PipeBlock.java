@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.pipes;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -30,8 +31,8 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
     public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 3);
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override

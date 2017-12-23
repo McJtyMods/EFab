@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.processor;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -17,8 +18,8 @@ public class ProcessorBlock extends GenericEFabMultiBlockPart<ProcessorTE, Empty
     }
 
     @Override
-    public boolean isHorizRotation() {
-        return true;
+    public RotationType getRotationType() {
+        return RotationType.HORIZROTATION;
     }
 
     @Override
