@@ -6,6 +6,7 @@ import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.render.RenderTools;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,10 +18,11 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper {
+class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipeWrapper {
 
     private final IEFabRecipe recipe;
     private final List<List<ItemStack>> inputs;
@@ -117,6 +119,6 @@ class GridCraftingRecipeWrapper extends BlankRecipeWrapper implements IShapedCra
             }
         }
 
-        return super.getTooltipStrings(mouseX, mouseY);
+        return Collections.emptyList();
     }
 }

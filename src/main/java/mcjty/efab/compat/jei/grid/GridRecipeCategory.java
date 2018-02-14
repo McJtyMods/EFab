@@ -4,7 +4,7 @@ import mcjty.efab.EFab;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.*;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
+import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class GridRecipeCategory extends BlankRecipeCategory<GridCraftingRecipeWrapper> {
+public class GridRecipeCategory implements IRecipeCategory<GridCraftingRecipeWrapper> {
 
     private static final int craftOutputSlot = 0;
     private static final int craftInputSlot1 = 1;

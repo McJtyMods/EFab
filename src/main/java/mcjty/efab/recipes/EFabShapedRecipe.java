@@ -3,6 +3,7 @@ package mcjty.efab.recipes;
 import mcjty.efab.EFab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -42,7 +43,10 @@ public class EFabShapedRecipe extends ShapedOreRecipe implements IEFabRecipe {
     public List<List<ItemStack>> getInputLists() {
         List<List<ItemStack>> inputLists = new ArrayList<>();
         for (Object o : input) {
-            if (o instanceof ItemStack) {
+            if (o instanceof Ingredient) {
+                ItemStack[] stacks = ((Ingredient) o).getMatchingStacks();
+                inputLists.add(Arrays.asList(stacks));
+            } else if (o instanceof ItemStack) {
                 inputLists.add(Collections.singletonList((ItemStack) o));
             } else if (o instanceof List) {
                 inputLists.add((List) o);

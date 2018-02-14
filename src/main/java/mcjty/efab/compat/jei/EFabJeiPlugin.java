@@ -5,7 +5,7 @@ import mcjty.efab.blocks.crafter.CrafterContainer;
 import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.grid.GridContainer;
 import mcjty.efab.compat.jei.grid.GridRecipeCategory;
-import mcjty.efab.compat.jei.grid.GridRecipeHandler;
+import mcjty.efab.compat.jei.grid.GridRecipeWrapperFactory;
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.network.PacketSendRecipe;
 import mcjty.efab.recipes.IEFabRecipe;
@@ -14,6 +14,7 @@ import mcjty.efab.tools.ItemStackList;
 import mezz.jei.api.*;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
@@ -29,21 +30,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @JEIPlugin
-public class EFabJeiPlugin extends BlankModPlugin {
+public class EFabJeiPlugin implements IModPlugin {
 
     @Override
     public void register(@Nonnull IModRegistry registry) {
-        IJeiHelpers helpers = registry.getJeiHelpers();
-        IGuiHelper guiHelper = helpers.getGuiHelper();
-
-        registry.addRecipeCategories(new GridRecipeCategory(guiHelper));
-        registry.addRecipeHandlers(new GridRecipeHandler());
+        registry.handleRecipes(IEFabRecipe.class, new GridRecipeWrapperFactory(), GridRecipeCategory.ID);
 
         List<IEFabRecipe> efabRecipes = RecipeManager.getRecipes().stream().map(JEIRecipeAdapter::new).collect(Collectors.toList());
-        registry.addRecipes(efabRecipes);
+        registry.addRecipes(efabRecipes, GridRecipeCategory.ID);
 
-        registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
-        registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID);
+        registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
+        registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID);
 
         IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
         transferRegistry.addRecipeTransferHandler(GridContainer.class, GridRecipeCategory.ID, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
@@ -68,6 +65,14 @@ public class EFabJeiPlugin extends BlankModPlugin {
                 return null;
             }
         }, GridRecipeCategory.ID);
+    }
+
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registry) {
+        IJeiHelpers helpers = registry.getJeiHelpers();
+        IGuiHelper guiHelper = helpers.getGuiHelper();
+
+        registry.addRecipeCategories(new GridRecipeCategory(guiHelper));
     }
 
     public static void sendIngredients(Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients, BlockPos pos) {
