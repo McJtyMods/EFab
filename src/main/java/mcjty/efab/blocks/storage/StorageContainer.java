@@ -15,7 +15,7 @@ public class StorageContainer extends GenericContainer {
     public static final ContainerFactory factory = new ContainerFactory() {
         @Override
         protected void setup() {
-            addSlotBox(new SlotDefinition(SlotType.SLOT_CONTAINER), CONTAINER_INVENTORY, SLOT_STORAGE, 6, 20, 9, 18, 3, 18);
+            addSlotBox(new SlotDefinition(SlotType.SLOT_INPUT), CONTAINER_INVENTORY, SLOT_STORAGE, 6, 20, 9, 18, 3, 18);
             layoutPlayerInventorySlots(6, 97);
         }
     };
