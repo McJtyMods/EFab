@@ -430,7 +430,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (current.isEmpty()) {
             if (!recipes.isEmpty()) {
                 inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
-                totalTicks = recipes.get(0).getCraftTime();
+                totalTicks = getCraftTime(recipes.get(0));
                 markDirtyQuick();
             }
         } else {
@@ -444,7 +444,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     }
                 }
                 inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
-                totalTicks = recipes.get(0).getCraftTime();
+                totalTicks = getCraftTime(recipes.get(0));
                 markDirtyQuick();
             }
         }
@@ -727,7 +727,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             int i = (first.getAsInt() - 1 + sorted.size()) % sorted.size();
             IEFabRecipe recipe = sorted.get(i);
             setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput());
-            totalTicks = recipe.getCraftTime();
+            totalTicks = getCraftTime(recipe);
             markDirtyQuick();
         }
     }
@@ -739,7 +739,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             int i = (first.getAsInt() + 1) % sorted.size();
             IEFabRecipe recipe = sorted.get(i);
             setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput());
-            totalTicks = recipe.getCraftTime();
+            totalTicks = getCraftTime(recipe);
             markDirtyQuick();
         }
     }
@@ -763,8 +763,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
 
             crafterHelper.setCraftingOutput(getCurrentOutput(recipe));
-            ticksRemaining = recipe.getCraftTime();
-            totalTicks = recipe.getCraftTime();
+            int craftTime = getCraftTime(recipe);
+            ticksRemaining = craftTime;
+            totalTicks = craftTime;
             markDirtyClient();
 
             if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
@@ -775,6 +776,37 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
             }
         }
+    }
+
+    private int getCraftTime(IEFabRecipe recipe) {
+        getSupportedTiers();
+        int craftTime = recipe.getCraftTime();
+        int bonus = 1;
+        if (recipe.getRequiredTiers().contains(RecipeTier.GEARBOX)) {
+            int cnt = gearBoxes.size();
+            if (cnt > 1 && bonus < cnt) {
+                bonus = Math.min(4, cnt);
+            }
+        }
+        if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
+            int cnt = steamEngines.size();
+            if (cnt > 1 && bonus < cnt) {
+                bonus = Math.min(4, cnt);
+            }
+        }
+        if (recipe.getRequiredTiers().contains(RecipeTier.RF)) {
+            int cnt = rfControls.size();
+            if (cnt > 1 && bonus < cnt) {
+                bonus = Math.min(4, cnt);
+            }
+        }
+        if (recipe.getRequiredTiers().contains(RecipeTier.COMPUTING)) {
+            int cnt = processors.size();
+            if (cnt > 1 && bonus < cnt) {
+                bonus = Math.min(4, cnt);
+            }
+        }
+        return craftTime / bonus;
     }
 
     private void handleAnimationSpeed(int boost, Set<BlockPos> posSet) {
@@ -995,7 +1027,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
 
-        return errors == null ? false : !errors.isEmpty();
+        return errors != null && !errors.isEmpty();
     }
 
     private Set<RecipeTier> getSupportedTiers() {
