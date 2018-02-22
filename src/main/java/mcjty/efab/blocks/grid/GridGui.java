@@ -78,9 +78,9 @@ public class GridGui extends GenericGuiContainer<GridTE> {
     public static String getTime(int ticks) {
         float seconds = ticks / 20.0f;
         if (seconds >= 60) {
-            float minutes = ticks * 20.0f / 60.0f;
+            float minutes = ticks / 20.0f / 60.0f;
             if (minutes >= 60) {
-                float hours = ticks * 20.0f / 3600.0f;
+                float hours = ticks / 20.0f / 3600.0f;
                 if (Math.abs(hours-1.0f) < 0.01) {
                     return "1 hour";
                 } else {
