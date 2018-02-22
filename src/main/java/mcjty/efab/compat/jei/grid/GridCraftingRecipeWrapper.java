@@ -1,6 +1,7 @@
 package mcjty.efab.compat.jei.grid;
 
 import mcjty.efab.EFab;
+import mcjty.efab.blocks.grid.GridGui;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.render.RenderTools;
@@ -63,7 +64,7 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
         Set<RecipeTier> tiers = recipe.getRequiredTiers();
         int y = 60;
         minecraft.fontRenderer.drawString("Time", 0, y, Color.black.getRGB());
-        minecraft.fontRenderer.drawString("" + recipe.getCraftTime() + " ticks", 28, y, Color.blue.getRGB());
+        minecraft.fontRenderer.drawString("" + GridGui.getTime(recipe.getCraftTime()), 28, y, Color.blue.getRGB());
         GlStateManager.color(1, 1, 1);
         int x = 0;
 

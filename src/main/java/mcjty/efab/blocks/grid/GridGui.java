@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class GridGui extends GenericGuiContainer<GridTE> {
@@ -72,6 +73,35 @@ public class GridGui extends GenericGuiContainer<GridTE> {
         sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_RIGHT);
     }
 
+    private static DecimalFormat fmt = new DecimalFormat("#.##");
+
+    public static String getTime(int ticks) {
+        float seconds = ticks / 20.0f;
+        if (seconds >= 60) {
+            float minutes = ticks * 20.0f / 60.0f;
+            if (minutes >= 60) {
+                float hours = ticks * 20.0f / 3600.0f;
+                if (Math.abs(hours-1.0f) < 0.01) {
+                    return "1 hour";
+                } else {
+                    return fmt.format(hours) + " hours";
+                }
+            } else {
+                if (Math.abs(minutes-1.0f) < 0.01) {
+                    return "1 minute";
+                } else {
+                    return fmt.format(minutes) + " minutes";
+                }
+            }
+        } else {
+            if (Math.abs(seconds-1.0f) < 0.01) {
+                return "1 second";
+            } else {
+                return fmt.format(seconds) + " seconds";
+            }
+        }
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int x1, int x2) {
         EFabMessages.INSTANCE.sendToServer(new PacketGetGridStatus(tileEntity.getPos()));
@@ -84,7 +114,7 @@ public class GridGui extends GenericGuiContainer<GridTE> {
             int ticks = tileEntity.getTicksRemaining();
             if (ticks < 0) {
                 craftButton.setText("Start");
-                craftButton.setTooltips("Start craft operation", "Duration " + tileEntity.getTotalTicks() + " ticks");
+                craftButton.setTooltips("Start craft operation", "Duration " + getTime(tileEntity.getTotalTicks()));
                 craftButton.setEnabled(true);
             } else {
                 craftButton.setTooltips("Craft operation in progress");
