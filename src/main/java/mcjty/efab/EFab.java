@@ -19,13 +19,15 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(modid = EFab.MODID, name = EFab.MODNAME,
         dependencies =
-                        "after:forge@[" + EFab.MIN_FORGE11_VER + ",)",
+                "required-after:mcjtylib_ng@[" + EFab.MIN_MCJTYLIB_VER + ",);" +
+                "after:forge@[" + EFab.MIN_FORGE11_VER + ",)",
         version = EFab.MODVERSION)
 public class EFab implements ModBase {
 
     public static final String MODID = "efab";
     public static final String MODNAME = "EFab";
-    public static final String MODVERSION = "0.0.10";
+    public static final String MODVERSION = "0.0.11";
+    public static final String MIN_MCJTYLIB_VER = "2.6.3";
 
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
 
