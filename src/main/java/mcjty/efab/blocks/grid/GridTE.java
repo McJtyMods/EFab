@@ -82,7 +82,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
         String msg;
         if (errorTicks > 0) {
-            msg = TextFormatting.DARK_RED + (((errorTicks /20) % 2 == 0) ? "  ERROR" : "");
+            msg = TextFormatting.DARK_RED + (((errorTicks / 20) % 2 == 0) ? "  ERROR" : "");
+        } else if (totalTicks == 0) {
+            msg = TextFormatting.DARK_GREEN + (ticksRemaining >= 0 ? ("  100%") : "  idle");
         } else {
             msg = TextFormatting.DARK_GREEN + (ticksRemaining >= 0 ? ("  " + ((totalTicks - ticksRemaining) * 100 / totalTicks + "%")) : "  idle");
         }
