@@ -103,7 +103,13 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
             x = 80;
             for (FluidStack stack : recipe.getRequiredFluids()) {
                 String name = stack.getLocalizedName();
+                GlStateManager.disableTexture2D();
+                RenderTools.drawBox(x-1, y-1, 18, 18, 0, 0, 0, 1f);
+                GlStateManager.enableTexture2D();
                 RenderTools.renderFluidStack(minecraft, stack, x, y);
+                if (recipe.getRequiredFluids().size() <= 1) {
+                    minecraft.fontRenderer.drawString(name, x+20, y+5, Color.blue.getRGB());
+                }
                 tooltips.add(new Tooltip(x, y, 16, 16)
                         .add(TextFormatting.BLUE + "Fluid: " + TextFormatting.WHITE + name)
                         .add(TextFormatting.BLUE + "Amount: " + TextFormatting.WHITE + stack.amount + " mb"));

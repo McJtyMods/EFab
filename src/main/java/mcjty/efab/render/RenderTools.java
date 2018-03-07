@@ -30,6 +30,20 @@ public class RenderTools {
         tessellator.draw();
     }
 
+    public static void drawBox(int x, int y, int width, int height, float r, float g, float b, float a) {
+        double zLevel = 100;
+        float f = 0.00390625F;
+        float f1 = 0.00390625F;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        vertexbuffer.pos((double)(x + 0), (double)(y + height), zLevel).color(r, g, b, a).endVertex();
+        vertexbuffer.pos((double)(x + width), (double)(y + height), zLevel).color(r, g, b, a).endVertex();
+        vertexbuffer.pos((double)(x + width), (double)(y + 0), zLevel).color(r, g, b, a).endVertex();
+        vertexbuffer.pos((double)(x + 0), (double)(y + 0), zLevel).color(r, g, b, a).endVertex();
+        tessellator.draw();
+    }
+
 
 
     public static void renderQuadBright(double scale, int brightness) {
