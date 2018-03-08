@@ -68,6 +68,8 @@ public class BoilerTE extends GenericEFabTile implements ITickable {
             return true;
         } else if (block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) {
             return true;
+        } else if (block == Blocks.MAGMA) {
+            return true;
         } else if (block.isBurning(getWorld(), p)) {
             return true;
         }
