@@ -70,9 +70,11 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
 
         y += 12;
 
-        if (recipe.getRequiredRfPerTick() > 0) {
+        int perTick = recipe.getRequiredRfPerTick();
+        if (perTick > 0) {
             minecraft.fontRenderer.drawString("RF", 0, y, Color.black.getRGB());
-            minecraft.fontRenderer.drawString("" + recipe.getRequiredRfPerTick() + " RF/tick", 28, y, Color.blue.getRGB());
+            int total = perTick * recipe.getCraftTime();
+            minecraft.fontRenderer.drawString("" + total + "RF @ " + perTick + "RF/t", 28, y, Color.blue.getRGB());
             GlStateManager.color(1, 1, 1);
             x = 0;
             y += 12;
