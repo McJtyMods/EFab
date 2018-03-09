@@ -532,13 +532,18 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     @Override
+    public int[] getSlotsForFace(EnumFacing side) {
+        return new int[] { GridContainer.SLOT_CRAFTOUTPUT, GridContainer.SLOT_CRAFTOUTPUT+1, GridContainer.SLOT_CRAFTOUTPUT+2 };
+    }
+
+    @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return index < GridContainer.SLOT_UPDATES;
+        return index >= GridContainer.SLOT_CRAFTOUTPUT && index < GridContainer.SLOT_UPDATES;
     }
 
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-        return index < GridContainer.SLOT_UPDATES;
+        return false;
     }
 
     private Random random = new Random();
