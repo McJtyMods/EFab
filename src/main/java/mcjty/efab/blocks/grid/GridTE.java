@@ -122,21 +122,26 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 if (te instanceof CrafterTE) {
                     CrafterTE crafterTE = (CrafterTE) te;
                     if (!crafterTE.isOn()) {
-                        messages.add(TextFormatting.GREEN + "  OFF");
+                        messages.add(TextFormatting.GREEN + "* OFF");
                     } else if (crafterTE.isCrafting()) {
-                        messages.add(TextFormatting.GREEN + "  " + crafterTE.getProgress() + "%");
+                        messages.add(TextFormatting.GREEN + "* " + crafterTE.getProgress() + "%");
+                    } else if (crafterTE.getLastError() == null || crafterTE.getLastError().trim().isEmpty()) {
+                        messages.add(TextFormatting.GREEN + "* IDLE");
                     } else {
-                        messages.add(TextFormatting.GREEN + "  IDLE");
+                        messages.add(TextFormatting.RED + "* ERROR");
                     }
                     List<ItemStack> outputs = crafterTE.getOutputs();
                     if (outputs.isEmpty()) {
-                        messages.add(TextFormatting.RED + "  (unknown)");
+                        messages.add("   (unknown)");
                     } else {
                         String display = outputs.get(0).getDisplayName();
-                        messages.add("  " + display);
+                        if (display.length() > 11) {
+                            display = display.substring(0, 11) + "...";
+                        }
+                        messages.add("   " + display);
                     }
                 } else {
-                    messages.add(TextFormatting.RED + "  ?");
+                    messages.add(TextFormatting.RED + "* ?");
                     messages.add("");
                 }
             }

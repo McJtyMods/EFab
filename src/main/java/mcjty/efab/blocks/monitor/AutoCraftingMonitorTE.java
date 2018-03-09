@@ -12,7 +12,7 @@ public class AutoCraftingMonitorTE extends AbstractMonitorTE {
             if (i <= crafterStatus.size()) {
                 messages.set(i, crafterStatus.get(i-1));
             } else {
-                messages.set(i, i % 2 == 0 ? "" : "  -");
+                messages.set(i, "");
             }
         }
     }
