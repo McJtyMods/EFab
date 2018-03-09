@@ -193,7 +193,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                             crafterDelay--;
                             if (crafterDelay <= 0) {
                                 crafterDelay = GeneralConfiguration.crafterDelay;
-                                crafterTE.startCraft(recipe);
+                                crafterTE.startCraft(this, recipe);
                                 countBusy++;
                             }
                         }
@@ -799,7 +799,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    private int getSpeedBonus(IEFabRecipe recipe) {
+    public int getSpeedBonus(IEFabRecipe recipe) {
         getSupportedTiers();
         int bonus = 1;
         if (recipe.getRequiredTiers().contains(RecipeTier.GEARBOX)) {
