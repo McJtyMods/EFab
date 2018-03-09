@@ -15,6 +15,8 @@ public class GeneralConfiguration {
     public static int soundSteamTicks = 50;
     public static int soundBeepsTicks = 8;
 
+    public static int maxSpeedupBonus = 4;
+
     public static int waterSteamCraftingConsumption = 5;
     public static int waterSteamStartAmount = 500;
 
@@ -70,6 +72,9 @@ public class GeneralConfiguration {
                 0, 1000000, "Amount of ticks that the steam sound should play");
         soundBeepsTicks = cfg.getInt("soundBeepsTicks", CATEGORY_GENERAL, soundBeepsTicks,
                 0, 1000000, "Amount of ticks that the beeps sound should play");
+
+        maxSpeedupBonus = cfg.getInt("maxSpeedupBonus", CATEGORY_GENERAL, maxSpeedupBonus,
+                1, 64, "The maximum speed bonus on a crafting operation you can get by adding multiple machine parts");
 
         waterSteamCraftingConsumption = cfg.getInt("waterSteamCraftingConsumption", CATEGORY_GENERAL, waterSteamCraftingConsumption,
                 0, 1000000, "Amount of water per tick that is being consumed during a steam crafting operation");

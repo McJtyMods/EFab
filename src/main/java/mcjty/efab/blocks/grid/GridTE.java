@@ -805,25 +805,25 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (recipe.getRequiredTiers().contains(RecipeTier.GEARBOX)) {
             int cnt = gearBoxes.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(4, cnt);
+                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus, cnt);
             }
         }
         if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
             int cnt = steamEngines.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(4, cnt);
+                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus, cnt);
             }
         }
         if (recipe.getRequiredTiers().contains(RecipeTier.RF)) {
             int cnt = rfControls.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(4, cnt);
+                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus, cnt);
             }
         }
         if (recipe.getRequiredTiers().contains(RecipeTier.COMPUTING)) {
             int cnt = processors.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(4, cnt);
+                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus, cnt);
             }
         }
         return bonus;
