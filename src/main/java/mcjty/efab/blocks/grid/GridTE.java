@@ -48,6 +48,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public static final String CMD_LEFT = "left";
     public static final String CMD_RIGHT = "right";
 
+    private static final int[] SLOTS = new int[]{GridContainer.SLOT_CRAFTOUTPUT, GridContainer.SLOT_CRAFTOUTPUT + 1, GridContainer.SLOT_CRAFTOUTPUT + 2};
+
     private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + COUNT_UPDATES + 1);
 
     private int ticksRemaining = -1;
@@ -75,6 +77,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private Set<RecipeTier> supportedTiers = null;
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
+
+    @Override
+    protected boolean needsCustomInvWrapper() {
+        return true;
+    }
 
     private void updateMonitorStatus(String[] crafterStatus) {
         if (monitors.isEmpty()) {
@@ -533,7 +540,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     @Override
     public int[] getSlotsForFace(EnumFacing side) {
-        return new int[] { GridContainer.SLOT_CRAFTOUTPUT, GridContainer.SLOT_CRAFTOUTPUT+1, GridContainer.SLOT_CRAFTOUTPUT+2 };
+        return SLOTS;
     }
 
     @Override

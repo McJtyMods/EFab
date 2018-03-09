@@ -46,6 +46,11 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
 
     @Override
+    protected boolean needsCustomInvWrapper() {
+        return true;
+    }
+
+    @Override
     public float getSpeed() {
         return speed;
     }
