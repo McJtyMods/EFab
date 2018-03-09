@@ -132,6 +132,13 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         return ticksRemaining >= 0 && !crafterHelper.getCraftingOutput().isEmpty();
     }
 
+    public int getProgress() {
+        if (totalTicks == 0) {
+            return 100;
+        }
+        return (totalTicks - ticksRemaining) * 100 / totalTicks;
+    }
+
     public String getLastError() {
         return lastError;
     }

@@ -5,6 +5,7 @@ import mcjty.efab.blocks.boiler.BoilerBlock;
 import mcjty.efab.blocks.crafter.CrafterBlock;
 import mcjty.efab.blocks.gearbox.GearBoxBlock;
 import mcjty.efab.blocks.grid.GridBlock;
+import mcjty.efab.blocks.monitor.AutoCraftingMonitorBlock;
 import mcjty.efab.blocks.monitor.MonitorBlock;
 import mcjty.efab.blocks.pipes.PipeBlock;
 import mcjty.efab.blocks.processor.ProcessorBlock;
@@ -29,6 +30,7 @@ public class ModBlocks {
     public static RFStorageBlock rfStorageBlock;
     public static ProcessorBlock processorBlock;
     public static MonitorBlock monitorBlock;
+    public static AutoCraftingMonitorBlock autoCraftingMonitorBlock;
     public static StorageBlock storageBlock;
     public static CrafterBlock crafterBlock;
 
@@ -44,6 +46,7 @@ public class ModBlocks {
         rfStorageBlock = new RFStorageBlock();
         processorBlock = new ProcessorBlock();
         monitorBlock = new MonitorBlock();
+        autoCraftingMonitorBlock = new AutoCraftingMonitorBlock();
         storageBlock = new StorageBlock();
         crafterBlock = new CrafterBlock();
     }
@@ -61,6 +64,7 @@ public class ModBlocks {
         rfStorageBlock.initModel();
         processorBlock.initModel();
         monitorBlock.initModel();
+        autoCraftingMonitorBlock.initModel();
         storageBlock.initModel();
         crafterBlock.initModel();
     }

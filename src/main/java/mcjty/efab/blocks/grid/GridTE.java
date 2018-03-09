@@ -7,6 +7,7 @@ import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.blocks.boiler.BoilerTE;
 import mcjty.efab.blocks.crafter.CrafterTE;
+import mcjty.efab.blocks.monitor.AutoCraftingMonitorTE;
 import mcjty.efab.blocks.monitor.MonitorTE;
 import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.storage.StorageTE;
@@ -72,6 +73,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> manaReceptacles = new HashSet<>();
     private final Set<BlockPos> processors = new HashSet<>();
     private final Set<BlockPos> monitors = new HashSet<>();
+    private final Set<BlockPos> autoMonitors = new HashSet<>();
     private final Set<BlockPos> crafters = new HashSet<>();
     private final Set<BlockPos> storages = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
@@ -84,21 +86,67 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     private void updateMonitorStatus(String[] crafterStatus) {
-        if (monitors.isEmpty()) {
-            return;
+        if (!monitors.isEmpty()) {
+            String msg;
+            if (errorTicks > 0) {
+                msg = TextFormatting.DARK_RED + (((errorTicks / 20) % 2 == 0) ? "  ERROR" : "");
+            } else if (totalTicks == 0) {
+                msg = TextFormatting.DARK_GREEN + (ticksRemaining >= 0 ? ("  100%") : "  idle");
+            } else {
+                msg = TextFormatting.DARK_GREEN + (ticksRemaining >= 0 ? ("  " + ((totalTicks - ticksRemaining) * 100 / totalTicks + "%")) : "  idle");
+            }
+            for (BlockPos monitorPos : monitors) {
+                TileEntity te = getWorld().getTileEntity(monitorPos);
+                if (te instanceof MonitorTE) {
+                    ((MonitorTE) te).setCraftStatus(msg, crafterStatus[0], crafterStatus[1]);
+                }
+            }
         }
-        String msg;
-        if (errorTicks > 0) {
-            msg = TextFormatting.DARK_RED + (((errorTicks / 20) % 2 == 0) ? "  ERROR" : "");
-        } else if (totalTicks == 0) {
-            msg = TextFormatting.DARK_GREEN + (ticksRemaining >= 0 ? ("  100%") : "  idle");
-        } else {
-            msg = TextFormatting.DARK_GREEN + (ticksRemaining >= 0 ? ("  " + ((totalTicks - ticksRemaining) * 100 / totalTicks + "%")) : "  idle");
-        }
-        for (BlockPos monitorPos : monitors) {
-            TileEntity te = getWorld().getTileEntity(monitorPos);
-            if (te instanceof MonitorTE) {
-                ((MonitorTE) te).setCraftStatus(msg, crafterStatus[0], crafterStatus[1]);
+        if (!autoMonitors.isEmpty()) {
+            Iterator<BlockPos> iterator = autoMonitors.iterator();
+            List<String> messages = new ArrayList<>();
+            for (BlockPos crafter : crafters) {
+                if (!iterator.hasNext()) {
+                    // No more monitors
+                    break;
+                }
+                if (messages.size() >= 8) {
+                    BlockPos monitorPos = iterator.next();
+                    TileEntity te = getWorld().getTileEntity(monitorPos);
+                    if (te instanceof AutoCraftingMonitorTE) {
+                        ((AutoCraftingMonitorTE) te).setCraftStatus(messages);
+                        messages.clear();
+                    }
+                }
+                TileEntity te = world.getTileEntity(crafter);
+                if (te instanceof CrafterTE) {
+                    CrafterTE crafterTE = (CrafterTE) te;
+                    if (!crafterTE.isOn()) {
+                        messages.add(TextFormatting.GREEN + "  OFF");
+                    } else if (crafterTE.isCrafting()) {
+                        messages.add(TextFormatting.GREEN + "  " + crafterTE.getProgress() + "%");
+                    } else {
+                        messages.add(TextFormatting.GREEN + "  IDLE");
+                    }
+                    List<ItemStack> outputs = crafterTE.getOutputs();
+                    if (outputs.isEmpty()) {
+                        messages.add(TextFormatting.RED + "  (unknown)");
+                    } else {
+                        String display = outputs.get(0).getDisplayName();
+                        messages.add("  " + display);
+                    }
+                } else {
+                    messages.add(TextFormatting.RED + "  ?");
+                    messages.add("");
+                }
+            }
+            while (iterator.hasNext()) {
+                BlockPos monitorPos = iterator.next();
+                TileEntity te = getWorld().getTileEntity(monitorPos);
+                if (te instanceof AutoCraftingMonitorTE) {
+                    ((AutoCraftingMonitorTE) te).setCraftStatus(messages);
+                    messages.clear();
+                }
             }
         }
     }
@@ -694,6 +742,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     processors.add(p);
                 } else if (block == ModBlocks.monitorBlock) {
                     monitors.add(p);
+                } else if (block == ModBlocks.autoCraftingMonitorBlock) {
+                    autoMonitors.add(p);
                 } else if (block == ModBlocks.crafterBlock) {
                     crafters.add(p);
                 } else if (block == ModBlocks.storageBlock) {
@@ -720,6 +770,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             rfStorages.clear();
             processors.clear();
             monitors.clear();
+            autoMonitors.clear();
             crafters.clear();
             storages.clear();
             manaReceptacles.clear();

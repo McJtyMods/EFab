@@ -28,7 +28,8 @@ public class StandardRecipes {
 
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.gearBoxBlock),
-                "iri", "rbr", "iri", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock));
+                "iri", "rbr", "iri", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock)
+                .time(200));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.boilerBlock),
                 "ici", "ibi", "iii", 'i', "ingotIron", 'b', ModBlocks.baseBlock, 'c', Blocks.CAULDRON)
@@ -73,6 +74,13 @@ public class StandardRecipes {
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.monitorBlock),
                 "dqd", "qbq", "dqd", 'd', "dyeBlack", 'b', ModBlocks.baseBlock, 'q', Items.QUARTZ)
+                .tier(RecipeTier.RF)
+                .tier(RecipeTier.COMPUTING)
+                .rfPerTick(10)
+                .time(100));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.autoCraftingMonitorBlock),
+                "rqr", "qbq", "dqd", 'd', "dyeBlack", 'b', ModBlocks.baseBlock, 'q', Items.QUARTZ, 'r', Items.REDSTONE)
                 .tier(RecipeTier.RF)
                 .tier(RecipeTier.COMPUTING)
                 .rfPerTick(10)
