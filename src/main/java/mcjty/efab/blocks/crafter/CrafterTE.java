@@ -43,7 +43,27 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     private String lastError = "";
 
+    // These two variables are used client side only for animation
+    private float cnt = 0;
+    private float cnt2 = 0;
+
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
+
+    public float getCnt() {
+        return cnt;
+    }
+
+    public void setCnt(float cnt) {
+        this.cnt = cnt;
+    }
+
+    public float getCnt2() {
+        return cnt2;
+    }
+
+    public void setCnt2(float cnt2) {
+        this.cnt2 = cnt2;
+    }
 
     @Override
     protected boolean needsCustomInvWrapper() {

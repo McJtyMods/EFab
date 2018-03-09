@@ -98,13 +98,13 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
         }
     }
 
-    private float cnt = 0;
-    private float cnt2 = 0;
-
     private static final int SPEEDCYCLE = 2000;
     private static final int SPEEDCYCLE2 = 2500;
 
     protected void renderWheel(CrafterTE tileEntity) {
+
+        float cnt = tileEntity.getCnt();
+        float cnt2 = tileEntity.getCnt2();
 
         float t = ((long)(2000.0f * 2.0f * (((int)cnt) % SPEEDCYCLE)) / SPEEDCYCLE) % 2000;
         cnt += tileEntity.getSpeed();
@@ -157,6 +157,9 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
         renderModel(tileEntity, getBakedPipeModel());
 
         GlStateManager.popMatrix();
+
+        tileEntity.setCnt(cnt);
+        tileEntity.setCnt2(cnt2);
     }
 
     private void renderModel(CrafterTE tileEntity, IBakedModel model) {
