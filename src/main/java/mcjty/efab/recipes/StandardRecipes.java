@@ -28,8 +28,7 @@ public class StandardRecipes {
 
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.gearBoxBlock),
-                "iri", "rbr", "iri", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock)
-                .time(200));
+                "iri", "rbr", "iri", 'i', "ingotIron", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.boilerBlock),
                 "ici", "ibi", "iii", 'i', "ingotIron", 'b', ModBlocks.baseBlock, 'c', Blocks.CAULDRON)
