@@ -291,18 +291,23 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
         if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
             // Consume a bit of water
-            FluidStack stack = new FluidStack(FluidRegistry.WATER, GeneralConfiguration.waterSteamCraftingConsumption);
+            int amount = GeneralConfiguration.waterSteamCraftingConsumption;
+            amount *= getSpeedBonus(recipe);        // Consume more if the operation is faster
+
+            FluidStack stack = new FluidStack(FluidRegistry.WATER, amount);
             TankTE tank = findSuitableTank(stack);
             if (tank == null) {
                 return CraftProgressResult.ABORT;
             }
             FluidStack drained = tank.getHandler().drain(stack, true);
-            if (drained == null || drained.amount < GeneralConfiguration.waterSteamCraftingConsumption) {
+            if (drained == null || drained.amount < amount) {
                 return CraftProgressResult.ABORT;
             }
         }
         if (recipe.getRequiredRfPerTick() > 0) {
             int stillneeded = recipe.getRequiredRfPerTick();
+            stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
+
             stillneeded = handlePowerPerTick(stillneeded, this.rfControls, GeneralConfiguration.rfControlMax);
             if (stillneeded > 0) {
                 stillneeded = handlePowerPerTick(stillneeded, this.rfStorages, GeneralConfiguration.rfStorageInternalFlow);
@@ -317,6 +322,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
         if (EFab.botania && recipe.getRequiredManaPerTick() > 0) {
             int stillneeded = recipe.getRequiredManaPerTick();
+            stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
+
             stillneeded = handleManaPerTick(stillneeded, this.manaReceptacles, GeneralConfiguration.maxManaUsage);
             if (stillneeded > 0) {
                 if (GeneralConfiguration.abortCraftWhenOutOfMana) {
@@ -792,9 +799,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    private int getCraftTime(IEFabRecipe recipe) {
+    private int getSpeedBonus(IEFabRecipe recipe) {
         getSupportedTiers();
-        int craftTime = recipe.getCraftTime();
         int bonus = 1;
         if (recipe.getRequiredTiers().contains(RecipeTier.GEARBOX)) {
             int cnt = gearBoxes.size();
@@ -820,7 +826,13 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 bonus = Math.min(4, cnt);
             }
         }
-        return craftTime / bonus;
+        return bonus;
+    }
+
+    private int getCraftTime(IEFabRecipe recipe) {
+        getSupportedTiers();
+        int craftTime = recipe.getCraftTime();
+        return craftTime / getSpeedBonus(recipe);
     }
 
     private void handleAnimationSpeed(int boost, Set<BlockPos> posSet) {
