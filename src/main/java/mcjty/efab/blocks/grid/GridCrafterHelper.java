@@ -2,11 +2,14 @@ package mcjty.efab.blocks.grid;
 
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
+import mcjty.efab.recipes.VanillaRecipeAdapter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -28,6 +31,9 @@ public class GridCrafterHelper {
 
     private ItemStack craftingOutput = ItemStack.EMPTY;
 
+    private IRecipe vanillaRecipe = null;       // A vanilla recipe if possible
+    private boolean vanillaRecipeValid = false;
+
     // Client side only and contains the last outputs from the server
     private List<ItemStack> outputsFromServer = Collections.emptyList();
 
@@ -37,6 +43,11 @@ public class GridCrafterHelper {
 
     public InventoryCrafting getWorkInventory() {
         return workInventory;
+    }
+
+    public void invalidateCache() {
+        vanillaRecipe = null;
+        vanillaRecipeValid = false;
     }
 
     /**
@@ -76,7 +87,19 @@ public class GridCrafterHelper {
         for (int i = 0; i < 9; i++) {
             workInventory.setInventorySlotContents(i, inventory.getStackInSlot(i));
         }
-        return RecipeManager.findValidRecipes(workInventory, world);
+        List<IEFabRecipe> validRecipes = RecipeManager.findValidRecipes(workInventory, world);
+        if (validRecipes.isEmpty()) {
+            // Try vanilla
+            if (!vanillaRecipeValid) {
+                vanillaRecipe = CraftingManager.findMatchingRecipe(workInventory, world);
+                vanillaRecipeValid = true;
+            }
+            if (vanillaRecipe != null) {
+                validRecipes.add(new VanillaRecipeAdapter(vanillaRecipe));
+            }
+
+        }
+        return validRecipes;
     }
 
     public boolean checkRoomForOutput(ItemStack output, int start, int stop) {

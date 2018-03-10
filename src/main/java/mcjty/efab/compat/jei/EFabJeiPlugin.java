@@ -15,6 +15,7 @@ import mezz.jei.api.*;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
@@ -39,12 +40,14 @@ public class EFabJeiPlugin implements IModPlugin {
         List<IEFabRecipe> efabRecipes = RecipeManager.getRecipes().stream().map(JEIRecipeAdapter::new).collect(Collectors.toList());
         registry.addRecipes(efabRecipes, GridRecipeCategory.ID);
 
-        registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
-        registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID);
+        registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
 
         IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
+        transferRegistry.addRecipeTransferHandler(GridContainer.class, VanillaRecipeCategoryUid.CRAFTING, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
         transferRegistry.addRecipeTransferHandler(GridContainer.class, GridRecipeCategory.ID, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
-        transferRegistry.addRecipeTransferHandler(new IRecipeTransferHandler<CrafterContainer>() {
+
+        IRecipeTransferHandler<CrafterContainer> handler = new IRecipeTransferHandler<CrafterContainer>() {
             @Override
             public Class<CrafterContainer> getContainerClass() {
                 return CrafterContainer.class;
@@ -64,7 +67,9 @@ public class EFabJeiPlugin implements IModPlugin {
 
                 return null;
             }
-        }, GridRecipeCategory.ID);
+        };
+        transferRegistry.addRecipeTransferHandler(handler, GridRecipeCategory.ID);
+        transferRegistry.addRecipeTransferHandler(handler, VanillaRecipeCategoryUid.CRAFTING);
     }
 
     @Override

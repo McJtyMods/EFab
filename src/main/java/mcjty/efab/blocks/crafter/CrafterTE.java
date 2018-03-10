@@ -328,6 +328,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     public void setInventorySlotContents(int index, ItemStack stack) {
         getInventoryHelper().setInventorySlotContents(getInventoryStackLimit(), index, stack);
         if (index >= CrafterContainer.SLOT_CRAFTINPUT && index < CrafterContainer.SLOT_CRAFTOUTPUT) {
+            crafterHelper.invalidateCache();
             setValidRecipeGhostOutput();
         }
     }
@@ -336,6 +337,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     public ItemStack decrStackSize(int index, int count) {
         ItemStack stack = getInventoryHelper().decrStackSize(index, count);
         if (index >= CrafterContainer.SLOT_CRAFTINPUT && index < CrafterContainer.SLOT_CRAFTOUTPUT) {
+            crafterHelper.invalidateCache();
             setValidRecipeGhostOutput();
         }
         return stack;
@@ -345,6 +347,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     public ItemStack removeStackFromSlot(int index) {
         ItemStack stack = getInventoryHelper().removeStackFromSlot(index);
         if (index >= CrafterContainer.SLOT_CRAFTINPUT && index < CrafterContainer.SLOT_CRAFTOUTPUT) {
+            crafterHelper.invalidateCache();
             setValidRecipeGhostOutput();
         }
         return stack;
@@ -352,6 +355,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
 
     public void setGridContents(List<ItemStack> stacks) {
+        crafterHelper.invalidateCache();
         setInventorySlotContents(CrafterContainer.SLOT_GHOSTOUT, stacks.get(0));
         for (int i = 1 ; i < stacks.size() ; i++) {
             setInventorySlotContents(CrafterContainer.SLOT_CRAFTINPUT + i-1, stacks.get(i));

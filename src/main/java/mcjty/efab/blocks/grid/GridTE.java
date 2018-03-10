@@ -555,6 +555,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         getInventoryHelper().setInventorySlotContents(getInventoryStackLimit(), index, stack);
         if (index >= GridContainer.SLOT_CRAFTINPUT && index < GridContainer.SLOT_CRAFTOUTPUT) {
             setValidRecipeGhostOutput();
+            crafterHelper.invalidateCache();
             // We need to update the visual crafting grid client side
             markDirtyClient();
         } else if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
@@ -567,6 +568,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         ItemStack stack = getInventoryHelper().decrStackSize(index, count);
         if (index >= GridContainer.SLOT_CRAFTINPUT && index < GridContainer.SLOT_CRAFTOUTPUT) {
             setValidRecipeGhostOutput();
+            crafterHelper.invalidateCache();
             // We need to update the visual crafting grid client side
             markDirtyClient();
         } else if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
@@ -580,6 +582,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         ItemStack stack = getInventoryHelper().removeStackFromSlot(index);
         if (index >= GridContainer.SLOT_CRAFTINPUT && index < GridContainer.SLOT_CRAFTOUTPUT) {
             setValidRecipeGhostOutput();
+            crafterHelper.invalidateCache();
             // We need to update the visual crafting grid client side
             markDirtyClient();
         } else if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
