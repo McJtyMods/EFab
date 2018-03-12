@@ -36,34 +36,34 @@
     "state": {
       "0": {
         "submodel": {
-//          "s0": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain0" }, "model": "efab:pipebend.obj", "transform": { "translation": [0, 0, 0]          } },
-//          "s1": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain1" }, "model": "efab:pipebend.obj", "transform": { "translation": [0.5, 0, 0]        } },
-//          "s2": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain2" }, "model": "efab:pipebend.obj", "transform": { "translation": [0, 0.5, 0]        } },
-//          "s3": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain3" }, "model": "efab:pipebend.obj", "transform": { "translation": [0.5, 0.5, 0]      } },
-//          "s4": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain4" }, "model": "efab:pipebend.obj", "transform": { "translation": [0.5, 0, 0.5]      } },
-//          "s5": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain5" }, "model": "efab:pipebend.obj", "transform": { "translation": [0.5, 0.5, 0.5]    } },
-//          "s6": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain6" }, "model": "efab:pipebend.obj", "transform": { "translation": [0, 0.5, 0.5]      } },
-//          "s7": { "custom": { "flip-v": true }, "textures": { "#efab:blocks/plain": "efab:blocks/plain7" }, "model": "efab:pipebend.obj", "transform": { "translation": [0, 0, 0.5]        } }
-          "s0": { "custom": { "flip-v": true }, "model": "efab:pipeblock.obj", "transform": { "rotation": {"y":180}, "translation": [-0.5, 0, -0.5]          } },
-          "s1": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0]        } },
-          "s2": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0.5, 0]        } },
-          "s3": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [0.5, 0.5, 0]      } },
-          "s4": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0.5]      } },
-          "s5": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0.5, 0.5]    } },
-          "s6": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0.5, 0.5]      } },
-          "s7": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "rotation": [ { "x": 180}, {"y":90} ],  "translation": [0, -0.5, 0.5]        } }
+          "s0": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [-0.75, 0.25, 0.25], "rotation": [{"z": 90}] } },       // DOWN, BACK, LEFT  OK
+          "s1": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [-0.25, -0.75, 0.25], "rotation": [{"z": 180}] } },   // DOWN, BACK, RIGHT   OK
+          "s2": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [0.25, 0.75, -0.75], "rotation": [{"x": -90}] } },   // UP, BACK, LEFT  OK
+          "s3": { "custom": { "flip-v": true }, "model": "efab:pipeblock.obj", "transform": { "translation": [0.75, 0.75, -0.75], "rotation": [{"y": 90}] } },  // UP, BACK, RIGHT    OK
+          "s4": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [0.25, 0.25, 0.75] } },   // DOWN, FRONT, LEFT      OK
+          "s5": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [-0.25, -0.75, 0.75], "rotation": [{"z":180}] } },   // DOWN, FRONT, RIGHT  OK
+          "s6": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.25, -0.25, 0.75], "rotation": [{"x": 90}] } },       // UP, FRONT, LEFT    OK
+          "s7": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.75, 0.75, 0.75] } }        // UP, FRONT, RIGHT       OK
+//          "s0": { "custom": { "flip-v": true }, "model": "efab:pipeblock.obj", "transform": { "rotation": {"y":180}, "translation": [-0.5, 0, -0.5]          } },
+//          "s1": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0]        } },
+//          "s2": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0.5, 0]        } },
+//          "s3": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [0.5, 0.5, 0]      } },
+//          "s4": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0.5]      } },
+//          "s5": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0.5, 0.5]    } },
+//          "s6": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0.5, 0.5]      } },
+//          "s7": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "rotation": [ { "x": 180}, {"y":90} ],  "translation": [0, -0.5, 0.5]        } }
         }
       },
       "1": {
         "submodel": {
-          "s0": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "rotation": [{"z":90},{"x":90}], "translation": [0, 0, 0]          } },
-          "s1": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0]        } },
-          "s2": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [0, 0.5, 0]        } },
-          "s3": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "rotation": { "y": 180 }, "translation": [0, 0.5, -0.5]      } },
-          "s4": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0, 0.5]      } },
-          "s5": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.5, 0.5, 0.5]    } },
-          "s6": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0.5, 0.5]      } },
-          "s7": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0, 0, 0.5]        } }
+          "s0": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [-0.75, 0.25, 0.25], "rotation": [{"z": 90}] } },       // DOWN, BACK, LEFT   OK
+          "s1": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [-0.25, -0.75, 0.25], "rotation": [{"z": 180}] } },   // DOWN, BACK, RIGHT  OK
+          "s2": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [-0.75, -0.25, -0.75], "rotation": [{"y": 180}, {"x": 90}] } },   // UP, BACK, LEFT  OK
+          "s3": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [0.75, 0.75, -0.75], "rotation": [{"y": 90}] } },  // UP, BACK, RIGHT   OK
+          "s4": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [0.25, -0.75, 0.75], "rotation": [{"x":180}, {"y":90}] } },   // DOWN, FRONT, LEFT  OK
+          "s5": { "custom": { "flip-v": true }, "model": "efab:pipe.obj", "transform": { "translation": [-0.25, -0.75, 0.75], "rotation": [{"z":180}] } },   // DOWN, FRONT, RIGHT
+          "s6": { "custom": { "flip-v": true }, "model": "efab:pipeblock.obj", "transform": { "translation": [0.25, 0.75, 0.75] } },       // UP, FRONT, LEFT
+          "s7": { "custom": { "flip-v": true }, "model": "efab:pipebend.obj", "transform": { "translation": [0.75, 0.75, 0.75] } }        // UP, FRONT, RIGHT
         }
       },
       "2": {
