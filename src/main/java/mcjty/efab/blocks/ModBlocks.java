@@ -8,6 +8,7 @@ import mcjty.efab.blocks.grid.GridBlock;
 import mcjty.efab.blocks.monitor.AutoCraftingMonitorBlock;
 import mcjty.efab.blocks.monitor.MonitorBlock;
 import mcjty.efab.blocks.pipes.PipeBlock;
+import mcjty.efab.blocks.poweroptimizer.PowerOptimizerBlock;
 import mcjty.efab.blocks.processor.ProcessorBlock;
 import mcjty.efab.blocks.rfcontrol.RfControlBlock;
 import mcjty.efab.blocks.rfstorage.RFStorageBlock;
@@ -33,6 +34,7 @@ public class ModBlocks {
     public static AutoCraftingMonitorBlock autoCraftingMonitorBlock;
     public static StorageBlock storageBlock;
     public static CrafterBlock crafterBlock;
+    public static PowerOptimizerBlock powerOptimizerBlock;
 
     public static void init() {
         baseBlock = new BaseBlock();
@@ -49,6 +51,7 @@ public class ModBlocks {
         autoCraftingMonitorBlock = new AutoCraftingMonitorBlock();
         storageBlock = new StorageBlock();
         crafterBlock = new CrafterBlock();
+        powerOptimizerBlock = new PowerOptimizerBlock();
     }
 
     @SideOnly(Side.CLIENT)
@@ -67,5 +70,6 @@ public class ModBlocks {
         autoCraftingMonitorBlock.initModel();
         storageBlock.initModel();
         crafterBlock.initModel();
+        powerOptimizerBlock.initModel();
     }
 }

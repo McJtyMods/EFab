@@ -28,7 +28,7 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
         super(Material.IRON, PipeTE.class, EmptyContainer.class, "pipes", false);
     }
 
-    public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 3);
+    public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 1);
 
     @Override
     public RotationType getRotationType() {
@@ -74,10 +74,10 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         world.setBlockState(pos, state
                 .withProperty(FACING_HORIZ, placer.getHorizontalFacing().getOpposite())
-//                        .withProperty(STATE, random.nextInt(4))
-                        .withProperty(STATE, pos.getX()%4)
+                        .withProperty(STATE, random.nextInt(2))
+//                        .withProperty(STATE, pos.getX()%4)
                 , 2);
-        System.out.println("pos.getX()%4 = " + pos.getX() % 4);
+//        System.out.println("pos.getX()%4 = " + pos.getX() % 4);
     }
 
     @Override

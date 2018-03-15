@@ -76,6 +76,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> autoMonitors = new HashSet<>();
     private final Set<BlockPos> crafters = new HashSet<>();
     private final Set<BlockPos> storages = new HashSet<>();
+    private final Set<BlockPos> powerOptimizers = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
@@ -358,17 +359,26 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
         if (recipe.getRequiredRfPerTick() > 0) {
-            int stillneeded = recipe.getRequiredRfPerTick();
-            stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
+            if (powerOptimizers.isEmpty()) {
+                int stillneeded = recipe.getRequiredRfPerTick();
+                stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
 
-            stillneeded = handlePowerPerTick(stillneeded, this.rfControls, GeneralConfiguration.rfControlMax);
-            if (stillneeded > 0) {
-                stillneeded = handlePowerPerTick(stillneeded, this.rfStorages, GeneralConfiguration.rfStorageInternalFlow);
+                stillneeded = handlePowerPerTick(stillneeded, this.rfControls, GeneralConfiguration.rfControlMax);
                 if (stillneeded > 0) {
-                    if (GeneralConfiguration.abortCraftWhenOutOfRf) {
-                        return CraftProgressResult.ABORT;
-                    } else {
-                        return CraftProgressResult.WAIT;
+                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorages, GeneralConfiguration.rfStorageInternalFlow);
+                    if (stillneeded > 0) {
+                        if (GeneralConfiguration.abortCraftWhenOutOfRf) {
+                            return CraftProgressResult.ABORT;
+                        } else {
+                            return CraftProgressResult.WAIT;
+                        }
+                    }
+                }
+            } else {
+                // Handle in multiple ticks for efficiency
+                if (handlePowerOptimized(recipe, 100)) {
+                    if (handlePowerOptimized(recipe, 10)) {
+                        handlePowerOptimized(recipe, 1);
                     }
                 }
             }
@@ -387,6 +397,18 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
         return CraftProgressResult.OK;
+    }
+
+    private boolean handlePowerOptimized(@Nonnull IEFabRecipe recipe, int step) {
+        while (ticksRemaining > step) {
+            ticksRemaining -= step;
+            int needed = recipe.getRequiredRfPerTick() * step;
+            needed = handlePowerPerTick(needed, this.rfControls, 1000000000);
+            if (needed > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private int handlePowerPerTick(int stillneeded, Set<BlockPos> poses, int maxUsage) {
@@ -756,6 +778,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     crafters.add(p);
                 } else if (block == ModBlocks.storageBlock) {
                     storages.add(p);
+                } else if (block == ModBlocks.powerOptimizerBlock) {
+                    powerOptimizers.add(p);
                 } else if (block == ModBlocks.tankBlock) {
                     tanks.add(p);
                 } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
@@ -782,7 +806,16 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             crafters.clear();
             storages.clear();
             manaReceptacles.clear();
+            powerOptimizers.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
+
+            for (BlockPos control : rfControls) {
+                TileEntity te = world.getTileEntity(control);
+                if (te instanceof RfControlTE) {
+                    RfControlTE controlTE = (RfControlTE) te;
+                    controlTE.setOptimized(!powerOptimizers.isEmpty());
+                }
+            }
         }
     }
 
