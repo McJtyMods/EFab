@@ -6,7 +6,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class VanillaRecipeAdapter implements IEFabRecipe {
 
@@ -18,7 +21,7 @@ public class VanillaRecipeAdapter implements IEFabRecipe {
 
     @Nonnull
     @Override
-    public Collection<FluidStack> getRequiredFluids() {
+    public List<FluidStack> getRequiredFluids() {
         return Collections.emptyList();
     }
 
@@ -72,6 +75,15 @@ public class VanillaRecipeAdapter implements IEFabRecipe {
     @Override
     public IRecipe cast() {
         return vanillaRecipe;
+    }
+
+    @Override
+    public void copyNBTFrom(String character) {
+    }
+
+    @Override
+    public String getCopyNBTFrom() {
+        return null;
     }
 
     @Override

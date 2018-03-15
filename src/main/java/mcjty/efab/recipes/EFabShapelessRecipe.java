@@ -18,6 +18,7 @@ public class EFabShapelessRecipe extends ShapedOreRecipe implements IEFabRecipe 
     private int requiredRfPerTick = 0;
     private int requiredManaPerTick = 0;
     private int craftTime = 0;
+    private String copyNBT;
 
     private List<String> inputs = new ArrayList<>();
     private Map<String,Object> inputMap = new HashMap<>();
@@ -56,6 +57,16 @@ public class EFabShapelessRecipe extends ShapedOreRecipe implements IEFabRecipe 
         }
 
         return inputLists;
+    }
+
+    @Override
+    public void copyNBTFrom(String character) {
+        copyNBT = character;
+    }
+
+    @Override
+    public String getCopyNBTFrom() {
+        return copyNBT;
     }
 
     @Override
@@ -100,7 +111,7 @@ public class EFabShapelessRecipe extends ShapedOreRecipe implements IEFabRecipe 
 
     @Nonnull
     @Override
-    public Collection<FluidStack> getRequiredFluids() {
+    public List<FluidStack> getRequiredFluids() {
         return requiredFluids;
     }
 

@@ -287,6 +287,12 @@ public class StandardRecipes {
         } else {
             recipe = new EFabShapelessRecipe(output, input.toArray(new Object[input.size()]));
         }
+
+        if (obj.has("copynbt")) {
+            String copyFrom = obj.get("copynbt").getAsString();
+            recipe.copyNBTFrom(copyFrom);
+        }
+
         recipe.time(obj.get("time").getAsInt());
         if (obj.has("tiers")) {
             JsonArray tiersArray = obj.get("tiers").getAsJsonArray();
@@ -343,6 +349,11 @@ public class StandardRecipes {
             inputMapObject.add(entry.getKey(), element);
         }
         obj.add("inputmap", inputMapObject);
+
+        if (recipe.getCopyNBTFrom() != null) {
+            obj.add("copynbt", new JsonPrimitive(recipe.getCopyNBTFrom()));
+        }
+
         obj.add("time", new JsonPrimitive(recipe.getCraftTime()));
 
         Set<RecipeTier> tiers = recipe.getRequiredTiers();

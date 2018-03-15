@@ -18,15 +18,14 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipeWrapper {
 
     private final IEFabRecipe recipe;
     private final List<List<ItemStack>> inputs;
+    private final List<List<FluidStack>> fluidInputs;
     private final ItemStack output;
     private final List<Tooltip> tooltips = new ArrayList<>();
 
@@ -37,6 +36,7 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
         this.recipe = recipe;
 
         this.inputs = recipe.getInputLists();
+        this.fluidInputs = Collections.singletonList(recipe.getRequiredFluids());
         this.output = recipe.cast().getRecipeOutput();
     }
 
@@ -54,6 +54,7 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
     public void getIngredients(@Nonnull IIngredients ingredients) {
         ingredients.setOutput(ItemStack.class, output);
         ingredients.setInputLists(ItemStack.class, inputs);
+        ingredients.setInputLists(FluidStack.class, fluidInputs);
     }
 
 
