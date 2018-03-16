@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +57,24 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
         ingredients.setInputLists(ItemStack.class, inputs);
     }
 
+    private static DecimalFormat format = new DecimalFormat("#.##");
+
+    private static String formatPower(long l) {
+        if (l < 10000) {
+            return Long.toString(l);
+        } else if (l < 1000000) {
+            Double d = l / 1000.0;
+            return format.format(d)+"K";
+        } else if (l < 1000000000L) {
+            Double d = l / 1000000.0;
+            return format.format(d)+"M";
+        } else {
+            Double d = l / 1000000000.0;
+            return format.format(d)+"G";
+        }
+    }
+
+
 
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
@@ -73,8 +92,8 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
         int perTick = recipe.getRequiredRfPerTick();
         if (perTick > 0) {
             minecraft.fontRenderer.drawString("RF", 0, y, Color.black.getRGB());
-            int total = perTick * recipe.getCraftTime();
-            minecraft.fontRenderer.drawString("" + total + "RF @ " + perTick + "RF/t", 28, y, Color.blue.getRGB());
+            long total = perTick * (long) recipe.getCraftTime();
+            minecraft.fontRenderer.drawString("" + formatPower(total) + "RF @ " + formatPower(perTick) + "RF/t", 28, y, Color.blue.getRGB());
             GlStateManager.color(1, 1, 1);
             x = 0;
             y += 12;
