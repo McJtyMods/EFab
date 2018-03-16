@@ -42,6 +42,8 @@ public class PowerOptimizerBlock extends GenericEFabMultiBlockPart<PowerOptimize
         tooltip.add(TextFormatting.WHITE + "This block considerably optimizes");
         tooltip.add(TextFormatting.WHITE + "RF based crafting operations by");
         tooltip.add(TextFormatting.WHITE + "negating the time constraint");
+        tooltip.add(TextFormatting.WHITE + "and allowing the craft to go as");
+        tooltip.add(TextFormatting.WHITE + "fast as there is available power");
     }
 
     @Override

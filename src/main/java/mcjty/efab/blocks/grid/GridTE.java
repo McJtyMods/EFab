@@ -315,7 +315,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 } else {
                     CraftProgressResult result = craftInProgress(recipe);
                     if (result == CraftProgressResult.WAIT) {
-                        ticksRemaining--;
+                        ticksRemaining++;
                     } else if (result == CraftProgressResult.ABORT) {
                         abortCraft();
                         errorTicks = 1;
@@ -376,10 +376,13 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 }
             } else {
                 // Handle in multiple ticks for efficiency
-                if (handlePowerOptimized(recipe, 100)) {
-                    if (handlePowerOptimized(recipe, 10)) {
-                        handlePowerOptimized(recipe, 1);
-                    }
+                ticksRemaining++;       // We process things differently so put back our tick
+                handlePowerOptimized(recipe, 100);
+                handlePowerOptimized(recipe, 10);
+                handlePowerOptimized(recipe, 1);
+                if (ticksRemaining > 0) {
+                    ticksRemaining--;
+                    return CraftProgressResult.WAIT;
                 }
             }
         }
@@ -399,16 +402,18 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return CraftProgressResult.OK;
     }
 
-    private boolean handlePowerOptimized(@Nonnull IEFabRecipe recipe, int step) {
-        while (ticksRemaining > step) {
-            ticksRemaining -= step;
+    private void handlePowerOptimized(@Nonnull IEFabRecipe recipe, int step) {
+        while (ticksRemaining >= step) {
             int needed = recipe.getRequiredRfPerTick() * step;
-            needed = handlePowerPerTick(needed, this.rfControls, 1000000000);
-            if (needed > 0) {
-                return false;
+            int available = getAvailablePower(this.rfControls) + getAvailablePower(this.rfStorages);
+            if (needed > available) {
+                return;
             }
+
+            ticksRemaining -= step;
+            needed = handlePowerPerTick(needed, this.rfControls, 1000000000);
+            handlePowerPerTick(needed, this.rfStorages, 1000000000);
         }
-        return true;
     }
 
     private int handlePowerPerTick(int stillneeded, Set<BlockPos> poses, int maxUsage) {
@@ -428,6 +433,18 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
         return stillneeded;
+    }
+
+    private int getAvailablePower(Set<BlockPos> poses) {
+        int power = 0;
+        for (BlockPos p : poses) {
+            TileEntity te = getWorld().getTileEntity(p);
+            if (te instanceof IEFabEnergyStorage) {
+                IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
+                power += energyStorage.getEnergyStored(null);
+            }
+        }
+        return power;
     }
 
     private int handleManaPerTick(int stillneeded, Set<BlockPos> poses, int maxUsage) {
@@ -808,14 +825,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             manaReceptacles.clear();
             powerOptimizers.clear();
             findMultiBlockParts(getPos(), new HashSet<>());
-
-            for (BlockPos control : rfControls) {
-                TileEntity te = world.getTileEntity(control);
-                if (te instanceof RfControlTE) {
-                    RfControlTE controlTE = (RfControlTE) te;
-                    controlTE.setOptimized(!powerOptimizers.isEmpty());
-                }
-            }
         }
     }
 
@@ -886,7 +895,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
             if (EFab.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
                 handleAnimationSpeed(GeneralConfiguration.manaRotationBoost, manaReceptacles);
-
             }
         }
     }
@@ -1057,37 +1065,39 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
 
         if (recipe.getRequiredRfPerTick() > 0) {
-            int totavailable = 0;
-            int maxpertick = 0;
-            for (BlockPos p : rfControls) {
-                TileEntity te = getWorld().getTileEntity(p);
-                if (te instanceof IEFabEnergyStorage) {
-                    IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
-                    totavailable += energyStorage.getEnergyStored(null);
-                    maxpertick += energyStorage.getMaxInternalConsumption();
+            if (powerOptimizers.isEmpty()) {
+                int totavailable = 0;
+                int maxpertick = 0;
+                for (BlockPos p : rfControls) {
+                    TileEntity te = getWorld().getTileEntity(p);
+                    if (te instanceof IEFabEnergyStorage) {
+                        IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
+                        totavailable += energyStorage.getEnergyStored(null);
+                        maxpertick += energyStorage.getMaxInternalConsumption();
+                    }
                 }
-            }
-            for (BlockPos p : rfStorages) {
-                TileEntity te = getWorld().getTileEntity(p);
-                if (te instanceof IEFabEnergyStorage) {
-                    IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
-                    totavailable += energyStorage.getEnergyStored(null);
-                    maxpertick += energyStorage.getMaxInternalConsumption();
+                for (BlockPos p : rfStorages) {
+                    TileEntity te = getWorld().getTileEntity(p);
+                    if (te instanceof IEFabEnergyStorage) {
+                        IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
+                        totavailable += energyStorage.getEnergyStored(null);
+                        maxpertick += energyStorage.getMaxInternalConsumption();
+                    }
                 }
-            }
-            if (recipe.getRequiredRfPerTick() > maxpertick) {
-                if (errors != null) {
-                    errors.add("Not enough power capacity!");
-                    errors.add("    " + recipe.getRequiredRfPerTick() + "RF/t needed but only " +
-                        maxpertick + " possible");
-                } else {
-                    return true;
-                }
-            } else if (recipe.getRequiredRfPerTick() > totavailable) {
-                if (errors != null) {
-                    errors.add("Not enough power!");
-                } else {
-                    return true;
+                if (recipe.getRequiredRfPerTick() > maxpertick) {
+                    if (errors != null) {
+                        errors.add("Not enough power capacity!");
+                        errors.add("    " + recipe.getRequiredRfPerTick() + "RF/t needed but only " +
+                                maxpertick + " possible");
+                    } else {
+                        return true;
+                    }
+                } else if (recipe.getRequiredRfPerTick() > totavailable) {
+                    if (errors != null) {
+                        errors.add("Not enough power!");
+                    } else {
+                        return true;
+                    }
                 }
             }
         }

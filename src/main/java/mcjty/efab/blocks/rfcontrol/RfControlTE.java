@@ -24,8 +24,6 @@ public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEn
     // Client side only
     private int sparks = -1;
 
-    private boolean optimized = false;
-
     @Override
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
@@ -68,10 +66,6 @@ public class RfControlTE extends GenericEFabTile implements IEnergyProvider, IEn
     public void setSpark(int s) {
         sparks = s;
         getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
-    }
-
-    public void setOptimized(boolean b) {
-        optimized = b;
     }
 
     @Override

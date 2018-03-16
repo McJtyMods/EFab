@@ -13,7 +13,7 @@ import java.util.Set;
 public interface IEFabRecipe {
 
     @Nonnull
-    Collection<FluidStack> getRequiredFluids();
+    List<FluidStack> getRequiredFluids();
 
     int getRequiredRfPerTick();
 
@@ -33,6 +33,11 @@ public interface IEFabRecipe {
     IEFabRecipe manaPerTick(int mana);
 
     IEFabRecipe time(int t);
+
+    // @todo not yet implemented
+    void copyNBTFrom(String character);
+
+    String getCopyNBTFrom();
 
     @Nonnull
     IRecipe cast();

@@ -149,6 +149,10 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     public boolean isCrafting() {
+        IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+        if (recipe == null) {
+            return false;
+        }
         return ticksRemaining >= 0 && !crafterHelper.getCraftingOutput().isEmpty();
     }
 
