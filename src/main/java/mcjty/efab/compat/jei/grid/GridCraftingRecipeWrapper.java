@@ -6,7 +6,6 @@ import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.render.RenderTools;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -18,8 +17,11 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipeWrapper {
 
