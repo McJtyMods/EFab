@@ -46,6 +46,9 @@ public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE
     public void render(SteamEngineTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
+        if (te.getWorld().isAirBlock(te.getPos())) {
+            return;
+        }
         GlStateManager.pushMatrix();
 
         GlStateManager.translate(x + .5, y, z + .5);

@@ -65,6 +65,10 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
     public void render(CrafterTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
+        if (te.getWorld().isAirBlock(te.getPos())) {
+            return;
+        }
+
         GlStateManager.pushMatrix();
 
         GlStateManager.translate(x + .5, y, z + .5);

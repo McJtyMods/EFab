@@ -21,6 +21,10 @@ public class TankRenderer extends TileEntitySpecialRenderer<TankTE> {
     public void render(TankTE te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
+        if (te.getWorld().isAirBlock(te.getPos())) {
+            return;
+        }
+
         Block block = te.getWorld().getBlockState(te.getPos().down()).getBlock();
         if (block != ModBlocks.tankBlock) {
             renderHud(te, x, y, z);
