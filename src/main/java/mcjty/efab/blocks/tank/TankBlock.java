@@ -106,14 +106,14 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
                 if (fluid == null || fluid.amount <= 0) {
                     ITextComponent component = new TextComponentString("Tank is empty");
                     if (player instanceof EntityPlayer) {
-                        ((EntityPlayer) player).sendStatusMessage(component, false);
+                        player.sendStatusMessage(component, false);
                     } else {
                         player.sendMessage(component);
                     }
                 } else {
                     ITextComponent component = new TextComponentString("Tank contains " + fluid.amount + "mb of " + fluid.getLocalizedName());
                     if (player instanceof EntityPlayer) {
-                        ((EntityPlayer) player).sendStatusMessage(component, false);
+                        player.sendStatusMessage(component, false);
                     } else {
                         player.sendMessage(component);
                     }

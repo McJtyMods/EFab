@@ -22,6 +22,7 @@ public class EFabFluidTank extends FluidTank {
         Fluid n = (fluid == null || fluid.amount <= 0) ? null : fluid.getFluid();
         if (o != n) {
             tank.markDirtyClient();
+
         }
         return fluidStack;
     }
@@ -34,6 +35,7 @@ public class EFabFluidTank extends FluidTank {
         Fluid n = (fluid == null || fluid.amount <= 0) ? null : fluid.getFluid();
         if (o != n) {
             tank.markDirtyClient();
+
         }
         return fluidStack;
     }
@@ -45,6 +47,7 @@ public class EFabFluidTank extends FluidTank {
         Fluid n = (fluid == null || fluid.amount <= 0) ? null : fluid.getFluid();
         if (o != n) {
             tank.markDirtyClient();
+
         }
         return i;
     }

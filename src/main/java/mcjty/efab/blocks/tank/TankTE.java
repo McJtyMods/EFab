@@ -147,7 +147,32 @@ public class TankTE extends GenericEFabTile {
     @Override
     public void readClientDataFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
-        clientFluidName = tagCompound.getString("fluidName");
+        String fluidName = tagCompound.getString("fluidName");
+        setClientFluidName(fluidName);
+    }
+
+    private void setClientFluidName(String fluidName) {
+        clientFluidName = fluidName;
+        BlockPos p = pos;
+        if (p == null || world == null) {
+            return;
+        }
+        while (true) {
+            if (world.getBlockState(p.down()) == ModBlocks.tankBlock) {
+                p = p.down();
+            } else {
+                break;
+            }
+        }
+        while (true) {
+            TileEntity te = world.getTileEntity(p);
+            if (te instanceof TankTE) {
+                ((TankTE) te).clientFluidName = fluidName;
+                p = p.up();
+            } else {
+                break;
+            }
+        }
     }
 
     @Override
@@ -173,7 +198,7 @@ public class TankTE extends GenericEFabTile {
         if (tagCompound.hasKey("fluid")) {
             handler.readFromNBT(tagCompound.getCompoundTag("fluid"));
             if (getFluid() != null) {
-                clientFluidName = getFluid().getLocalizedName();
+                setClientFluidName(getFluid().getLocalizedName());
             }
         }
     }
