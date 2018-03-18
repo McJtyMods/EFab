@@ -195,7 +195,7 @@ public class TankTE extends GenericEFabTile {
         } else {
             handler = null;
         }
-        if (tagCompound.hasKey("fluid")) {
+        if (tagCompound.hasKey("fluid") && handler != null) {
             handler.readFromNBT(tagCompound.getCompoundTag("fluid"));
             if (getFluid() != null) {
                 setClientFluidName(getFluid().getLocalizedName());
@@ -207,7 +207,7 @@ public class TankTE extends GenericEFabTile {
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
         tagCompound.setInteger("capacity", capacity);
-        if (handler != null) {
+        if (handler != null && capacity > 0) {
             NBTTagCompound fluidTc = new NBTTagCompound();
             handler.writeToNBT(fluidTc);
             tagCompound.setTag("fluid", fluidTc);
