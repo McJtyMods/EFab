@@ -593,8 +593,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     public void setInventorySlotContents(int index, ItemStack stack) {
         getInventoryHelper().setInventorySlotContents(getInventoryStackLimit(), index, stack);
         if (index >= GridContainer.SLOT_CRAFTINPUT && index < GridContainer.SLOT_CRAFTOUTPUT) {
-            setValidRecipeGhostOutput();
             crafterHelper.invalidateCache();
+            setValidRecipeGhostOutput();
             // We need to update the visual crafting grid client side
             markDirtyClient();
         } else if (index >= GridContainer.SLOT_UPDATES && index < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES) {
