@@ -17,6 +17,7 @@ public class GeneralConfiguration {
 
     public static int maxSpeedupBonus = 4;
     public static int vanillaCraftTime = 1;
+    public static boolean vanillaCraftingAllowed = true;
 
     public static int waterSteamCraftingConsumption = 5;
     public static int waterSteamStartAmount = 500;
@@ -78,6 +79,8 @@ public class GeneralConfiguration {
                 1, 64, "The maximum speed bonus on a crafting operation you can get by adding multiple machine parts");
         vanillaCraftTime = cfg.getInt("vanillaCraftTime", CATEGORY_GENERAL, vanillaCraftTime,
                 0, 1000000, "The amount of time needed for the grid/crafter to craft normal vanilla recipes");
+        vanillaCraftingAllowed = cfg.getBoolean("vanillaCraftingAllowed", CATEGORY_GENERAL, vanillaCraftingAllowed,
+                "If enabled the EFab grid and crafter will also support vanilla recipes. If disabled they don't");
 
         waterSteamCraftingConsumption = cfg.getInt("waterSteamCraftingConsumption", CATEGORY_GENERAL, waterSteamCraftingConsumption,
                 0, 1000000, "Amount of water per tick that is being consumed during a steam crafting operation");

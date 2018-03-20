@@ -6,6 +6,7 @@ import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.grid.GridContainer;
 import mcjty.efab.compat.jei.grid.GridRecipeCategory;
 import mcjty.efab.compat.jei.grid.GridRecipeWrapperFactory;
+import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.network.PacketSendRecipe;
 import mcjty.efab.recipes.IEFabRecipe;
@@ -39,12 +40,17 @@ public class EFabJeiPlugin implements IModPlugin {
 
         List<IEFabRecipe> efabRecipes = RecipeManager.getRecipes().stream().map(JEIRecipeAdapter::new).collect(Collectors.toList());
         registry.addRecipes(efabRecipes, GridRecipeCategory.ID);
-
-        registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
-        registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
-
         IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
-        transferRegistry.addRecipeTransferHandler(GridContainer.class, VanillaRecipeCategoryUid.CRAFTING, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
+
+        if (GeneralConfiguration.vanillaCraftingAllowed) {
+            registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
+            registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
+            transferRegistry.addRecipeTransferHandler(GridContainer.class, VanillaRecipeCategoryUid.CRAFTING, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
+        } else {
+            registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID);
+            registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID);
+        }
+
         transferRegistry.addRecipeTransferHandler(GridContainer.class, GridRecipeCategory.ID, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);
 
         IRecipeTransferHandler<CrafterContainer> handler = new IRecipeTransferHandler<CrafterContainer>() {
