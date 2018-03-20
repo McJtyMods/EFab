@@ -85,7 +85,7 @@ class GridCraftingRecipeWrapper implements IRecipeWrapper, IShapedCraftingRecipe
         Set<RecipeTier> tiers = recipe.getRequiredTiers();
         int y = 60;
         minecraft.fontRenderer.drawString("Time", 0, y, Color.black.getRGB());
-        minecraft.fontRenderer.drawString("" + GridGui.getTime(recipe.getCraftTime()), 28, y, Color.blue.getRGB());
+        minecraft.fontRenderer.drawString("" + GridGui.getTime(recipe.getCraftTime(), false), 28, y, Color.blue.getRGB());
         GlStateManager.color(1, 1, 1);
         int x = 0;
 
