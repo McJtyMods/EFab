@@ -12,6 +12,8 @@ import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.Rectangle;
 import java.text.DecimalFormat;
@@ -69,7 +71,11 @@ public class GridGui extends GenericGuiContainer<GridTE> {
     }
 
     private void craft() {
-        sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_CRAFT);
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+            sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_CRAFT_REPEAT);
+        } else {
+            sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_CRAFT);
+        }
     }
 
     private void left() {
@@ -125,7 +131,8 @@ public class GridGui extends GenericGuiContainer<GridTE> {
             if (ticks < 0) {
                 timeLeftLabel.setText("");
                 craftButton.setText("Start");
-                craftButton.setTooltips("Start craft operation", "Duration " + getTime(tileEntity.getTotalTicks(), false));
+                craftButton.setTooltips("Start craft operation", "Duration " + getTime(tileEntity.getTotalTicks(), false),
+                        TextFormatting.GRAY + "Shift-click to autorepeat");
                 craftButton.setEnabled(true);
             } else {
                 timeLeftLabel.setText(getTime(ticks, true));

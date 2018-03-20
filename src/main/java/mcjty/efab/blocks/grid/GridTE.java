@@ -46,6 +46,7 @@ import static mcjty.efab.blocks.grid.GridContainer.COUNT_UPDATES;
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ITickable {
 
     public static final String CMD_CRAFT = "craft";
+    public static final String CMD_CRAFT_REPEAT = "craftRepeat";
     public static final String CMD_LEFT = "left";
     public static final String CMD_RIGHT = "right";
 
@@ -56,6 +57,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private int ticksRemaining = -1;
     private int totalTicks = 0;
     private int errorTicks = 0;            // Where there was an error this will be > 0
+    private boolean repeat = false;
 
     private int crafterDelay = 0;
 
@@ -485,6 +487,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         for (int i = GridContainer.SLOT_CRAFTINPUT; i < GridContainer.SLOT_CRAFTOUTPUT; i++) {
             decrStackSize(i, 1);
         }
+
+        if (repeat) {
+            startCraft(repeat);
+        }
     }
 
     // Returns true if the final craft requirements are not ok
@@ -873,7 +879,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 .findFirst();
     }
 
-    private void startCraft() {
+    private void startCraft(boolean repeat) {
+        this.repeat = repeat;
         errorTicks = 0;
         markDirtyQuick();
         IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
@@ -953,6 +960,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         errorTicks = tagCompound.getInteger("error");
         totalTicks = tagCompound.getInteger("total");
         crafterDelay = tagCompound.getInteger("crafterDelay");
+        repeat = tagCompound.getBoolean("repeat");
         crafterHelper.readFromNBT(tagCompound);
     }
 
@@ -963,6 +971,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         tagCompound.setInteger("error", errorTicks);
         tagCompound.setInteger("total", totalTicks);
         tagCompound.setInteger("crafterDelay", crafterDelay);
+        tagCompound.setBoolean("repeat", repeat);
         crafterHelper.writeToNBT(tagCompound);
         return tagCompound;
     }
@@ -1207,7 +1216,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             return rc;
         }
         if (CMD_CRAFT.equals(command)) {
-            startCraft();
+            startCraft(false);
+            return true;
+        } else if (CMD_CRAFT_REPEAT.equals(command)) {
+            startCraft(true);
             return true;
         } else if (CMD_LEFT.equals(command)) {
             left();
