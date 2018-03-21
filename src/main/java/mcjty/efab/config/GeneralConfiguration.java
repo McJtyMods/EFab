@@ -16,6 +16,7 @@ public class GeneralConfiguration {
     public static int soundBeepsTicks = 8;
 
     public static int maxSpeedupBonus = 4;
+    public static int maxPipeSpeedBonus = 2;
     public static int vanillaCraftTime = 1;
     public static boolean vanillaCraftingAllowed = true;
 
@@ -77,6 +78,8 @@ public class GeneralConfiguration {
 
         maxSpeedupBonus = cfg.getInt("maxSpeedupBonus", CATEGORY_GENERAL, maxSpeedupBonus,
                 1, 64, "The maximum speed bonus on a crafting operation you can get by adding multiple machine parts");
+        maxPipeSpeedBonus = cfg.getInt("maxPipeSpeedBonus", CATEGORY_GENERAL, maxPipeSpeedBonus,
+                1, 64, "The maximum speed bonus on a liquid crafting operation");
         vanillaCraftTime = cfg.getInt("vanillaCraftTime", CATEGORY_GENERAL, vanillaCraftTime,
                 0, 1000000, "The amount of time needed for the grid/crafter to craft normal vanilla recipes");
         vanillaCraftingAllowed = cfg.getBoolean("vanillaCraftingAllowed", CATEGORY_GENERAL, vanillaCraftingAllowed,

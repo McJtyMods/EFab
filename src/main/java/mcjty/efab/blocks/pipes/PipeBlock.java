@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.pipes;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
+import mcjty.efab.config.GeneralConfiguration;
 import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
@@ -8,16 +9,19 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
 import java.util.Random;
 
 public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer> {
@@ -29,6 +33,15 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
     }
 
     public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 1);
+
+    @Override
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        if (GeneralConfiguration.maxPipeSpeedBonus > 1) {
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxPipeSpeedBonus + " pipes");
+            tooltip.add(TextFormatting.GOLD + "to speed up liquid related recipes");
+        }
+    }
 
     @Override
     public RotationType getRotationType() {

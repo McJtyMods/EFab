@@ -74,6 +74,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> rfStorages = new HashSet<>();
     private final Set<BlockPos> manaReceptacles = new HashSet<>();
     private final Set<BlockPos> processors = new HashSet<>();
+    private final Set<BlockPos> pipes = new HashSet<>();
     private final Set<BlockPos> monitors = new HashSet<>();
     private final Set<BlockPos> autoMonitors = new HashSet<>();
     private final Set<BlockPos> crafters = new HashSet<>();
@@ -793,6 +794,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     rfStorages.add(p);
                 } else if (block == ModBlocks.processorBlock) {
                     processors.add(p);
+                } else if (block == ModBlocks.pipeBlock) {
+                    pipes.add(p);
                 } else if (block == ModBlocks.monitorBlock) {
                     monitors.add(p);
                 } else if (block == ModBlocks.autoCraftingMonitorBlock) {
@@ -824,6 +827,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             rfControls.clear();
             rfStorages.clear();
             processors.clear();
+            pipes.clear();
             monitors.clear();
             autoMonitors.clear();
             crafters.clear();
@@ -931,6 +935,12 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             int cnt = processors.size();
             if (cnt > 1 && bonus < cnt) {
                 bonus = Math.min(GeneralConfiguration.maxSpeedupBonus, cnt);
+            }
+        }
+        if (recipe.getRequiredTiers().contains(RecipeTier.LIQUID)) {
+            int cnt = pipes.size();
+            if (cnt > 1 && bonus < cnt) {
+                bonus = Math.min(GeneralConfiguration.maxPipeSpeedBonus, cnt);
             }
         }
         return bonus;
