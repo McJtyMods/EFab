@@ -14,30 +14,12 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class BoilerRenderer extends TileEntitySpecialRenderer<BoilerTE> {
 
-    private static class Particle {
-        private final double offsetx;
-        private final double offsety;
-
-        public Particle(double offsetx, double offsety) {
-            this.offsetx = offsetx;
-            this.offsety = offsety;
-        }
-
-        public double getOffsetx() {
-            return offsetx;
-        }
-
-        public double getOffsety() {
-            return offsety;
-        }
-    }
-
-    private static Particle[] particles = new Particle[] {
-            new Particle(-.2, -.13),
-            new Particle(-.1, -.2),
-            new Particle(0, 0),
-            new Particle(.2, 0.24),
-            new Particle(.1, .1)
+    private static ParticleRenderer.Particle[] particles = new ParticleRenderer.Particle[] {
+            new ParticleRenderer.Particle(-.2, -.13),
+            new ParticleRenderer.Particle(-.1, -.2),
+            new ParticleRenderer.Particle(0, 0),
+            new ParticleRenderer.Particle(.2, 0.24),
+            new ParticleRenderer.Particle(.1, .1)
     };
 
     @Override
@@ -65,7 +47,7 @@ public class BoilerRenderer extends TileEntitySpecialRenderer<BoilerTE> {
             BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 
-            for (Particle particle : particles) {
+            for (ParticleRenderer.Particle particle : particles) {
                 long time = System.currentTimeMillis();
 
                 double ox = particle.getOffsetx();

@@ -55,4 +55,22 @@ public class ParticleRenderer {
 //        GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
+
+    public static class Particle {
+        private final double offsetx;
+        private final double offsety;
+
+        public Particle(double offsetx, double offsety) {
+            this.offsetx = offsetx;
+            this.offsety = offsety;
+        }
+
+        public double getOffsetx() {
+            return offsetx;
+        }
+
+        public double getOffsety() {
+            return offsety;
+        }
+    }
 }

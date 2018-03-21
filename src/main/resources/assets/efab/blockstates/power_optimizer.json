@@ -29,18 +29,6 @@
       "north": { "y": 180 },
       "east": { "y": 270 },
       "west": { "y": 90 }
-    },
-    "glow": {
-      "false": {
-        "submodel": {
-          "g": { "textures": { "txt": "efab:blocks/power_glow" }, "model": "efab:power_glow" }
-        }
-      },
-      "true": {
-        "submodel": {
-          "g": { "textures": { "txt": "efab:blocks/power_glow" }, "model": "efab:power_glow" }
-        }
-      }
     }
   }
 }
