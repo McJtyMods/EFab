@@ -56,8 +56,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     private int ticksRemaining = -1;
     private int totalTicks = 0;
-    private int errorTicks = 0;            // Where there was an error this will be > 0
+    private int errorTicks = 0;             // Where there was an error this will be > 0
     private boolean repeat = false;
+    private int rfWarning = 0;              // If we don't have enough power during one tick we increase this. If it goes beyond some value we abort the crafting operation
+    private int manaWarning = 0;            // If we don't have enough mana during one tick we increase this. If it goes beyond some value we abort the crafting operation
 
     private int crafterDelay = 0;
 
@@ -370,12 +372,16 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 if (stillneeded > 0) {
                     stillneeded = handlePowerPerTick(stillneeded, this.rfStorages, GeneralConfiguration.rfStorageInternalFlow);
                     if (stillneeded > 0) {
-                        if (GeneralConfiguration.abortCraftWhenOutOfRf) {
-                            return CraftProgressResult.ABORT;
-                        } else {
-                            return CraftProgressResult.WAIT;
+                        if (GeneralConfiguration.ticksAllowedWithoutRF >= 0) {
+                            rfWarning++;
+                            if (rfWarning > GeneralConfiguration.ticksAllowedWithoutRF) {
+                                return CraftProgressResult.ABORT;
+                            }
                         }
+                        return CraftProgressResult.WAIT;
                     }
+                } else {
+                    rfWarning = 0;
                 }
             } else {
                 // Handle in multiple ticks for efficiency
@@ -383,6 +389,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 handlePowerOptimized(recipe, 100);
                 handlePowerOptimized(recipe, 10);
                 handlePowerOptimized(recipe, 1);
+                rfWarning = 0;
                 if (ticksRemaining > 0) {
                     ticksRemaining--;
                     return CraftProgressResult.WAIT;
@@ -395,11 +402,15 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
             stillneeded = handleManaPerTick(stillneeded, this.manaReceptacles, GeneralConfiguration.maxManaUsage);
             if (stillneeded > 0) {
-                if (GeneralConfiguration.abortCraftWhenOutOfMana) {
-                    return CraftProgressResult.ABORT;
-                } else {
-                    return CraftProgressResult.WAIT;
+                if (GeneralConfiguration.ticksAllowedWithoutMana >= 0) {
+                    manaWarning++;
+                    if (manaWarning > GeneralConfiguration.ticksAllowedWithoutMana) {
+                        return CraftProgressResult.ABORT;
+                    }
                 }
+                return CraftProgressResult.WAIT;
+            } else {
+                manaWarning = 0;
             }
         }
         return CraftProgressResult.OK;
@@ -886,6 +897,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private void startCraft(boolean repeat) {
         this.repeat = repeat;
         errorTicks = 0;
+        rfWarning = 0;
+        manaWarning = 0;
+
         markDirtyQuick();
         IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
 
@@ -971,6 +985,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         totalTicks = tagCompound.getInteger("total");
         crafterDelay = tagCompound.getInteger("crafterDelay");
         repeat = tagCompound.getBoolean("repeat");
+        rfWarning = tagCompound.getInteger("rfWarning");
+        manaWarning = tagCompound.getInteger("manaWarning");
         crafterHelper.readFromNBT(tagCompound);
     }
 
@@ -982,6 +998,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         tagCompound.setInteger("total", totalTicks);
         tagCompound.setInteger("crafterDelay", crafterDelay);
         tagCompound.setBoolean("repeat", repeat);
+        tagCompound.setInteger("rfWarning", rfWarning);
+        tagCompound.setInteger("manaWarning", manaWarning);
         crafterHelper.writeToNBT(tagCompound);
         return tagCompound;
     }

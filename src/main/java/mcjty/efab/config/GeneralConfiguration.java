@@ -47,11 +47,11 @@ public class GeneralConfiguration {
     public static int rfStorageInputPerTick = 50;
     public static int rfStorageMax = 10000;
     public static int rfStorageInternalFlow = 30;
-    public static boolean abortCraftWhenOutOfRf = true;
+    public static int ticksAllowedWithoutRF = 1;
 
     public static int maxMana = 10000;
     public static int maxManaUsage = 1000;
-    public static boolean abortCraftWhenOutOfMana = true;
+    public static int ticksAllowedWithoutMana = 1;
 
     public static float maxManaRotationSpeed = 20;
     public static int manaRotationBoost = 40;
@@ -125,8 +125,8 @@ public class GeneralConfiguration {
         manaRotationSpinDown = cfg.getFloat("manaRotationSpinDown", CATEGORY_GENERAL, manaRotationSpinDown,
                 0.0f, 1000.0f, "If not mana crafting this is the speed at which the speed of the rotating spheres will decrease");
 
-        abortCraftWhenOutOfMana = cfg.getBoolean("abortCraftWhenOutOfMana", CATEGORY_GENERAL, abortCraftWhenOutOfMana,
-                "If enabled the crafting will be aborted if there is not enough mana. If disabled the crafting operation will wait until mana becomes available");
+        ticksAllowedWithoutMana = cfg.getInt("ticksAllowedWithoutMana", CATEGORY_GENERAL, ticksAllowedWithoutMana, -1, 1000000000,
+                "If -1 then the efab will pause the crafting until mana is available. Otherwise it will allow a delay of the specified amount of ticks before aborting");
 
         rfControlInputPerTick = cfg.getInt("rfControlInputPerTick", CATEGORY_GENERAL, rfControlInputPerTick,
                 1, 1000000, "How much RF/t the RF Control block can receive");
@@ -140,8 +140,8 @@ public class GeneralConfiguration {
         rfStorageInternalFlow = cfg.getInt("rfStorageInternalFlow", CATEGORY_GENERAL, rfStorageInternalFlow,
                 1, 1000000, "How much RF/t the RF Storage block can contribute to crafting");
 
-        abortCraftWhenOutOfRf = cfg.getBoolean("abortCraftWhenOutOfRf", CATEGORY_GENERAL, abortCraftWhenOutOfRf,
-                "If enabled the crafting will be aborted if there is not enough power. If disabled the crafting operation will wait until power becomes available");
+        ticksAllowedWithoutRF = cfg.getInt("ticksAllowedWithoutRF", CATEGORY_GENERAL, ticksAllowedWithoutRF, -1, 1000000000,
+                "If -1 then the efab will pause the crafting until power is available. Otherwise it will allow a delay of the specified amount of ticks before aborting");
 
         maxCraftAnimationSpeed = cfg.getFloat("maxCraftAnimationSpeed", CATEGORY_GENERAL, maxCraftAnimationSpeed,
                 1.0f, 1000.0f, "Maximum speed factor for the animation of the crafter during auto crafting");
