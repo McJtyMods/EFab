@@ -26,8 +26,6 @@ import mcjty.lib.varia.NullSidedInvWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -39,7 +37,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -72,6 +69,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     // Client side only and contains the last error from the server
     private List<String> errorsFromServer = Collections.emptyList();
+    private List<String> usageFromServer = Collections.emptyList();
 
     // Transient information that is calculated on demand
     private boolean dirty = true;       // Our cached multiblock info is invalid
@@ -1067,6 +1065,37 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return null;
     }
 
+    public List<String> getUsage() {
+        if (getWorld().isRemote) {
+            return usageFromServer;
+        }
+
+        ItemStack output = getCurrentGhostOutput();
+        IEFabRecipe recipe = findRecipeForOutput(output);
+
+        List<String> usage = new ArrayList<>();
+
+        if (recipe != null) {
+            int speedBonus = getSpeedBonus(recipe);
+            if (speedBonus > 1) {
+                usage.add(TextFormatting.GOLD + "Speed up factor: " + speedBonus);
+            }
+            if (recipe.getRequiredRfPerTick() > 0) {
+                usage.add(TextFormatting.GRAY + "RF/t " + TextFormatting.BLUE + recipe.getRequiredRfPerTick() * speedBonus);
+                usage.add(TextFormatting.GRAY + "Total " + TextFormatting.BLUE + recipe.getRequiredRfPerTick() * recipe.getCraftTime());
+            }
+            if (recipe.getRequiredManaPerTick() > 0) {
+                usage.add(TextFormatting.GRAY + "Mana/t " + TextFormatting.BLUE + recipe.getRequiredManaPerTick() * speedBonus);
+                usage.add(TextFormatting.GRAY + "Total " + TextFormatting.BLUE + recipe.getRequiredManaPerTick() * recipe.getCraftTime());
+            }
+            for (FluidStack fluidStack : recipe.getRequiredFluids()) {
+                usage.add(TextFormatting.GRAY + "Liquid " + TextFormatting.BLUE + fluidStack.getLocalizedName() + " (" + fluidStack.amount + "mb)");
+            }
+        }
+
+        return usage;
+    }
+
     public List<String> getErrorState() {
         if (getWorld().isRemote) {
             return errorsFromServer;
@@ -1237,10 +1266,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     // Called client-side only
-    public void syncFromServer(int ticks, int total, List<String> errors, List<ItemStack> outputs) {
+    public void syncFromServer(int ticks, int total, List<String> errors, List<ItemStack> outputs, List<String> usage) {
         ticksRemaining = ticks;
         totalTicks = total;
         errorsFromServer = errors;
+        usageFromServer = usage;
         crafterHelper.syncFromServer(outputs);
     }
 
