@@ -22,9 +22,12 @@ import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.network.Argument;
+import mcjty.lib.varia.NullSidedInvWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -32,8 +35,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
@@ -1235,6 +1242,26 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         totalTicks = total;
         errorsFromServer = errors;
         crafterHelper.syncFromServer(outputs);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            if (needsCustomInvWrapper()) {
+                if (facing == null) {
+                    if (invHandlerNull == null) {
+                        invHandlerNull = new SidedInvWrapper(this, EnumFacing.DOWN);
+                    }
+                    return (T) invHandlerNull;
+                } else {
+                    if (invHandlerSided == null) {
+                        invHandlerSided = new NullSidedInvWrapper(this);
+                    }
+                    return (T) invHandlerSided;
+                }
+            }
+        }
+        return super.getCapability(capability, facing);
     }
 
     @Override
