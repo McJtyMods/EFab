@@ -562,7 +562,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         List<IEFabRecipe> recipes = findCurrentRecipesSorted();
         if (current.isEmpty()) {
             if (!recipes.isEmpty()) {
-                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput().copy());
                 totalTicks = getCraftTime(recipes.get(0));
                 markDirtyQuick();
             }
@@ -576,7 +576,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         return; // Ok, already present
                     }
                 }
-                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput());
+                inventoryHelper.setStackInSlot(GridContainer.SLOT_GHOSTOUT, recipes.get(0).cast().getRecipeOutput().copy());
                 totalTicks = getCraftTime(recipes.get(0));
                 markDirtyQuick();
             }
@@ -876,7 +876,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (first.isPresent()) {
             int i = (first.getAsInt() - 1 + sorted.size()) % sorted.size();
             IEFabRecipe recipe = sorted.get(i);
-            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput());
+            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput().copy());
             totalTicks = getCraftTime(recipe);
             markDirtyQuick();
         }
@@ -888,7 +888,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (first.isPresent()) {
             int i = (first.getAsInt() + 1) % sorted.size();
             IEFabRecipe recipe = sorted.get(i);
-            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput());
+            setInventorySlotContents(GridContainer.SLOT_GHOSTOUT, recipe.cast().getRecipeOutput().copy());
             totalTicks = getCraftTime(recipe);
             markDirtyQuick();
         }
