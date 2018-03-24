@@ -31,25 +31,31 @@ public class TankItemBlock extends GenericItemBlock {
                 if (fluid != null) {
                     TileEntity tedown = world.getTileEntity(pos.down());
                     if (tedown instanceof TankTE) {
-                        if (!fluid.isFluidEqual(((TankTE) tedown).getFluid())) {
+                        FluidStack tankFluid = ((TankTE) tedown).getFluid();
+                        if (tankFluid != null && !fluid.isFluidEqual(tankFluid)) {
                             // Not compatible
-                            ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
-                            if (player instanceof EntityPlayer) {
-                                ((EntityPlayer) player).sendStatusMessage(component, false);
-                            } else {
-                                player.sendMessage(component);
+                            if (world.isRemote) {
+                                ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
+                                if (player instanceof EntityPlayer) {
+                                    player.sendStatusMessage(component, false);
+                                } else {
+                                    player.sendMessage(component);
+                                }
                             }
                             return false;
                         }
                     }
                     TileEntity teup = world.getTileEntity(pos.up());
                     if (teup instanceof TankTE) {
-                        if (!fluid.isFluidEqual(((TankTE) teup).getFluid())) {
-                            ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
-                            if (player instanceof EntityPlayer) {
-                                ((EntityPlayer) player).sendStatusMessage(component, false);
-                            } else {
-                                player.sendMessage(component);
+                        FluidStack tankFluid = ((TankTE) teup).getFluid();
+                        if (tankFluid != null && !fluid.isFluidEqual(tankFluid)) {
+                            if (world.isRemote) {
+                                ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
+                                if (player instanceof EntityPlayer) {
+                                    player.sendStatusMessage(component, false);
+                                } else {
+                                    player.sendMessage(component);
+                                }
                             }
                             return false;
                         }
@@ -65,11 +71,13 @@ public class TankItemBlock extends GenericItemBlock {
             FluidStack fluidDown = ((TankTE) tedown).getFluid();
             FluidStack fluidUp = ((TankTE) teup).getFluid();
             if (fluidDown != null && fluidUp != null && !fluidDown.isFluidEqual(fluidUp)) {
-                ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
-                if (player instanceof EntityPlayer) {
-                    ((EntityPlayer) player).sendStatusMessage(component, false);
-                } else {
-                    player.sendMessage(component);
+                if (world.isRemote) {
+                    ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
+                    if (player instanceof EntityPlayer) {
+                        player.sendStatusMessage(component, false);
+                    } else {
+                        player.sendMessage(component);
+                    }
                 }
                 return false;
             }

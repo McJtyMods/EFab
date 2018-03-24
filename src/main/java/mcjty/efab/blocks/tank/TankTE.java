@@ -45,6 +45,30 @@ public class TankTE extends GenericEFabTile {
         return handler;
     }
 
+    public TankTE getBottomTank() {
+        BlockPos bottomPos = pos;
+        while (world.getBlockState(bottomPos.down()).getBlock() == ModBlocks.tankBlock) {
+            bottomPos = bottomPos.down();
+        }
+        TileEntity te = world.getTileEntity(bottomPos);
+        if (te instanceof TankTE) {
+            return (TankTE) te;
+        } else {
+            return this;        // Should not happen
+        }
+    }
+
+    // Get the index of this tank relative to the bottom tank (0 means bottom tank)
+    public int getTankIndex() {
+        int idx = 0;
+        BlockPos bottomPos = pos;
+        while (world.getBlockState(bottomPos.down()).getBlock() == ModBlocks.tankBlock) {
+            bottomPos = bottomPos.down();
+            idx++;
+        }
+        return idx;
+    }
+
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         // First find the bottom tank
@@ -197,7 +221,7 @@ public class TankTE extends GenericEFabTile {
         }
         if (tagCompound.hasKey("fluid") && handler != null) {
             handler.readFromNBT(tagCompound.getCompoundTag("fluid"));
-            if (getFluid() != null) {
+            if (getFluid() != null && getFluid().amount > 0) {
                 setClientFluidName(getFluid().getLocalizedName());
             }
         }
@@ -207,7 +231,7 @@ public class TankTE extends GenericEFabTile {
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
         tagCompound.setInteger("capacity", capacity);
-        if (handler != null && capacity > 0) {
+        if (handler != null && capacity > 0 && handler.getFluid() != null && handler.getFluid().amount > 0) {
             NBTTagCompound fluidTc = new NBTTagCompound();
             handler.writeToNBT(fluidTc);
             tagCompound.setTag("fluid", fluidTc);

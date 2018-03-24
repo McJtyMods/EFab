@@ -6,6 +6,7 @@ import mcjty.efab.tools.FluidTools;
 import mcjty.efab.tools.InventoryHelper;
 import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.entity.GenericTileEntity;
 import mcjty.theoneprobe.api.TextStyleClass;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,6 +15,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -31,6 +33,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer> {
@@ -59,7 +63,9 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
         if (stack.hasTagCompound()) {
             NBTTagCompound tagCompound = stack.getTagCompound();
             FluidStack fluid = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
-            tooltip.add(TextFormatting.GRAY + "Fluid: " + TextFormatting.BLUE + fluid.amount + "mb (" + fluid.getLocalizedName() + ")");
+            if (fluid != null) {
+                tooltip.add(TextFormatting.GRAY + "Fluid: " + TextFormatting.BLUE + fluid.amount + "mb (" + fluid.getLocalizedName() + ")");
+            }
         }
 
     }
@@ -181,6 +187,54 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
         super.neighborChanged(state, world, pos, blockIn, fromPos);
         // @todo: on 1.11 we could have used the position from which the update is coming
         world.markBlockRangeForRenderUpdate(pos, pos);
+    }
+
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState metadata, int fortune) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+
+        if (tileEntity instanceof TankTE) {
+            TankTE bottomTank = ((TankTE) tileEntity).getBottomTank();
+
+            ItemStack stack = new ItemStack(Item.getItemFromBlock(this));
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            bottomTank.writeRestorableToNBT(tagCompound);
+
+            // Correct the amount in the fluid so it doesn't go beyond cap based on where the tank is located
+            if (tagCompound.hasKey("fluid")) {
+                FluidStack fluid = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
+                if (fluid != null) {
+                    int index = ((TankTE) tileEntity).getTankIndex();
+                    int totalamount = bottomTank.getFluid().amount;
+                    while (index > 0) {
+                        totalamount -= GeneralConfiguration.tankCapacity;
+                        index--;
+                    }
+                    if (totalamount < 0) {
+                        totalamount = 0;
+                    } else if (totalamount > GeneralConfiguration.tankCapacity) {
+                        totalamount = GeneralConfiguration.tankCapacity;
+                    }
+
+                    if (fluid.amount > totalamount) {
+                        fluid.amount = totalamount;
+                    }
+                    if (fluid.amount > 0) {
+                        tagCompound.setTag("fluid", new NBTTagCompound());
+                        fluid.writeToNBT(tagCompound.getCompoundTag("fluid"));
+                    } else {
+                        tagCompound.removeTag("fluid");
+                    }
+                }
+            }
+
+            stack.setTagCompound(tagCompound);
+            List<ItemStack> result = new ArrayList<>();
+            result.add(stack);
+            return result;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override
