@@ -51,7 +51,7 @@ public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContai
         tooltip.add(TextFormatting.WHITE + "This block is needed for " + TextFormatting.GREEN + "steam" + TextFormatting.WHITE + " crafting");
         tooltip.add(TextFormatting.WHITE + "Needs a " + TextFormatting.GREEN + "steam engine" + TextFormatting.WHITE
                 + " and a " + TextFormatting.GREEN + "tank" + TextFormatting.WHITE + " with water");
-        tooltip.add(TextFormatting.WHITE + "and a heat source below (fire or lava)");
+        tooltip.add(TextFormatting.WHITE + "and a heat source below (fire, lava, ...)");
     }
 
     @Override
