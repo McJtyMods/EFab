@@ -21,6 +21,7 @@ public class PacketReturnGridStatus implements IMessage {
     private int ticks;
     private int total;
     private List<String> errors;
+    private List<String> usage;
     private List<ItemStack> outputs;
 
     @Override
@@ -33,6 +34,12 @@ public class PacketReturnGridStatus implements IMessage {
         errors = new ArrayList<>(size);
         for (int i = 0 ; i < size ; i++) {
             errors.add(NetworkTools.readStringUTF8(buf));
+        }
+
+        size = buf.readInt();
+        usage = new ArrayList<>(size);
+        for (int i = 0 ; i < size ; i++) {
+            usage.add(NetworkTools.readStringUTF8(buf));
         }
 
         size = buf.readInt();
@@ -51,6 +58,10 @@ public class PacketReturnGridStatus implements IMessage {
         for (String error : errors) {
             NetworkTools.writeStringUTF8(buf, error);
         }
+        buf.writeInt(usage.size());
+        for (String use : usage) {
+            NetworkTools.writeStringUTF8(buf, use);
+        }
         buf.writeInt(outputs.size());
         for (ItemStack output : outputs) {
             NetworkTools.writeItemStack(buf, output);
@@ -65,6 +76,7 @@ public class PacketReturnGridStatus implements IMessage {
         this.ticks = gridTE.getTicksRemaining();
         this.total = gridTE.getTotalTicks();
         this.errors = gridTE.getErrorState();
+        this.usage = gridTE.getUsage();
         this.outputs = gridTE.getOutputs();
     }
 
@@ -73,6 +85,7 @@ public class PacketReturnGridStatus implements IMessage {
         this.ticks = 0;
         this.total = 0;
         this.errors = Collections.singletonList(crafterTE.getLastError());
+        this.usage = Collections.emptyList();
         this.outputs = crafterTE.getOutputs();
     }
 
@@ -82,7 +95,7 @@ public class PacketReturnGridStatus implements IMessage {
             EFab.proxy.addScheduledTaskClient(() -> {
                 TileEntity te = EFab.proxy.getClientWorld().getTileEntity(message.pos);
                 if (te instanceof GridTE) {
-                    ((GridTE) te).syncFromServer(message.ticks, message.total, message.errors, message.outputs);
+                    ((GridTE) te).syncFromServer(message.ticks, message.total, message.errors, message.outputs, message.usage);
                 } else if (te instanceof CrafterTE) {
                     ((CrafterTE) te).syncFromServer(message.errors, message.outputs);
                 }

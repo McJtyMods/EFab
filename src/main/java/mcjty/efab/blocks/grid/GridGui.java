@@ -17,6 +17,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.awt.Rectangle;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GridGui extends GenericGuiContainer<GridTE> {
@@ -131,8 +132,18 @@ public class GridGui extends GenericGuiContainer<GridTE> {
             if (ticks < 0) {
                 timeLeftLabel.setText("");
                 craftButton.setText("Start");
-                craftButton.setTooltips("Start craft operation", "Duration " + getTime(tileEntity.getTotalTicks(), false),
-                        TextFormatting.GRAY + "Shift-click to autorepeat");
+                List<String> tooltip = new ArrayList<>();
+                tooltip.add("Start craft operation");
+                tooltip.add("Duration " + getTime(tileEntity.getTotalTicks(), false));
+                tooltip.add(TextFormatting.GRAY + "Shift-click to autorepeat");
+
+                List<String> usage = tileEntity.getUsage();
+                if (!usage.isEmpty()) {
+                    tooltip.add("");
+                    tooltip.addAll(usage);
+                }
+
+                craftButton.setTooltips(tooltip.toArray(new String[tooltip.size()]));
                 craftButton.setEnabled(true);
             } else {
                 timeLeftLabel.setText(getTime(ticks, true));
