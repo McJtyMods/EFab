@@ -6,6 +6,7 @@ import mcjty.efab.tools.FluidTools;
 import mcjty.efab.tools.InventoryHelper;
 import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
+import mcjty.theoneprobe.api.TextStyleClass;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -14,6 +15,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -50,10 +52,16 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This tank can store " + TextFormatting.GREEN + GeneralConfiguration.tankCapacity + TextFormatting.WHITE + " mb");
-        tooltip.add(TextFormatting.WHITE + "You can combine tanks by placing them");
+        tooltip.add(TextFormatting.WHITE + "Combine tanks by placing them");
         tooltip.add(TextFormatting.WHITE + "on top of each other");
-        tooltip.add(TextFormatting.WHITE + "Tanks are used for " + TextFormatting.GREEN + "liquid" + TextFormatting.WHITE + " and "
+        tooltip.add(TextFormatting.WHITE + "Used for " + TextFormatting.GREEN + "liquid" + TextFormatting.WHITE + " and "
             + TextFormatting.GREEN + "steam" + TextFormatting.WHITE + " crafting");
+        if (stack.hasTagCompound()) {
+            NBTTagCompound tagCompound = stack.getTagCompound();
+            FluidStack fluid = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
+            tooltip.add(TextFormatting.GRAY + "Fluid: " + TextFormatting.BLUE + fluid.amount + "mb (" + fluid.getLocalizedName() + ")");
+        }
+
     }
 
     @SideOnly(Side.CLIENT)
