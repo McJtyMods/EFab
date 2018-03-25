@@ -202,6 +202,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
 
             // Correct the amount in the fluid so it doesn't go beyond cap based on where the tank is located
             if (tagCompound.hasKey("fluid")) {
+                tagCompound.setInteger("capacity", GeneralConfiguration.tankCapacity);
                 FluidStack fluid = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
                 if (fluid != null) {
                     int index = ((TankTE) tileEntity).getTankIndex();
