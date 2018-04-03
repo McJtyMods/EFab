@@ -136,8 +136,8 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
                         return true;
                     }
                 };
-                return CapabilityEnergy.ENERGY.cast(handler);
             }
+            return CapabilityEnergy.ENERGY.cast(handler);
         }
         return super.getCapability(capability, facing);
     }
