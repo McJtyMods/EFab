@@ -265,7 +265,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     public void startCraft(GridTE grid, IEFabRecipe recipe) {
         crafterHelper.setCraftingOutput(getCurrentOutput(recipe));
-        int craftTime = recipe.getCraftTime() * grid.getSpeedBonus(recipe);
+        int craftTime = recipe.getCraftTime() / grid.getSpeedBonus(recipe);
         ticksRemaining = craftTime;
         totalTicks = craftTime;
         markDirtyQuick();
