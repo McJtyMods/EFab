@@ -43,6 +43,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import static mcjty.efab.blocks.grid.GridContainer.COUNT_UPDATES;
@@ -167,24 +168,26 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    public boolean checkIngredients(List<ItemStack> ingredients) {
+    public boolean checkIngredients(List<ItemStack> ingredients, Predicate<String> testName) {
         for (ItemStack ingredient : ingredients) {
             int needed = ingredient.getCount();
             for (BlockPos storagePos : storages) {
                 TileEntity te = getWorld().getTileEntity(storagePos);
                 if (te instanceof StorageTE) {
                     StorageTE storageTE = (StorageTE) te;
-                    for (int ii = 0; ii < storageTE.getSizeInventory() ; ii++) {
-                        ItemStack storageStack = storageTE.getStackInSlot(ii);
-                        if (!storageStack.isEmpty() && OreDictionary.itemMatches(ingredient, storageStack, false)) {
-                            needed -= Math.min(storageStack.getCount(), needed);
-                            if (needed <= 0) {
-                                break;
+                    if (testName.test(storageTE.getCraftingName())) {
+                        for (int ii = 0; ii < storageTE.getSizeInventory(); ii++) {
+                            ItemStack storageStack = storageTE.getStackInSlot(ii);
+                            if (!storageStack.isEmpty() && OreDictionary.itemMatches(ingredient, storageStack, false)) {
+                                needed -= Math.min(storageStack.getCount(), needed);
+                                if (needed <= 0) {
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (needed <= 0) {
-                        break;
+                        if (needed <= 0) {
+                            break;
+                        }
                     }
                 }
             }
@@ -494,7 +497,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             return;
         }
 
-        if (checkFinalCraftRequirements(recipe, Collections.emptyList())) {
+        if (checkFinalCraftRequirements(recipe, Collections.emptyList(), s -> false)) {
             return;
         }
 
@@ -511,7 +514,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     // Returns true if the final craft requirements are not ok
-    public boolean checkFinalCraftRequirements(IEFabRecipe recipe, @Nonnull List<ItemStack> ingredients) {
+    public boolean checkFinalCraftRequirements(IEFabRecipe recipe, @Nonnull List<ItemStack> ingredients, Predicate<String> matcher) {
         // Now check if we have secondary requirements like fluids
         // First loop to check
         for (FluidStack stack : recipe.getRequiredFluids()) {
@@ -522,7 +525,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
 
-        if (!checkIngredients(ingredients)) {
+        if (!checkIngredients(ingredients, matcher)) {
             // Ingredients are missing. Abort!
             return true;
         }

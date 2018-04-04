@@ -49,6 +49,8 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
         tooltip.add(TextFormatting.WHITE + "Also needs a " + TextFormatting.GREEN + "processor" + TextFormatting.WHITE
                 + " and one or more " + TextFormatting.GREEN + "storage" + TextFormatting.WHITE + " blocks");
         tooltip.add(TextFormatting.YELLOW + "The crafter needs a redstone signal to work!");
+        tooltip.add(TextFormatting.GOLD + "If you give this crafter a name it will only");
+        tooltip.add(TextFormatting.GOLD + "pull items from item storages with the same name!");
     }
 
     @Override
@@ -66,6 +68,9 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
                 probeInfo.text(TextStyleClass.LABEL + "Status " + TextStyleClass.INFO + "IDLE");
             } else {
                 probeInfo.text(TextStyleClass.LABEL + "Status " + TextStyleClass.ERROR + crafterTE.getLastError());
+            }
+            if (crafterTE.getCraftingName() != null && !crafterTE.getCraftingName().trim().isEmpty()) {
+                probeInfo.text(TextStyleClass.LABEL + "Name " + TextStyleClass.INFO + crafterTE.getCraftingName());
             }
             List<ItemStack> outputs = crafterTE.getOutputs();
             if (!outputs.isEmpty()) {

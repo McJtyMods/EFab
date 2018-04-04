@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 
@@ -34,6 +35,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     public static final String CMD_LEFT = "left";
     public static final String CMD_RIGHT = "right";
+    public static final String CMD_SETNAME = "setName";
 
     public static final int[] SLOTS = new int[]{CrafterContainer.SLOT_CRAFTOUTPUT, CrafterContainer.SLOT_CRAFTOUTPUT + 1, CrafterContainer.SLOT_CRAFTOUTPUT + 2};
 
@@ -41,6 +43,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     private float speed = 1.0f;
     private int speedBoost = 0;
+    private String name;
 
     private int ticksRemaining = -1;
     private int totalTicks = 0;
@@ -52,6 +55,15 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     private float cnt2 = 0;
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
+
+    public String getCraftingName() {
+        return name == null ? "" : name;
+    }
+
+    public void setCraftingName(String name) {
+        this.name = name;
+        markDirtyClient();
+    }
 
     public float getCnt() {
         return cnt;
@@ -250,7 +262,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         }
 
         List<ItemStack> ingredients = condenseIngredients(crafterHelper.getWorkInventory());
-        if (grid.checkFinalCraftRequirements(recipe, ingredients)) {
+        if (grid.checkFinalCraftRequirements(recipe, ingredients, getStorageMatcher())) {
             return;
         }
 
@@ -285,7 +297,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
                 return null; // Don't start
             }
             List<ItemStack> ingredients = condenseIngredients(crafterHelper.getWorkInventory());
-            if (!grid.checkIngredients(ingredients)) {
+            if (!grid.checkIngredients(ingredients, getStorageMatcher())) {
                 lastError = "Ingredients missing";
                 return null;
             }
@@ -302,6 +314,10 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
             lastError = "No recipe";
         }
         return null;
+    }
+
+    private Predicate<String> getStorageMatcher() {
+        return getCraftingName().isEmpty() ? s -> true : s -> getCraftingName().equals(s);
     }
 
     /**
@@ -410,12 +426,14 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     public void readRestorableFromNBT(NBTTagCompound tagCompound) {
         super.readRestorableFromNBT(tagCompound);
         readBufferFromNBT(tagCompound, inventoryHelper);
+        name = tagCompound.getString("name");
     }
 
     @Override
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
         writeBufferToNBT(tagCompound, inventoryHelper);
+        tagCompound.setString("name", name);
     }
 
     @Override
@@ -504,6 +522,9 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
             return true;
         } else if (CMD_RIGHT.equals(command)) {
             right();
+            return true;
+        } else if (CMD_SETNAME.equals(command)) {
+            setCraftingName(args.get("name").getString());
             return true;
         }
         return false;
