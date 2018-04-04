@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IMonitor {
 
-    BlockPos getPos();
+    BlockPos getMonitorPos();
 
     List<String> getClientLog();
 

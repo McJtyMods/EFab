@@ -8,6 +8,7 @@ import mcjty.lib.network.Argument;
 import mcjty.typed.Type;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -44,6 +45,11 @@ public abstract class AbstractMonitorTE extends GenericEFabTile implements ITick
     public void setSpeedBoost(int speedBoost) {
         this.speedBoost = speedBoost;
         markDirtyClient();
+    }
+
+    @Override
+    public BlockPos getMonitorPos() {
+        return pos;
     }
 
     @Override

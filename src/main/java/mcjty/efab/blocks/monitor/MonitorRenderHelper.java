@@ -18,10 +18,10 @@ public class MonitorRenderHelper {
         List<String> log = monitorTE.getClientLog();
         long t = System.currentTimeMillis();
         if (t - monitorTE.getLastUpdateTime() > 250) {
-            EFabMessages.INSTANCE.sendToServer(new PacketGetMonitorText(monitorTE.getPos()));
+            EFabMessages.INSTANCE.sendToServer(new PacketGetMonitorText(monitorTE.getMonitorPos()));
             monitorTE.setLastUpdateTime(t);
         }
-        EnumFacing orientation = OrientationTools.getOrientationHoriz(Minecraft.getMinecraft().world.getBlockState(monitorTE.getPos()));
+        EnumFacing orientation = OrientationTools.getOrientationHoriz(Minecraft.getMinecraft().world.getBlockState(monitorTE.getMonitorPos()));
 
         HudRenderHelper.HudPlacement hudPlacement = HudRenderHelper.HudPlacement.HUD_FRONT;
         HudRenderHelper.HudOrientation hudOrientation = HudRenderHelper.HudOrientation.HUD_SOUTH;
