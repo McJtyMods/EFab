@@ -9,6 +9,7 @@ import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.network.Argument;
+import mcjty.lib.varia.NullSidedInvWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryCrafting;
@@ -16,6 +17,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -467,6 +471,26 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         return getStackInSlot(CrafterContainer.SLOT_GHOSTOUT);
     }
 
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            if (needsCustomInvWrapper()) {
+                if (facing == null) {
+                    if (invHandlerNull == null) {
+                        invHandlerNull = new SidedInvWrapper(this, EnumFacing.DOWN);
+                    }
+                    return (T) invHandlerNull;
+                } else {
+                    if (invHandlerSided == null) {
+                        invHandlerSided = new NullSidedInvWrapper(this);
+                    }
+                    return (T) invHandlerSided;
+                }
+            }
+        }
+        return super.getCapability(capability, facing);
+    }
 
 
     @Override
