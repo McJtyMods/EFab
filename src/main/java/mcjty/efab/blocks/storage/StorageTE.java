@@ -45,7 +45,9 @@ public class StorageTE extends GenericEFabTile implements DefaultSidedInventory 
     public void writeRestorableToNBT(NBTTagCompound tagCompound) {
         super.writeRestorableToNBT(tagCompound);
         writeBufferToNBT(tagCompound, inventoryHelper);
-        tagCompound.setString("name", name);
+        if (name != null) {
+            tagCompound.setString("name", name);
+        }
     }
 
     @Override
