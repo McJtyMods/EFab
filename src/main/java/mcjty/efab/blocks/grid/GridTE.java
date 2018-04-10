@@ -784,22 +784,33 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    private void findMultiBlockParts(BlockPos current, Set<BlockPos> visited) {
-        if (visited.contains(current)) {
-            return;
-        }
-        visited.add(current);
+    private void addTodo(Queue<BlockPos> todo, Set<BlockPos> visited, BlockPos pos) {
         for (EnumFacing dir : EnumFacing.VALUES) {
-            BlockPos p = current.offset(dir);
+            BlockPos p = pos.offset(dir);
+            if (!visited.contains(p)) {
+                todo.add(p);
+            }
+        }
+    }
+
+    private void findMultiBlockParts(BlockPos current) {
+        Set<BlockPos> visited = new HashSet<>();
+        Queue<BlockPos> todo = new ArrayDeque<>();
+
+        visited.add(current);
+        addTodo(todo, visited, current);
+        while (!todo.isEmpty()) {
+            BlockPos p = todo.poll();
+            visited.add(p);
             Block block = getWorld().getBlockState(p).getBlock();
             if (block == ModBlocks.gridBlock) {
                 TileEntity te = getWorld().getTileEntity(p);
                 if (te instanceof GridTE) {
                     ((GridTE) te).invalidateMultiBlockCache();
                 }
-                findMultiBlockParts(p, visited);
+                addTodo(todo, visited, p);
             } else if (block == ModBlocks.baseBlock) {
-                findMultiBlockParts(p, visited);
+                addTodo(todo, visited, p);
             } else if (block instanceof GenericEFabMultiBlockPart) {
                 if (block == ModBlocks.boilerBlock) {
                     boilers.add(p);
@@ -830,7 +841,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
                     manaReceptacles.add(p);
                 }
-                findMultiBlockParts(p, visited);
+                addTodo(todo, visited, p);
+            } else {
+                // Don't go further here
             }
         }
     }
@@ -853,7 +866,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             storages.clear();
             manaReceptacles.clear();
             powerOptimizers.clear();
-            findMultiBlockParts(getPos(), new HashSet<>());
+            findMultiBlockParts(getPos());
         }
     }
 
