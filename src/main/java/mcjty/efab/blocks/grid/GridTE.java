@@ -90,6 +90,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> powerOptimizers = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
+    // This itemstack is the last itemstack for which we calculated findRecipeForOutput so it acts like
+    // a cache. If it is null then the cache is invalid
+    @Nullable private ItemStack cachedItemStackForRecipe = null;
+    private IEFabRecipe cachedRecipe = null;
+
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
 
     @Override
@@ -606,12 +611,21 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     @Nullable
     private IEFabRecipe findRecipeForOutput(ItemStack output) {
+        if (cachedItemStackForRecipe != null &&
+                ((cachedItemStackForRecipe.isEmpty() && output.isEmpty()) ||
+                        mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, cachedItemStackForRecipe))) {
+            return cachedRecipe;
+        }
+
+        cachedItemStackForRecipe = output;
         List<IEFabRecipe> recipes = crafterHelper.findCurrentRecipes(getWorld());
         for (IEFabRecipe recipe : recipes) {
             if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, recipe.cast().getRecipeOutput())) {
+                cachedRecipe = recipe;
                 return recipe;
             }
         }
+        cachedRecipe = null;
         return null;
     }
 
