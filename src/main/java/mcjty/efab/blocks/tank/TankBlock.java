@@ -141,7 +141,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
             if (filled == fluidStack.amount) {
                 // Success
                 tank.getHandler().fill(fluidStack, true);
-                tank.markDirtyClient();
+                tank.getBottomTank().markDirtyClient();
                 if (!player.capabilities.isCreativeMode) {
                     heldItem.splitStack(1);
                     ItemStack emptyContainer = FluidTools.drainContainer(container);
@@ -164,7 +164,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
                 drained = tank.getHandler().drain(capacity, false);
                 if (drained != null && drained.amount == capacity) {
                     tank.getHandler().drain(capacity, true);
-                    tank.markDirtyClient();
+                    tank.getBottomTank().markDirtyClient();
                     ItemStack filledContainer = FluidTools.fillContainer(drained, container);
                     if (!filledContainer.isEmpty()) {
                         heldItem.splitStack(1);

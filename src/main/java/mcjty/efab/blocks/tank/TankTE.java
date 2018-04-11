@@ -2,7 +2,7 @@ package mcjty.efab.blocks.tank;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ModBlocks;
-import mcjty.efab.config.GeneralConfiguration;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -34,8 +34,9 @@ public class TankTE extends GenericEFabTile {
 
     public FluidTank getHandler() {
         if (handler == null) {
+            Block block = getWorld().getBlockState(pos.down()).getBlock();
             TileEntity te = getWorld().getTileEntity(pos.down());
-            if (te instanceof TankTE) {
+            if (block == blockType && te instanceof TankTE) {
                 TankTE tankTE = (TankTE) te;
                 return tankTE.getHandler();
             } else {
@@ -141,8 +142,9 @@ public class TankTE extends GenericEFabTile {
                     markDirtyQuick();
                 }
 
+                Block block = world.getBlockState(pos.up()).getBlock();
                 TileEntity te = world.getTileEntity(pos.up());
-                if (te instanceof TankTE) {
+                if (block == blockType && te instanceof TankTE) {
                     TankTE topTE = (TankTE) te;
                     BlockPos p = pos.up();
                     int cnt = 0;
@@ -193,8 +195,9 @@ public class TankTE extends GenericEFabTile {
             }
         }
         while (true) {
+            Block block = world.getBlockState(p).getBlock();
             TileEntity te = world.getTileEntity(p);
-            if (te instanceof TankTE) {
+            if (block == blockType && te instanceof TankTE) {
                 ((TankTE) te).clientFluidName = fluidName;
                 p = p.up();
             } else {
