@@ -9,6 +9,7 @@ tile.efab.pipes.name=Pipes
 tile.efab.power_optimizer.name=Power Optimizer
 tile.efab.grid.name=EFab Crafting Grid
 tile.efab.tank.name=Tank
+tile.efab.tank2.name=Advanced Tank
 tile.efab.boiler.name=Boiler
 tile.efab.steamengine.name=Steam Engine
 tile.efab.rfcontrol.name=RF Control

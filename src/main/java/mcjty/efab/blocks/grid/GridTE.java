@@ -11,6 +11,7 @@ import mcjty.efab.blocks.monitor.AutoCraftingMonitorTE;
 import mcjty.efab.blocks.monitor.MonitorTE;
 import mcjty.efab.blocks.rfcontrol.RfControlTE;
 import mcjty.efab.blocks.storage.StorageTE;
+import mcjty.efab.blocks.tank.TankBlock;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.GeneralConfiguration;
@@ -850,7 +851,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     storages.add(p);
                 } else if (block == ModBlocks.powerOptimizerBlock) {
                     powerOptimizers.add(p);
-                } else if (block == ModBlocks.tankBlock) {
+                } else if (block instanceof TankBlock) {
                     tanks.add(p);
                 } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
                     manaReceptacles.add(p);

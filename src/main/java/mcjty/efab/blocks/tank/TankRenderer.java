@@ -1,6 +1,5 @@
 package mcjty.efab.blocks.tank;
 
-import mcjty.efab.blocks.ModBlocks;
 import mcjty.lib.gui.HudRenderHelper;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
@@ -25,8 +24,9 @@ public class TankRenderer extends TileEntitySpecialRenderer<TankTE> {
             return;
         }
 
-        Block block = te.getWorld().getBlockState(te.getPos().down()).getBlock();
-        if (block != ModBlocks.tankBlock) {
+        Block block = te.getWorld().getBlockState(te.getPos()).getBlock();
+        Block blockBelow = te.getWorld().getBlockState(te.getPos().down()).getBlock();
+        if (block != blockBelow) {
             renderHud(te, x, y, z);
         }
     }

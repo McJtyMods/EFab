@@ -39,7 +39,8 @@ public class GeneralConfiguration {
     public static float craftAnimationSpinDown = 0.3f;
     public static int crafterDelay = 10;
 
-    public static int tankCapacity = 10000;
+    public static int tankCapacity = 16000;
+    public static int tank2Capacity = 64000;
 
     public static int rfControlInputPerTick = 10;
     public static int rfControlMax = 20;
@@ -110,6 +111,8 @@ public class GeneralConfiguration {
 
         tankCapacity = cfg.getInt("tankCapacity", CATEGORY_GENERAL, tankCapacity,
                 1, 1000000, "Capacity of each tank block in MB");
+        tank2Capacity = cfg.getInt("tank2Capacity", CATEGORY_GENERAL, tank2Capacity,
+                1, 1000000, "Capacity of each tank (tier 2) block in MB");
 
         maxMana = cfg.getInt("maxMana", CATEGORY_GENERAL, maxMana,
                 1, 100000000, "Maximum amount of mana that can be stored in the mana receptacle");

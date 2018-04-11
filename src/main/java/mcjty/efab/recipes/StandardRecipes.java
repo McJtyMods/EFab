@@ -40,6 +40,11 @@ public class StandardRecipes {
                 .tier(RecipeTier.GEARBOX)
                 .time(10));
         RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.tank2Block),
+                "iii", "i i", "iii", 'i', "blockIron")
+                .tier(RecipeTier.GEARBOX)
+                .time(50));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
                 new ItemStack(ModBlocks.steamEngineBlock),
                 "ici", "ibi", "ici", 'i', "ingotIron", 'b', ModBlocks.baseBlock, 'c', Blocks.PISTON)
                 .tier(RecipeTier.GEARBOX)

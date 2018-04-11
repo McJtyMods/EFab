@@ -4,10 +4,7 @@ import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.tools.FluidTools;
 import mcjty.efab.tools.InventoryHelper;
-import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
-import mcjty.lib.entity.GenericTileEntity;
-import mcjty.theoneprobe.api.TextStyleClass;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -43,8 +40,11 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
 
     public static final PropertyEnum<EnumTankState> STATE = PropertyEnum.create("state", EnumTankState.class, EnumTankState.values());
 
-    public TankBlock() {
-        super(Material.IRON, TankTE.class, EmptyContainer.class, TankItemBlock.class, "tank", false);
+    public final int capacity;
+
+    public TankBlock(String name, int capacity, Class<? extends TankTE> clazz) {
+        super(Material.IRON, clazz, EmptyContainer.class, TankItemBlock.class, name, false);
+        this.capacity = capacity;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     @Override
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add(TextFormatting.WHITE + "This tank can store " + TextFormatting.GREEN + GeneralConfiguration.tankCapacity + TextFormatting.WHITE + " mb");
+        tooltip.add(TextFormatting.WHITE + "This tank can store " + TextFormatting.GREEN + capacity + TextFormatting.WHITE + " mb");
         tooltip.add(TextFormatting.WHITE + "Combine tanks by placing them");
         tooltip.add(TextFormatting.WHITE + "on top of each other");
         tooltip.add(TextFormatting.WHITE + "Used for " + TextFormatting.GREEN + "liquid" + TextFormatting.WHITE + " and "
@@ -119,18 +119,10 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
                 FluidStack fluid = tankTE.getFluid();
                 if (fluid == null || fluid.amount <= 0) {
                     ITextComponent component = new TextComponentString("Tank is empty");
-                    if (player instanceof EntityPlayer) {
-                        player.sendStatusMessage(component, false);
-                    } else {
-                        player.sendMessage(component);
-                    }
+                    player.sendStatusMessage(component, false);
                 } else {
                     ITextComponent component = new TextComponentString("Tank contains " + fluid.amount + "mb of " + fluid.getLocalizedName());
-                    if (player instanceof EntityPlayer) {
-                        player.sendStatusMessage(component, false);
-                    } else {
-                        player.sendMessage(component);
-                    }
+                    player.sendStatusMessage(component, false);
                 }
             }
         }
@@ -149,6 +141,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
             if (filled == fluidStack.amount) {
                 // Success
                 tank.getHandler().fill(fluidStack, true);
+                tank.markDirtyClient();
                 if (!player.capabilities.isCreativeMode) {
                     heldItem.splitStack(1);
                     ItemStack emptyContainer = FluidTools.drainContainer(container);
@@ -171,6 +164,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
                 drained = tank.getHandler().drain(capacity, false);
                 if (drained != null && drained.amount == capacity) {
                     tank.getHandler().drain(capacity, true);
+                    tank.markDirtyClient();
                     ItemStack filledContainer = FluidTools.fillContainer(drained, container);
                     if (!filledContainer.isEmpty()) {
                         heldItem.splitStack(1);
@@ -202,19 +196,19 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
 
             // Correct the amount in the fluid so it doesn't go beyond cap based on where the tank is located
             if (tagCompound.hasKey("fluid")) {
-                tagCompound.setInteger("capacity", GeneralConfiguration.tankCapacity);
+                tagCompound.setInteger("capacity", capacity);
                 FluidStack fluid = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("fluid"));
                 if (fluid != null) {
                     int index = ((TankTE) tileEntity).getTankIndex();
                     int totalamount = bottomTank.getFluid().amount;
                     while (index > 0) {
-                        totalamount -= GeneralConfiguration.tankCapacity;
+                        totalamount -= capacity;
                         index--;
                     }
                     if (totalamount < 0) {
                         totalamount = 0;
-                    } else if (totalamount > GeneralConfiguration.tankCapacity) {
-                        totalamount = GeneralConfiguration.tankCapacity;
+                    } else if (totalamount > capacity) {
+                        totalamount = capacity;
                     }
 
                     if (fluid.amount > totalamount) {

@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 public class TankTE extends GenericEFabTile {
 
     private EFabFluidTank handler;
-    private int capacity = GeneralConfiguration.tankCapacity;
+    private int capacity = getCapacity();
 
     private String clientFluidName = "";
 
@@ -47,7 +47,7 @@ public class TankTE extends GenericEFabTile {
 
     public TankTE getBottomTank() {
         BlockPos bottomPos = pos;
-        while (world.getBlockState(bottomPos.down()).getBlock() == ModBlocks.tankBlock) {
+        while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
             bottomPos = bottomPos.down();
         }
         TileEntity te = world.getTileEntity(bottomPos);
@@ -62,7 +62,7 @@ public class TankTE extends GenericEFabTile {
     public int getTankIndex() {
         int idx = 0;
         BlockPos bottomPos = pos;
-        while (world.getBlockState(bottomPos.down()).getBlock() == ModBlocks.tankBlock) {
+        while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
             bottomPos = bottomPos.down();
             idx++;
         }
@@ -74,20 +74,20 @@ public class TankTE extends GenericEFabTile {
         // First find the bottom tank
         if (!world.isRemote) {
             BlockPos bottomPos = pos;
-            while (world.getBlockState(bottomPos.down()).getBlock() == ModBlocks.tankBlock) {
+            while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
                 bottomPos = bottomPos.down();
             }
-            if (world.getBlockState(bottomPos.up()).getBlock() == ModBlocks.tankBlock) {
+            if (world.getBlockState(bottomPos.up()).getBlock() == blockType) {
                 // We have a multiblock. Need to combine handlers.
                 BlockPos p = bottomPos;
                 int cnt = 0;
-                while (world.getBlockState(p).getBlock() == ModBlocks.tankBlock) {
+                while (world.getBlockState(p).getBlock() == blockType) {
                     cnt++;
                     p = p.up();
                 }
-                EFabFluidTank bottomHandler = new EFabFluidTank(GeneralConfiguration.tankCapacity * cnt, this);
+                EFabFluidTank bottomHandler = new EFabFluidTank(getCapacity() * cnt, this);
                 p = bottomPos;
-                while (world.getBlockState(p).getBlock() == ModBlocks.tankBlock) {
+                while (world.getBlockState(p).getBlock() == blockType) {
                     TankTE te = (TankTE) world.getTileEntity(p);
                     te.markDirtyQuick();
                     if (te.handler != null) {
@@ -99,20 +99,24 @@ public class TankTE extends GenericEFabTile {
                 }
                 TankTE bottomTE = (TankTE) world.getTileEntity(bottomPos);
                 bottomTE.handler = bottomHandler;
-                bottomTE.capacity = GeneralConfiguration.tankCapacity * cnt;
+                bottomTE.capacity = getCapacity() * cnt;
             }
             markDirtyClient();
         }
+    }
+
+    public int getCapacity() {
+        return ModBlocks.tankBlock.capacity;
     }
 
     @Override
     public void onBlockBreak(World world, BlockPos pos, IBlockState state) {
         if (!world.isRemote) {
             BlockPos bottomPos = pos;
-            while (world.getBlockState(bottomPos.down()).getBlock() == ModBlocks.tankBlock) {
+            while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
                 bottomPos = bottomPos.down();
             }
-            if (world.getBlockState(bottomPos.up()).getBlock() == ModBlocks.tankBlock || bottomPos.up().equals(pos)) {
+            if (world.getBlockState(bottomPos.up()).getBlock() == blockType || bottomPos.up().equals(pos)) {
                 TankTE bottomTE = (TankTE) world.getTileEntity(bottomPos);
                 // Empty the complete tank first
                 FluidStack drained = bottomTE.getHandler().drain(bottomTE.getHandler().getCapacity(), true);
@@ -120,8 +124,8 @@ public class TankTE extends GenericEFabTile {
                 // We have a multiblock. Need to split handlers.
                 int cntBelow = pos.getY() - bottomPos.getY();       // Number of tank blocks below this one
                 if (cntBelow > 0) {
-                    bottomTE.handler = new EFabFluidTank(cntBelow * GeneralConfiguration.tankCapacity, this);
-                    bottomTE.capacity = cntBelow * GeneralConfiguration.tankCapacity;
+                    bottomTE.handler = new EFabFluidTank(cntBelow * getCapacity(), this);
+                    bottomTE.capacity = cntBelow * getCapacity();
                     if (drained != null) {
                         int accepted = bottomTE.handler.fill(drained, true);
                         drained.amount -= accepted;
@@ -129,8 +133,8 @@ public class TankTE extends GenericEFabTile {
                     bottomTE.markDirtyQuick();
                 }
 
-                handler = new EFabFluidTank(GeneralConfiguration.tankCapacity, this);
-                capacity = GeneralConfiguration.tankCapacity;
+                handler = new EFabFluidTank(getCapacity(), this);
+                capacity = getCapacity();
                 if (drained != null && drained.amount > 0) {
                     int accepted = handler.fill(drained, true);
                     drained.amount -= accepted;
@@ -142,12 +146,12 @@ public class TankTE extends GenericEFabTile {
                     TankTE topTE = (TankTE) te;
                     BlockPos p = pos.up();
                     int cnt = 0;
-                    while (world.getBlockState(p).getBlock() == ModBlocks.tankBlock) {
+                    while (world.getBlockState(p).getBlock() == blockType) {
                         cnt++;
                         p = p.up();
                     }
-                    topTE.handler = new EFabFluidTank(cnt * GeneralConfiguration.tankCapacity, this);
-                    topTE.capacity = cnt * GeneralConfiguration.tankCapacity;
+                    topTE.handler = new EFabFluidTank(cnt * getCapacity(), this);
+                    topTE.capacity = cnt * getCapacity();
                     if (drained != null && drained.amount > 0) {
                         topTE.handler.fill(drained, true);
                     }
@@ -182,7 +186,7 @@ public class TankTE extends GenericEFabTile {
             return;
         }
         while (true) {
-            if (world.getBlockState(p.down()) == ModBlocks.tankBlock) {
+            if (world.getBlockState(p.down()) == blockType) {
                 p = p.down();
             } else {
                 break;
