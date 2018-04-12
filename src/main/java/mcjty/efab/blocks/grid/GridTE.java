@@ -91,11 +91,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> powerOptimizers = new HashSet<>();
     private Set<RecipeTier> supportedTiers = null;
 
-    // This itemstack is the last itemstack for which we calculated findRecipeForOutput so it acts like
-    // a cache. If it is null then the cache is invalid
-    @Nullable private ItemStack cachedItemStackForRecipe = null;
-    private IEFabRecipe cachedRecipe = null;
-
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
 
     @Override
@@ -306,7 +301,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (ticksRemaining >= 0) {
                 markDirtyQuick();
 
-                IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+                IEFabRecipe recipe = crafterHelper.findRecipeForOutput(getCurrentGhostOutput(), world);
                 if (recipe == null) {
                     abortCraft();
                     errorTicks = 1;
@@ -610,26 +605,6 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return recipes;
     }
 
-    @Nullable
-    private IEFabRecipe findRecipeForOutput(ItemStack output) {
-        if (cachedItemStackForRecipe != null &&
-                ((cachedItemStackForRecipe.isEmpty() && output.isEmpty()) ||
-                        mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, cachedItemStackForRecipe))) {
-            return cachedRecipe;
-        }
-
-        cachedItemStackForRecipe = output;
-        List<IEFabRecipe> recipes = crafterHelper.findCurrentRecipes(getWorld());
-        for (IEFabRecipe recipe : recipes) {
-            if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, recipe.cast().getRecipeOutput())) {
-                cachedRecipe = recipe;
-                return recipe;
-            }
-        }
-        cachedRecipe = null;
-        return null;
-    }
-
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         getInventoryHelper().setInventorySlotContents(getInventoryStackLimit(), index, stack);
@@ -700,7 +675,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
     private void updateSound() {
         if (ticksRemaining >= 0) {
-            IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+            IEFabRecipe recipe = crafterHelper.findRecipeForOutput(getCurrentGhostOutput(), world);
             if (recipe != null) {
                 Set<RecipeTier> requiredTiers = recipe.getRequiredTiers();
                 if (requiredTiers.contains(RecipeTier.STEAM)) {
@@ -937,7 +912,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         manaWarning = 0;
 
         markDirtyQuick();
-        IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+        IEFabRecipe recipe = crafterHelper.findRecipeForOutput(getCurrentGhostOutput(), world);
 
         if (recipe != null) {
             boolean error = getErrorsForOutput(recipe, null);
@@ -1102,7 +1077,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
 
         ItemStack output = getCurrentGhostOutput();
-        IEFabRecipe recipe = findRecipeForOutput(output);
+        IEFabRecipe recipe = crafterHelper.findRecipeForOutput(output, world);
 
         List<String> usage = new ArrayList<>();
 
@@ -1133,7 +1108,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
 
         ItemStack output = getCurrentGhostOutput();
-        IEFabRecipe recipe = findRecipeForOutput(output);
+        IEFabRecipe recipe = crafterHelper.findRecipeForOutput(output, world);
         List<String> errors = new ArrayList<>();
         getErrorsForOutput(recipe, errors);
         return errors;

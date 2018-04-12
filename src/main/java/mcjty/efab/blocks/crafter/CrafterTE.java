@@ -139,17 +139,6 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         }
     }
 
-    @Nullable
-    private IEFabRecipe findRecipeForOutput(ItemStack output) {
-        List<IEFabRecipe> recipes = crafterHelper.findCurrentRecipes(getWorld());
-        for (IEFabRecipe recipe : recipes) {
-            if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, recipe.cast().getRecipeOutput())) {
-                return recipe;
-            }
-        }
-        return null;
-    }
-
     /**
      * Return all current outputs with the first outputs the ones that are actually possible
      * given current configuration
@@ -165,7 +154,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     public boolean isCrafting() {
-        IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+        IEFabRecipe recipe = crafterHelper.findRecipeForOutput(getCurrentGhostOutput(), world);
         if (recipe == null) {
             return false;
         }
@@ -191,7 +180,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         if (ticksRemaining >= 0) {
             markDirtyQuick();
 
-            IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+            IEFabRecipe recipe = crafterHelper.findRecipeForOutput(getCurrentGhostOutput(), world);
             if (recipe == null) {
                 lastError = "No recipe";
                 abortCraft();
@@ -288,7 +277,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     }
 
     public IEFabRecipe checkCraft(GridTE grid) {
-        IEFabRecipe recipe = findRecipeForOutput(getCurrentGhostOutput());
+        IEFabRecipe recipe = crafterHelper.findRecipeForOutput(getCurrentGhostOutput(), world);
         if (recipe != null) {
             List<String> errors = new ArrayList<>();
             boolean error = grid.getErrorsForOutput(recipe, errors);

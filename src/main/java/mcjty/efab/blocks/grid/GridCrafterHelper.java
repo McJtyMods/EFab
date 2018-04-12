@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +36,13 @@ public class GridCrafterHelper {
     private IRecipe vanillaRecipe = null;       // A vanilla recipe if possible
     private boolean vanillaRecipeValid = false;
 
+    // This itemstack is the last itemstack for which we calculated findRecipeForOutput so it acts like
+    // a cache. If it is null then the cache is invalid
+    // This cache is for the efab recipes. Vanilla recipes are cached in the vanillaRecipe* fields
+    @Nullable private ItemStack cachedItemStackForRecipe = null;
+    @Nullable private IEFabRecipe cachedRecipe = null;
+
+
     // Client side only and contains the last outputs from the server
     private List<ItemStack> outputsFromServer = Collections.emptyList();
 
@@ -49,6 +57,28 @@ public class GridCrafterHelper {
     public void invalidateCache() {
         vanillaRecipe = null;
         vanillaRecipeValid = false;
+        cachedItemStackForRecipe = null;
+        cachedRecipe = null;
+    }
+
+    @Nullable
+    public IEFabRecipe findRecipeForOutput(ItemStack output, World world) {
+        if (cachedItemStackForRecipe != null &&
+                ((cachedItemStackForRecipe.isEmpty() && output.isEmpty()) ||
+                        mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, cachedItemStackForRecipe))) {
+            return cachedRecipe;
+        }
+
+        cachedItemStackForRecipe = output;
+        List<IEFabRecipe> recipes = findCurrentRecipes(world);
+        for (IEFabRecipe recipe : recipes) {
+            if (mcjty.efab.tools.InventoryHelper.isItemStackConsideredEqual(output, recipe.cast().getRecipeOutput())) {
+                cachedRecipe = recipe;
+                return recipe;
+            }
+        }
+        cachedRecipe = null;
+        return null;
     }
 
     /**
