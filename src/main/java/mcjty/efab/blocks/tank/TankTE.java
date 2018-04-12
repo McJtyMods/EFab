@@ -34,9 +34,8 @@ public class TankTE extends GenericEFabTile {
 
     public FluidTank getHandler() {
         if (handler == null) {
-            Block block = getWorld().getBlockState(pos.down()).getBlock();
             TileEntity te = getWorld().getTileEntity(pos.down());
-            if (block == blockType && te instanceof TankTE) {
+            if (te instanceof TankTE && ((TankTE) te).isAdvanced() == isAdvanced()) {
                 TankTE tankTE = (TankTE) te;
                 return tankTE.getHandler();
             } else {
@@ -104,6 +103,10 @@ public class TankTE extends GenericEFabTile {
             }
             markDirtyClient();
         }
+    }
+
+    public boolean isAdvanced() {
+        return false;
     }
 
     public int getCapacity() {
