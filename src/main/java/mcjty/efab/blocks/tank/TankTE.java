@@ -47,7 +47,7 @@ public class TankTE extends GenericEFabTile {
 
     public TankTE getBottomTank() {
         BlockPos bottomPos = pos;
-        while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
+        while (world.getBlockState(bottomPos.down()).getBlock() == getTankBlock()) {
             bottomPos = bottomPos.down();
         }
         TileEntity te = world.getTileEntity(bottomPos);
@@ -62,7 +62,7 @@ public class TankTE extends GenericEFabTile {
     public int getTankIndex() {
         int idx = 0;
         BlockPos bottomPos = pos;
-        while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
+        while (world.getBlockState(bottomPos.down()).getBlock() == getTankBlock()) {
             bottomPos = bottomPos.down();
             idx++;
         }
@@ -74,20 +74,20 @@ public class TankTE extends GenericEFabTile {
         // First find the bottom tank
         if (!world.isRemote) {
             BlockPos bottomPos = pos;
-            while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
+            while (world.getBlockState(bottomPos.down()).getBlock() == getTankBlock()) {
                 bottomPos = bottomPos.down();
             }
-            if (world.getBlockState(bottomPos.up()).getBlock() == blockType) {
+            if (world.getBlockState(bottomPos.up()).getBlock() == getTankBlock()) {
                 // We have a multiblock. Need to combine handlers.
                 BlockPos p = bottomPos;
                 int cnt = 0;
-                while (world.getBlockState(p).getBlock() == blockType) {
+                while (world.getBlockState(p).getBlock() == getTankBlock()) {
                     cnt++;
                     p = p.up();
                 }
                 EFabFluidTank bottomHandler = new EFabFluidTank(getCapacity() * cnt, this);
                 p = bottomPos;
-                while (world.getBlockState(p).getBlock() == blockType) {
+                while (world.getBlockState(p).getBlock() == getTankBlock()) {
                     TankTE te = (TankTE) world.getTileEntity(p);
                     te.markDirtyQuick();
                     if (te.handler != null) {
@@ -113,14 +113,18 @@ public class TankTE extends GenericEFabTile {
         return ModBlocks.tankBlock.capacity;
     }
 
+    public Block getTankBlock() {
+        return ModBlocks.tankBlock;
+    }
+
     @Override
     public void onBlockBreak(World world, BlockPos pos, IBlockState state) {
         if (!world.isRemote) {
             BlockPos bottomPos = pos;
-            while (world.getBlockState(bottomPos.down()).getBlock() == blockType) {
+            while (world.getBlockState(bottomPos.down()).getBlock() == getTankBlock()) {
                 bottomPos = bottomPos.down();
             }
-            if (world.getBlockState(bottomPos.up()).getBlock() == blockType || bottomPos.up().equals(pos)) {
+            if (world.getBlockState(bottomPos.up()).getBlock() == getTankBlock() || bottomPos.up().equals(pos)) {
                 TankTE bottomTE = (TankTE) world.getTileEntity(bottomPos);
                 // Empty the complete tank first
                 FluidStack drained = bottomTE.getHandler().drain(bottomTE.getHandler().getCapacity(), true);
@@ -147,11 +151,11 @@ public class TankTE extends GenericEFabTile {
 
                 Block block = world.getBlockState(pos.up()).getBlock();
                 TileEntity te = world.getTileEntity(pos.up());
-                if (block == blockType && te instanceof TankTE) {
+                if (block == getTankBlock() && te instanceof TankTE) {
                     TankTE topTE = (TankTE) te;
                     BlockPos p = pos.up();
                     int cnt = 0;
-                    while (world.getBlockState(p).getBlock() == blockType) {
+                    while (world.getBlockState(p).getBlock() == getTankBlock()) {
                         cnt++;
                         p = p.up();
                     }
@@ -191,7 +195,7 @@ public class TankTE extends GenericEFabTile {
             return;
         }
         while (true) {
-            if (world.getBlockState(p.down()) == blockType) {
+            if (world.getBlockState(p.down()) == getTankBlock()) {
                 p = p.down();
             } else {
                 break;
@@ -200,7 +204,7 @@ public class TankTE extends GenericEFabTile {
         while (true) {
             Block block = world.getBlockState(p).getBlock();
             TileEntity te = world.getTileEntity(p);
-            if (block == blockType && te instanceof TankTE) {
+            if (block == getTankBlock() && te instanceof TankTE) {
                 ((TankTE) te).clientFluidName = fluidName;
                 p = p.up();
             } else {

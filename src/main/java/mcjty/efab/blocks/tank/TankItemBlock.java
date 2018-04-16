@@ -36,11 +36,7 @@ public class TankItemBlock extends GenericItemBlock {
                             // Not compatible
                             if (world.isRemote) {
                                 ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
-                                if (player instanceof EntityPlayer) {
-                                    player.sendStatusMessage(component, false);
-                                } else {
-                                    player.sendMessage(component);
-                                }
+                                player.sendStatusMessage(component, false);
                             }
                             return false;
                         }
@@ -51,11 +47,7 @@ public class TankItemBlock extends GenericItemBlock {
                         if (tankFluid != null && !fluid.isFluidEqual(tankFluid)) {
                             if (world.isRemote) {
                                 ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
-                                if (player instanceof EntityPlayer) {
-                                    player.sendStatusMessage(component, false);
-                                } else {
-                                    player.sendMessage(component);
-                                }
+                                player.sendStatusMessage(component, false);
                             }
                             return false;
                         }
@@ -67,17 +59,13 @@ public class TankItemBlock extends GenericItemBlock {
         // Check if the tank above and below have the same fluid
         TileEntity tedown = world.getTileEntity(pos.down());
         TileEntity teup = world.getTileEntity(pos.up());
-        if (tedown instanceof TankTE && teup instanceof TankTE) {
+        if (tedown instanceof TankTE && teup instanceof TankTE && ((TankTE) tedown).isAdvanced() == ((TankTE) teup).isAdvanced()) {
             FluidStack fluidDown = ((TankTE) tedown).getFluid();
             FluidStack fluidUp = ((TankTE) teup).getFluid();
             if (fluidDown != null && fluidUp != null && !fluidDown.isFluidEqual(fluidUp)) {
                 if (world.isRemote) {
                     ITextComponent component = new TextComponentString(TextFormatting.RED + "Can't place this tank there. Fluids are not compatible!");
-                    if (player instanceof EntityPlayer) {
-                        player.sendStatusMessage(component, false);
-                    } else {
-                        player.sendMessage(component);
-                    }
+                    player.sendStatusMessage(component, false);
                 }
                 return false;
             }
