@@ -51,7 +51,7 @@ repositories {
     }
 }
 
-version = "0.0.35"
+version = "0.0.36"
 group= "mcjty.efab"
 archivesBaseName = "efab"
 
