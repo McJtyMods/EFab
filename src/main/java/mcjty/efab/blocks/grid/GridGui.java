@@ -58,7 +58,7 @@ public class GridGui extends GenericGuiContainer<GridTE> {
                 .addButtonEvent(parent -> right());
         timeLeftLabel = new Label<>(mc, this)
                 .setText("")
-                .setHorizontalAlignment(HorizontalAlignment.ALIGH_LEFT)
+                .setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT)
                 .setLayoutHint(new PositionalLayout.PositionalHint(88, 11, 40, 14));
         craftButton = new Button(mc, this)
                 .setText("Start")
