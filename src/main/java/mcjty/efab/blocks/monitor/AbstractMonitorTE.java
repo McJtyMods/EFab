@@ -5,11 +5,10 @@ import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.network.PacketGetMonitorText;
 import mcjty.lib.network.Argument;
-import mcjty.typed.Type;
+import mcjty.lib.typed.Type;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
