@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,15 +47,15 @@ public class GridGui extends GenericGuiContainer<GridTE> {
                 .setBackground(mainBackground);
 
         leftArrow = new Button(mc, this)
+                .setName("left")
                 .setText("<")
                 .setLayoutHint(new PositionalLayout.PositionalHint(82, 45, 13, 18))
-                .setVisible(false)
-                .addButtonEvent(parent -> left());
+                .setVisible(false);
         rightArrow = new Button(mc, this)
+                .setName("right")
                 .setText(">")
                 .setLayoutHint(new PositionalLayout.PositionalHint(112, 45, 13, 18))
-                .setVisible(false)
-                .addButtonEvent(parent -> right());
+                .setVisible(false);
         timeLeftLabel = new Label<>(mc, this)
                 .setText("")
                 .setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT)
@@ -69,22 +69,17 @@ public class GridGui extends GenericGuiContainer<GridTE> {
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
+
+        window.action(EFabMessages.INSTANCE, "left", tileEntity, GridTE.ACTION_LEFT);
+        window.action(EFabMessages.INSTANCE, "right", tileEntity, GridTE.ACTION_RIGHT);
     }
 
     private void craft() {
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_CRAFT_REPEAT);
+            window.sendAction(EFabMessages.INSTANCE, tileEntity, GridTE.ACTION_CRAFT_REPEAT);
         } else {
-            sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_CRAFT);
+            window.sendAction(EFabMessages.INSTANCE, tileEntity, GridTE.ACTION_CRAFT);
         }
-    }
-
-    private void left() {
-        sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_LEFT);
-    }
-
-    private void right() {
-        sendServerCommand(EFabMessages.INSTANCE, GridTE.CMD_RIGHT);
     }
 
     private static DecimalFormat fmt = new DecimalFormat("#.##");

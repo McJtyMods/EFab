@@ -21,12 +21,12 @@ import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.sound.SoundController;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.entity.DefaultAction;
 import mcjty.lib.entity.GenericTileEntity;
-import mcjty.lib.network.Argument;
+import mcjty.lib.entity.IAction;
 import mcjty.lib.varia.NullSidedInvWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -51,14 +51,24 @@ import static mcjty.efab.blocks.grid.GridContainer.COUNT_UPDATES;
 
 public class GridTE extends GenericTileEntity implements DefaultSidedInventory, ITickable {
 
-    public static final String CMD_CRAFT = "craft";
-    public static final String CMD_CRAFT_REPEAT = "craftRepeat";
-    public static final String CMD_LEFT = "left";
-    public static final String CMD_RIGHT = "right";
-
     private static final int[] SLOTS = new int[]{GridContainer.SLOT_CRAFTOUTPUT, GridContainer.SLOT_CRAFTOUTPUT + 1, GridContainer.SLOT_CRAFTOUTPUT + 2};
 
     private InventoryHelper inventoryHelper = new InventoryHelper(this, GridContainer.factory, 9 + 3 + COUNT_UPDATES + 1);
+
+    public static final String ACTION_CRAFT = "craft";
+    public static final String ACTION_CRAFT_REPEAT = "craftRepeat";
+    public static final String ACTION_LEFT = "left";
+    public static final String ACTION_RIGHT = "right";
+
+    @Override
+    public IAction[] getActions() {
+        return new IAction[] {
+                new DefaultAction<>(ACTION_CRAFT, o -> ((GridTE)o).startCraft(false)),
+                new DefaultAction<>(ACTION_CRAFT_REPEAT, o -> ((GridTE)o).startCraft(true)),
+                new DefaultAction<>(ACTION_LEFT, o -> ((GridTE)o).left()),
+                new DefaultAction<>(ACTION_RIGHT, o -> ((GridTE)o).right()),
+        };
+    }
 
     private int ticksRemaining = -1;
     private int totalTicks = 0;
@@ -1298,27 +1308,5 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
         return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, Map<String, Argument> args) {
-        boolean rc = super.execute(playerMP, command, args);
-        if (rc) {
-            return rc;
-        }
-        if (CMD_CRAFT.equals(command)) {
-            startCraft(false);
-            return true;
-        } else if (CMD_CRAFT_REPEAT.equals(command)) {
-            startCraft(true);
-            return true;
-        } else if (CMD_LEFT.equals(command)) {
-            left();
-            return true;
-        } else if (CMD_RIGHT.equals(command)) {
-            right();
-            return true;
-        }
-        return false;
     }
 }
