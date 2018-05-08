@@ -94,6 +94,9 @@ dependencies {
     if (!project.hasProperty("singleproject")) {
         deobfCompile "com.github.mcjty:mcjtylib:${mcjtylib_version}"
         deobfCompile "com.github.mcjty:rftools:1.12-7.30"
+    } else {
+	compile project(':McJtyLib')
+	compile project(':RFTools')
     }
     compile "li.cil.oc:OpenComputers:${oc_version}"
     deobfCompile "net.industrial-craft:industrialcraft-2:2.6.190-ex110:api"
