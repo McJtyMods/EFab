@@ -8,10 +8,14 @@ import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
-import mcjty.lib.network.Argument;
+import mcjty.lib.entity.DefaultAction;
+import mcjty.lib.entity.DefaultValue;
+import mcjty.lib.entity.IAction;
+import mcjty.lib.entity.IValue;
+import mcjty.lib.typed.Key;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.NullSidedInvWrapper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,17 +29,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 
 public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory, ITickable, ISpeedBooster {
-
-    public static final String CMD_LEFT = "left";
-    public static final String CMD_RIGHT = "right";
-    public static final String CMD_SETNAME = "setName";
 
     public static final int[] SLOTS = new int[]{CrafterContainer.SLOT_CRAFTOUTPUT, CrafterContainer.SLOT_CRAFTOUTPUT + 1, CrafterContainer.SLOT_CRAFTOUTPUT + 2};
 
@@ -55,6 +54,25 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     private float cnt2 = 0;
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
+
+    public final static String ACTION_LEFT = "left";
+    public final static String ACTION_RIGHT = "right";
+    public final static Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
+
+    @Override
+    public IValue[] getValues() {
+        return new IValue[] {
+                new DefaultValue<>(VALUE_NAME, CrafterTE::getCraftingName, CrafterTE::setCraftingName)
+        };
+    }
+
+    @Override
+    public IAction[] getActions() {
+        return new IAction[] {
+                new DefaultAction<>(ACTION_LEFT, o -> ((CrafterTE)o).left()),
+                new DefaultAction<>(ACTION_RIGHT, o -> ((CrafterTE)o).right()),
+        };
+    }
 
     public String getCraftingName() {
         return name == null ? "" : name;
@@ -499,25 +517,5 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
             }
         }
         return super.getCapability(capability, facing);
-    }
-
-
-    @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, Map<String, Argument> args) {
-        boolean rc = super.execute(playerMP, command, args);
-        if (rc) {
-            return rc;
-        }
-        if (CMD_LEFT.equals(command)) {
-            left();
-            return true;
-        } else if (CMD_RIGHT.equals(command)) {
-            right();
-            return true;
-        } else if (CMD_SETNAME.equals(command)) {
-            setCraftingName(args.get("name").getString());
-            return true;
-        }
-        return false;
     }
 }

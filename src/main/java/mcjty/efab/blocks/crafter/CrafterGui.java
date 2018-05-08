@@ -10,11 +10,10 @@ import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.lib.network.Argument;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.List;
 
 public class CrafterGui extends GenericGuiContainer<CrafterTE> {
@@ -25,7 +24,6 @@ public class CrafterGui extends GenericGuiContainer<CrafterTE> {
     private Button leftArrow;
     private Button rightArrow;
     private Label errorLabel;
-    private TextField nameField;
 
     private static final ResourceLocation mainBackground = new ResourceLocation(EFab.MODID, "textures/gui/crafter.png");
 
@@ -44,41 +42,33 @@ public class CrafterGui extends GenericGuiContainer<CrafterTE> {
                 .setBackground(mainBackground);
 
         leftArrow = new Button(mc, this)
+                .setName("left")
                 .setText("<")
                 .setLayoutHint(new PositionalLayout.PositionalHint(82, 45, 13, 18))
-                .setVisible(false)
-                .addButtonEvent(parent -> left());
+                .setVisible(false);
         rightArrow = new Button(mc, this)
+                .setName("right")
                 .setText(">")
                 .setLayoutHint(new PositionalLayout.PositionalHint(112, 45, 13, 18))
-                .setVisible(false)
-                .addButtonEvent(parent -> right());
+                .setVisible(false);
         errorLabel = new Label<>(mc, this)
                 .setText("")
                 .setColor(0xffff0000)
                 .setLayoutHint(new PositionalLayout.PositionalHint(6, 70, 160, 20));
-        nameField = new TextField(mc, this)
+        TextField nameField = new TextField(mc, this)
+                .setName("name")
                 .setTooltips("If you give this crafter a name", "it will only use item storages", "with the same name")
                 .setLayoutHint(new PositionalLayout.PositionalHint(5, 90, 161, 16));
         nameField.setText(tileEntity.getCraftingName());
-        nameField.addTextEvent((parent, newText) -> setName());
 
         toplevel.addChild(leftArrow).addChild(rightArrow).addChild(errorLabel).addChild(nameField);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
-    }
 
-    private void left() {
-        sendServerCommand(EFabMessages.INSTANCE, CrafterTE.CMD_LEFT);
-    }
-
-    private void right() {
-        sendServerCommand(EFabMessages.INSTANCE, CrafterTE.CMD_RIGHT);
-    }
-
-    private void setName() {
-        sendServerCommand(EFabMessages.INSTANCE, CrafterTE.CMD_SETNAME, new Argument("name", nameField.getText()));
+        window.action(EFabMessages.INSTANCE, "left", tileEntity, CrafterTE.ACTION_LEFT);
+        window.action(EFabMessages.INSTANCE, "right", tileEntity, CrafterTE.ACTION_RIGHT);
+        window.bind(EFabMessages.INSTANCE, "name", tileEntity, CrafterTE.VALUE_NAME.getName());
     }
 
     @Override
