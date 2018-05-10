@@ -2,7 +2,6 @@ package mcjty.efab.blocks.crafter;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.proxy.GuiProxy;
-import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.theoneprobe.api.*;
 import net.minecraft.block.material.Material;

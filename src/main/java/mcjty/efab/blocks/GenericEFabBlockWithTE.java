@@ -1,10 +1,10 @@
 package mcjty.efab.blocks;
 
 import mcjty.efab.EFab;
-import mcjty.lib.container.GenericBlock;
+import mcjty.lib.blocks.GenericBlock;
 import mcjty.lib.container.GenericGuiContainer;
-import mcjty.lib.container.GenericItemBlock;
-import mcjty.lib.entity.GenericTileEntity;
+import mcjty.lib.blocks.GenericItemBlock;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.inventory.Container;

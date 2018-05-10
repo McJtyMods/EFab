@@ -1,6 +1,6 @@
 package mcjty.efab.blocks.tank;
 
-import mcjty.lib.container.GenericItemBlock;
+import mcjty.lib.blocks.GenericItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

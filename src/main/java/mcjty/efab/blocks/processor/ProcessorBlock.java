@@ -2,7 +2,6 @@ package mcjty.efab.blocks.processor;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.config.GeneralConfiguration;
-import mcjty.lib.container.BaseBlock;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
