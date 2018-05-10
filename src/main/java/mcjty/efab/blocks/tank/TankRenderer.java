@@ -1,6 +1,6 @@
 package mcjty.efab.blocks.tank;
 
-import mcjty.lib.gui.HudRenderHelper;
+import mcjty.lib.client.HudRenderHelper;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;

@@ -2,7 +2,7 @@ package mcjty.efab.blocks.monitor;
 
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.network.PacketGetMonitorText;
-import mcjty.lib.gui.HudRenderHelper;
+import mcjty.lib.client.HudRenderHelper;
 import mcjty.lib.varia.OrientationTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

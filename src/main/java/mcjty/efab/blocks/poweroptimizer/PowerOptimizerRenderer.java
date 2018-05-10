@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.poweroptimizer;
 
 import mcjty.efab.EFab;
-import mcjty.lib.gui.RenderHelper;
+import mcjty.lib.client.RenderHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
