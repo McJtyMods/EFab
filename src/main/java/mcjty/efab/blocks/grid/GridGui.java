@@ -61,9 +61,9 @@ public class GridGui extends GenericGuiContainer<GridTE> {
                 .setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT)
                 .setLayoutHint(new PositionalLayout.PositionalHint(88, 11, 40, 14));
         craftButton = new Button(mc, this)
+                .setChannel("craft")
                 .setText("Start")
-                .setLayoutHint(new PositionalLayout.PositionalHint(84, 24, 40, 16))
-                .addButtonEvent(parent -> craft());
+                .setLayoutHint(new PositionalLayout.PositionalHint(84, 24, 40, 16));
 
         toplevel.addChild(craftButton).addChild(leftArrow).addChild(rightArrow).addChild(timeLeftLabel);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
@@ -72,6 +72,7 @@ public class GridGui extends GenericGuiContainer<GridTE> {
 
         window.action(EFabMessages.INSTANCE, "left", tileEntity, GridTE.ACTION_LEFT);
         window.action(EFabMessages.INSTANCE, "right", tileEntity, GridTE.ACTION_RIGHT);
+        window.event("craft", (source, params) -> craft());
     }
 
     private void craft() {
