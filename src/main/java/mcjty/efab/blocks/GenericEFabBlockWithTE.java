@@ -2,7 +2,7 @@ package mcjty.efab.blocks;
 
 import mcjty.efab.EFab;
 import mcjty.lib.blocks.GenericBlock;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.blocks.GenericItemBlock;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.material.Material;

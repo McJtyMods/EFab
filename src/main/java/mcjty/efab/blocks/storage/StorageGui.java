@@ -2,7 +2,7 @@ package mcjty.efab.blocks.storage;
 
 import mcjty.efab.EFab;
 import mcjty.efab.network.EFabMessages;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Panel;

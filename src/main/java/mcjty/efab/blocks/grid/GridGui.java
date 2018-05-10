@@ -3,7 +3,7 @@ package mcjty.efab.blocks.grid;
 import mcjty.efab.EFab;
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.network.PacketGetGridStatus;
-import mcjty.lib.container.GenericGuiContainer;
+import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.PositionalLayout;
