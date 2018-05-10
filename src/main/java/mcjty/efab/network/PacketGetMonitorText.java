@@ -4,6 +4,7 @@ import mcjty.efab.EFab;
 import mcjty.lib.network.PacketRequestServerList;
 import mcjty.lib.network.PacketRequestServerListHandler;
 import mcjty.lib.typed.Type;
+import mcjty.lib.typed.TypedMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
@@ -19,7 +20,7 @@ public class PacketGetMonitorText extends PacketRequestServerList<String> {
     }
 
     public PacketGetMonitorText(BlockPos pos) {
-        super(EFab.MODID, pos, CMD_GETMESSAGES);
+        super(EFab.MODID, pos, CMD_GETMESSAGES, TypedMap.EMPTY);
     }
 
     public static class Handler extends PacketRequestServerListHandler<PacketGetMonitorText, String> {

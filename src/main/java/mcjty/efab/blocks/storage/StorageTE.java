@@ -3,22 +3,29 @@ package mcjty.efab.blocks.storage;
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
-import mcjty.lib.network.Argument;
+import mcjty.lib.entity.DefaultValue;
+import mcjty.lib.entity.IValue;
+import mcjty.lib.typed.Key;
+import mcjty.lib.typed.Type;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
-import java.util.Map;
-
 public class StorageTE extends GenericEFabTile implements DefaultSidedInventory {
-
-    public static final String CMD_SETNAME = "setName";
 
     private static int[] SLOTS = null;
     private InventoryHelper inventoryHelper = new InventoryHelper(this, StorageContainer.factory, 9 * 3);
     private String name;
+
+    public static final Key<String> VALUE_CRAFTING_NAME = new Key<>("name", Type.STRING);
+
+    @Override
+    public IValue[] getValues() {
+        return new IValue[] {
+                new DefaultValue<>(VALUE_CRAFTING_NAME, StorageTE::getCraftingName, StorageTE::setCraftingName),
+        };
+    }
 
     @Override
     protected boolean needsCustomInvWrapper() {
@@ -84,18 +91,5 @@ public class StorageTE extends GenericEFabTile implements DefaultSidedInventory 
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
         return true;
-    }
-
-    @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, Map<String, Argument> args) {
-        boolean rc = super.execute(playerMP, command, args);
-        if (rc) {
-            return rc;
-        }
-        if (CMD_SETNAME.equals(command)) {
-            setCraftingName(args.get("name").getString());
-            return true;
-        }
-        return false;
     }
 }

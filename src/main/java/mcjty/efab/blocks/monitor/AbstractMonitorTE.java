@@ -4,8 +4,8 @@ import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.network.PacketGetMonitorText;
-import mcjty.lib.network.Argument;
 import mcjty.lib.typed.Type;
+import mcjty.lib.typed.TypedMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractMonitorTE extends GenericEFabTile implements ITickable, ISpeedBooster, IMonitor {
 
@@ -111,7 +110,7 @@ public abstract class AbstractMonitorTE extends GenericEFabTile implements ITick
 
     @Nonnull
     @Override
-    public <T> List<T> executeWithResultList(String command, Map<String, Argument> args, Type<T> type) {
+    public <T> List<T> executeWithResultList(String command, TypedMap args, Type<T> type) {
         List<T> rc = super.executeWithResultList(command, args, type);
         if (!rc.isEmpty()) {
             return rc;
