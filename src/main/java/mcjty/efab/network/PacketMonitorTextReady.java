@@ -38,7 +38,7 @@ public class PacketMonitorTextReady extends PacketListToClient<String> {
                 return;
             }
             IClientCommandHandler clientCommandHandler = (IClientCommandHandler) te;
-            if (!clientCommandHandler.execute(message.command, message.list, Type.STRING)) {
+            if (!clientCommandHandler.receiveListFromServer(message.command, message.list, Type.STRING)) {
                 Logging.log("Command " + message.command + " was not handled!");
             }
         }

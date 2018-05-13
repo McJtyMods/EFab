@@ -122,8 +122,8 @@ public abstract class AbstractMonitorTE extends GenericEFabTile implements ITick
     }
 
     @Override
-    public <T> boolean execute(String command, List<T> list, Type<T> type) {
-        boolean rc = super.execute(command, list, type);
+    public <T> boolean receiveListFromServer(String command, List<T> list, Type<T> type) {
+        boolean rc = super.receiveListFromServer(command, list, type);
         if (rc) {
             return true;
         }
