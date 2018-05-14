@@ -13,6 +13,7 @@ import mcjty.lib.McJtyLib;
 import mcjty.lib.McJtyRegister;
 import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.network.PacketHandler;
+import mcjty.lib.proxy.AbstractCommonProxy;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -32,19 +33,16 @@ import org.apache.logging.log4j.Level;
 import java.io.File;
 import java.util.concurrent.Callable;
 
-public abstract class CommonProxy {
+public abstract class CommonProxy extends AbstractCommonProxy {
 
-    public static File modConfigDir;
-    private Configuration mainConfig;
-
+    @Override
     public void preInit(FMLPreInitializationEvent e) {
+        super.preInit(e);
+
         MinecraftForge.EVENT_BUS.register(this);
-        McJtyLib.preInit(e);
 
         RecipeManager.init();
-        GeneralConfig.preInit(e);
 
-        modConfigDir = e.getModConfigurationDirectory();
         mainConfig = new Configuration(new File(modConfigDir.getPath(), "efab.cfg"));
 
         readMainConfig();
@@ -87,13 +85,17 @@ public abstract class CommonProxy {
         }
     }
 
+    @Override
     public void init(FMLInitializationEvent e) {
+        super.init(e);
         NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 //        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
 //        ModRecipes.init();
     }
 
+    @Override
     public void postInit(FMLPostInitializationEvent e) {
+        super.postInit(e);
         mainConfig = null;
         StandardRecipes.init();
         if (EFab.botania) {
@@ -102,21 +104,4 @@ public abstract class CommonProxy {
         File file = new File(modConfigDir.getPath(), "efab_recipes.json");
         StandardRecipes.readRecipesConfig(file);
     }
-
-    public World getClientWorld() {
-        throw new IllegalStateException("This should only be called from client side");
-    }
-
-    public EntityPlayer getClientPlayer() {
-        throw new IllegalStateException("This should only be called from client side");
-    }
-
-    public <V> ListenableFuture<V> addScheduledTaskClient(Callable<V> callableToSchedule) {
-        throw new IllegalStateException("This should only be called from client side");
-    }
-
-    public ListenableFuture<Object> addScheduledTaskClient(Runnable runnableToSchedule) {
-        throw new IllegalStateException("This should only be called from client side");
-    }
-
 }

@@ -26,8 +26,9 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
-        MinecraftForge.EVENT_BUS.register(this);
         super.preInit(e);
+
+        MinecraftForge.EVENT_BUS.register(this);
         OBJLoader.INSTANCE.addDomain(EFab.MODID);
 //        ModelLoaderRegistry.registerLoader(new BakedModelLoader());
         if (EFab.botania) {
