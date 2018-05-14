@@ -804,10 +804,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             visited.add(p);
             Block block = getWorld().getBlockState(p).getBlock();
             if (block == ModBlocks.gridBlock) {
-                TileEntity te = getWorld().getTileEntity(p);
-                if (te instanceof GridTE) {
-                    ((GridTE) te).invalidateMultiBlockCache();
-                }
+//                TileEntity te = getWorld().getTileEntity(p);
+//                if (te instanceof GridTE) {
+//                    ((GridTE) te).invalidateMultiBlockCache();
+//                }
                 addTodo(todo, visited, p);
             } else if (block == ModBlocks.baseBlock) {
                 addTodo(todo, visited, p);
