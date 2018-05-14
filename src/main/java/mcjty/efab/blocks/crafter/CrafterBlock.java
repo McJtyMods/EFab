@@ -75,7 +75,7 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
             if (!outputs.isEmpty()) {
                 probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
                     .text(TextStyleClass.LABEL + "Output ")
-                    .item(outputs.get(0));
+                    .item(crafterTE.getStackInSlot(CrafterContainer.SLOT_GHOSTOUT));
             }
         }
     }
