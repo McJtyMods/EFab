@@ -24,7 +24,7 @@ import java.util.List;
 public class StorageBlock extends GenericEFabMultiBlockPart<StorageTE, StorageContainer> {
 
     public StorageBlock() {
-        super(Material.IRON, StorageTE.class, StorageContainer.class, "storage", true);
+        super(Material.IRON, StorageTE.class, StorageContainer::new, "storage", true);
     }
 
     @Override

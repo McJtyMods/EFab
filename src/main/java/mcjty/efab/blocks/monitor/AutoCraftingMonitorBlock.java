@@ -23,7 +23,7 @@ public class AutoCraftingMonitorBlock extends GenericEFabMultiBlockPart<AutoCraf
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public AutoCraftingMonitorBlock() {
-        super(Material.IRON, AutoCraftingMonitorTE.class, EmptyContainer.class, "autocrafting_monitor", false);
+        super(Material.IRON, AutoCraftingMonitorTE.class, EmptyContainer::new, "autocrafting_monitor", false);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
 public class GearBoxBlock extends GenericEFabMultiBlockPart<GearBoxTE, EmptyContainer> {
 
     public GearBoxBlock() {
-        super(Material.IRON, GearBoxTE.class, EmptyContainer.class, "gearbox", false);
+        super(Material.IRON, GearBoxTE.class, EmptyContainer::new, "gearbox", false);
     }
 
     @Override

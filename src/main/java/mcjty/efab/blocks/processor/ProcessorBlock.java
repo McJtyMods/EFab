@@ -14,7 +14,7 @@ import java.util.List;
 public class ProcessorBlock extends GenericEFabMultiBlockPart<ProcessorTE, EmptyContainer> {
 
     public ProcessorBlock() {
-        super(Material.IRON, ProcessorTE.class, EmptyContainer.class, "processor", false);
+        super(Material.IRON, ProcessorTE.class, EmptyContainer::new, "processor", false);
     }
 
     @Override

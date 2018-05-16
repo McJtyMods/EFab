@@ -5,7 +5,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,15 +17,16 @@ import net.minecraft.world.World;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 public class GenericEFabMultiBlockPart<T extends GenericEFabTile, C extends Container> extends GenericEFabBlockWithTE<T,C> {
 
-    public GenericEFabMultiBlockPart(Material material, Class<? extends T> tileEntityClass, Class<? extends C> containerClass, String name, boolean isContainer) {
-        super(material, tileEntityClass, containerClass, name, isContainer);
+    public GenericEFabMultiBlockPart(Material material, Class<? extends T> tileEntityClass, BiFunction<EntityPlayer, IInventory, C> containerFactory, String name, boolean isContainer) {
+        super(material, tileEntityClass, containerFactory, name, isContainer);
     }
 
-    public GenericEFabMultiBlockPart(Material material, Class<? extends T> tileEntityClass, Class<? extends C> containerClass, Class<? extends ItemBlock> itemBlockClass, String name, boolean isContainer) {
-        super(material, tileEntityClass, containerClass, itemBlockClass, name, isContainer);
+    public GenericEFabMultiBlockPart(Material material, Class<? extends T> tileEntityClass, BiFunction<EntityPlayer, IInventory, C> containerFactory, Class<? extends ItemBlock> itemBlockClass, String name, boolean isContainer) {
+        super(material, tileEntityClass, containerFactory, itemBlockClass, name, isContainer);
     }
 
     @Override

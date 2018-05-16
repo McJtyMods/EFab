@@ -23,7 +23,7 @@ public class MonitorBlock extends GenericEFabMultiBlockPart<MonitorTE, EmptyCont
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public MonitorBlock() {
-        super(Material.IRON, MonitorTE.class, EmptyContainer.class, "monitor", false);
+        super(Material.IRON, MonitorTE.class, EmptyContainer::new, "monitor", false);
     }
 
     @Override

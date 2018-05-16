@@ -29,7 +29,7 @@ public class RfControlBlock extends GenericEFabMultiBlockPart<RfControlTE, Empty
     public static PropertyBool SPARKS = PropertyBool.create("sparks");
 
     public RfControlBlock() {
-        super(Material.IRON, RfControlTE.class, EmptyContainer.class, "rfcontrol", false);
+        super(Material.IRON, RfControlTE.class, EmptyContainer::new, "rfcontrol", false);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class SteamEngineBlock extends GenericEFabMultiBlockPart<SteamEngineTE, E
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public SteamEngineBlock() {
-        super(Material.IRON, SteamEngineTE.class, EmptyContainer.class, "steamengine", false);
+        super(Material.IRON, SteamEngineTE.class, EmptyContainer::new, "steamengine", false);
     }
 
     @Override

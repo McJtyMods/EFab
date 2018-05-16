@@ -28,7 +28,7 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public CrafterBlock() {
-        super(Material.IRON, CrafterTE.class, CrafterContainer.class, "crafter", false);
+        super(Material.IRON, CrafterTE.class, CrafterContainer::new, "crafter", false);
     }
 
     @Override

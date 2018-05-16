@@ -24,7 +24,7 @@ public class ManaReceptacleBlock extends GenericEFabMultiBlockPart<ManaReceptacl
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public ManaReceptacleBlock() {
-        super(Material.IRON, ManaReceptacleTE.class, EmptyContainer.class, "manareceptacle", false);
+        super(Material.IRON, ManaReceptacleTE.class, EmptyContainer::new, "manareceptacle", false);
     }
 
     @Override

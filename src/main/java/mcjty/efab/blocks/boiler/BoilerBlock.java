@@ -29,7 +29,7 @@ public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContai
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public BoilerBlock() {
-        super(Material.IRON, BoilerTE.class, EmptyContainer.class, "boiler", false);
+        super(Material.IRON, BoilerTE.class, EmptyContainer::new, "boiler", false);
     }
 
     @SideOnly(Side.CLIENT)

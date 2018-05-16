@@ -32,7 +32,7 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> imp
     public static PropertyBool HALF = PropertyBool.create("half");
 
     public GridBlock() {
-        super(Material.IRON, GridTE.class, GridContainer.class, "grid", true);
+        super(Material.IRON, GridTE.class, GridContainer::new, "grid", true);
     }
 
     @Override

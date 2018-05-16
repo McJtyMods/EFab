@@ -43,7 +43,7 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
     public final int capacity;
 
     public TankBlock(String name, int capacity, Class<? extends TankTE> clazz) {
-        super(Material.IRON, clazz, EmptyContainer.class, TankItemBlock.class, name, false);
+        super(Material.IRON, clazz, EmptyContainer::new, TankItemBlock.class, name, false);
         this.capacity = capacity;
     }
 

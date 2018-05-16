@@ -20,7 +20,7 @@ import java.util.List;
 public class PowerOptimizerBlock extends GenericEFabMultiBlockPart<PowerOptimizerTE, EmptyContainer> {
 
     public PowerOptimizerBlock() {
-        super(Material.IRON, PowerOptimizerTE.class, EmptyContainer.class, "power_optimizer", false);
+        super(Material.IRON, PowerOptimizerTE.class, EmptyContainer::new, "power_optimizer", false);
     }
 
     @Override

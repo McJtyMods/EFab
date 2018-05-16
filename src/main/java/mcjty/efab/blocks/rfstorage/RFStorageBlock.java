@@ -14,7 +14,7 @@ import java.util.List;
 public class RFStorageBlock extends GenericEFabMultiBlockPart<RFStorageTE, EmptyContainer> {
 
     public RFStorageBlock() {
-        super(Material.IRON, RFStorageTE.class, EmptyContainer.class, "rfstorage", false);
+        super(Material.IRON, RFStorageTE.class, EmptyContainer::new, "rfstorage", false);
     }
 
     @Override

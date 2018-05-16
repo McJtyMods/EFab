@@ -28,7 +28,7 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
     public static final AxisAlignedBB EMPTY = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public PipeBlock() {
-        super(Material.IRON, PipeTE.class, EmptyContainer.class, "pipes", false);
+        super(Material.IRON, PipeTE.class, EmptyContainer::new, "pipes", false);
     }
 
     public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 1);
