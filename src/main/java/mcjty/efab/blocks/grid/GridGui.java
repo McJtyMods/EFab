@@ -56,7 +56,7 @@ public class GridGui extends GenericGuiContainer<GridTE> {
                 .setText(">")
                 .setLayoutHint(new PositionalLayout.PositionalHint(112, 45, 13, 18))
                 .setVisible(false);
-        timeLeftLabel = new Label<>(mc, this)
+        timeLeftLabel = new Label(mc, this)
                 .setText("")
                 .setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT)
                 .setLayoutHint(new PositionalLayout.PositionalHint(88, 11, 40, 14));

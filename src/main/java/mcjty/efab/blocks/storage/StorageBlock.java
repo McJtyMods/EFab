@@ -56,7 +56,7 @@ public class StorageBlock extends GenericEFabMultiBlockPart<StorageTE, StorageCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<StorageTE>> getGuiClass() {
         return StorageGui.class;
     }
 

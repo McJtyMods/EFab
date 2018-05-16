@@ -89,7 +89,7 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<CrafterTE>> getGuiClass() {
         return CrafterGui.class;
     }
 

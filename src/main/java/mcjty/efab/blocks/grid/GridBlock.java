@@ -56,7 +56,7 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> imp
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<GridTE>> getGuiClass() {
         return GridGui.class;
     }
 

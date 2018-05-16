@@ -39,7 +39,7 @@ public abstract class GenericEFabBlockWithTE<T extends GenericTileEntity, C exte
     }
 
     @SideOnly(Side.CLIENT)
-    public Class<? extends GenericGuiContainer> getGuiClass() {
+    public Class<? extends GenericGuiContainer<T>> getGuiClass() {
         return null;
     }
 }

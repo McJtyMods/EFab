@@ -51,7 +51,7 @@ public class CrafterGui extends GenericGuiContainer<CrafterTE> {
                 .setText(">")
                 .setLayoutHint(new PositionalLayout.PositionalHint(112, 45, 13, 18))
                 .setVisible(false);
-        errorLabel = new Label<>(mc, this)
+        errorLabel = new Label(mc, this)
                 .setText("")
                 .setColor(0xffff0000)
                 .setLayoutHint(new PositionalLayout.PositionalHint(6, 70, 160, 20));
