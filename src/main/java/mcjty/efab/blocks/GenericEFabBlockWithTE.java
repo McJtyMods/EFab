@@ -5,6 +5,7 @@ import mcjty.lib.blocks.GenericBlock;
 import mcjty.lib.blocks.GenericItemBlock;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.tileentity.GenericTileEntity;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public abstract class GenericEFabBlockWithTE<T extends GenericTileEntity, C extends Container> extends GenericBlock<T, C> {
 
@@ -24,14 +26,14 @@ public abstract class GenericEFabBlockWithTE<T extends GenericTileEntity, C exte
                                   Class<? extends T> tileEntityClass,
                                   BiFunction<EntityPlayer, IInventory, C> containerFactory,
                                   String name, boolean isContainer) {
-        this(material, tileEntityClass, containerFactory, GenericItemBlock.class, name, isContainer);
+        this(material, tileEntityClass, containerFactory, GenericItemBlock::new, name, isContainer);
     }
 
     public GenericEFabBlockWithTE(Material material, Class<? extends T> tileEntityClass,
                                   BiFunction<EntityPlayer, IInventory, C> containerFactory,
-                                  Class<? extends ItemBlock> itemBlockClass,
+                                  Function<Block, ItemBlock> itemBlockFunction,
                                   String name, boolean isContainer) {
-        super(EFab.instance, material, tileEntityClass, containerFactory, itemBlockClass, name, isContainer);
+        super(EFab.instance, material, tileEntityClass, containerFactory, itemBlockFunction, name, isContainer);
         setCreativeTab(EFab.tabEFab);
     }
 

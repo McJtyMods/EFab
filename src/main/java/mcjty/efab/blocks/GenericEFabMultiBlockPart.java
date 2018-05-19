@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class GenericEFabMultiBlockPart<T extends GenericEFabTile, C extends Container> extends GenericEFabBlockWithTE<T,C> {
 
@@ -25,8 +26,9 @@ public class GenericEFabMultiBlockPart<T extends GenericEFabTile, C extends Cont
         super(material, tileEntityClass, containerFactory, name, isContainer);
     }
 
-    public GenericEFabMultiBlockPart(Material material, Class<? extends T> tileEntityClass, BiFunction<EntityPlayer, IInventory, C> containerFactory, Class<? extends ItemBlock> itemBlockClass, String name, boolean isContainer) {
-        super(material, tileEntityClass, containerFactory, itemBlockClass, name, isContainer);
+    public GenericEFabMultiBlockPart(Material material, Class<? extends T> tileEntityClass, BiFunction<EntityPlayer, IInventory, C> containerFactory,
+                                     Function<Block, ItemBlock> itemBlockFunction, String name, boolean isContainer) {
+        super(material, tileEntityClass, containerFactory, itemBlockFunction, name, isContainer);
     }
 
     @Override
