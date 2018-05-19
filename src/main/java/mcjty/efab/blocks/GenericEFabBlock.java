@@ -22,7 +22,7 @@ public abstract class GenericEFabBlock extends Block {
         setHardness(2.0f);
         setSoundType(SoundType.METAL);
         setHarvestLevel("pickaxe", 0);
-        McJtyRegister.registerLater(this, EFab.instance, ItemBlock.class);
+        McJtyRegister.registerLater(this, EFab.instance, ItemBlock::new);
     }
 
     @SideOnly(Side.CLIENT)
