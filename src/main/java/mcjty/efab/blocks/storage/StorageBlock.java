@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class StorageBlock extends GenericEFabMultiBlockPart<StorageTE, StorageContainer> {
 
@@ -56,8 +57,8 @@ public class StorageBlock extends GenericEFabMultiBlockPart<StorageTE, StorageCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<StorageTE>> getGuiClass() {
-        return StorageGui.class;
+    public BiFunction<StorageTE, StorageContainer, GenericGuiContainer<? super StorageTE>> getGuiFactory() {
+        return StorageGui::new;
     }
 
     @Override

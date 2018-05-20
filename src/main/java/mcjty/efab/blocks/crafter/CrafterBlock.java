@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterContainer> {
 
@@ -89,8 +90,8 @@ public class CrafterBlock extends GenericEFabMultiBlockPart<CrafterTE, CrafterCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<CrafterTE>> getGuiClass() {
-        return CrafterGui.class;
+    public BiFunction<CrafterTE, CrafterContainer, GenericGuiContainer<? super CrafterTE>> getGuiFactory() {
+        return CrafterGui::new;
     }
 
     @Override

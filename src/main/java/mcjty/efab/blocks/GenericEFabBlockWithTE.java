@@ -44,7 +44,8 @@ public abstract class GenericEFabBlockWithTE<T extends GenericTileEntity, C exte
     }
 
     @SideOnly(Side.CLIENT)
-    public Class<? extends GenericGuiContainer<T>> getGuiClass() {
+    @Override
+    public BiFunction<T, C, GenericGuiContainer<? super T>> getGuiFactory() {
         return null;
     }
 }

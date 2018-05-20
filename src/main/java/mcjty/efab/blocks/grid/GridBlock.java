@@ -26,6 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> implements ISoundProducer {
 
@@ -56,8 +57,8 @@ public class GridBlock extends GenericEFabBlockWithTE<GridTE, GridContainer> imp
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Class<? extends GenericGuiContainer<GridTE>> getGuiClass() {
-        return GridGui.class;
+    public BiFunction<GridTE, GridContainer, GenericGuiContainer<? super GridTE>> getGuiFactory() {
+        return GridGui::new;
     }
 
     @Override
