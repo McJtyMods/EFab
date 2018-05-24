@@ -13,8 +13,11 @@ import java.util.List;
 
 public class RFStorageBlock extends GenericEFabMultiBlockPart<RFStorageTE, EmptyContainer> {
 
-    public RFStorageBlock() {
-        super(Material.IRON, RFStorageTE.class, EmptyContainer::new, "rfstorage", false);
+    private final boolean advanced;
+
+    public RFStorageBlock(String name, boolean advanced, Class<? extends RFStorageTE> teClazz) {
+        super(Material.IRON, teClazz, EmptyContainer::new, name, false);
+        this.advanced = advanced;
     }
 
     @Override
@@ -23,11 +26,13 @@ public class RFStorageBlock extends GenericEFabMultiBlockPart<RFStorageTE, Empty
     }
 
     @Override
-    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
-        super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + GeneralConfiguration.rfStorageMax
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag flag) {
+        super.addInformation(stack, playerIn, tooltip, flag);
+        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN
+                + (advanced ? GeneralConfiguration.advancedRfStorageMax : GeneralConfiguration.rfStorageMax)
                 + TextFormatting.WHITE + " RF");
-        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + GeneralConfiguration.rfStorageInternalFlow
+        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN
+                + (advanced ? GeneralConfiguration.advancedRfStorageInternalFlow : GeneralConfiguration.rfStorageInternalFlow)
                 + TextFormatting.WHITE + " RF/t to crafting");
     }
 }

@@ -103,6 +103,12 @@ public class StandardRecipes {
                 .tier(RecipeTier.LIQUID)
                 .fluid(new FluidStack(FluidRegistry.LAVA, 1000))
                 .time(100));
+        RecipeManager.registerRecipe(new EFabShapedRecipe(
+                new ItemStack(ModBlocks.advancedRfStorageBlock),
+                "rRr", "RbR", "rRr", 'r', Items.REDSTONE, 'b', ModBlocks.rfStorageBlock, 'R', Blocks.REDSTONE_BLOCK)
+                .tier(RecipeTier.RF)
+                .rfPerTick(200)
+                .time(500));
         if (EFab.botania) {
             RecipeManager.registerRecipe(new EFabShapedRecipe(
                     new ItemStack(BotaniaSupportSetup.getManaReceptacle()),

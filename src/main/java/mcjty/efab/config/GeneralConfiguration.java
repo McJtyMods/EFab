@@ -48,6 +48,8 @@ public class GeneralConfiguration {
     public static int rfStorageInputPerTick = 50;
     public static int rfStorageMax = 10000;
     public static int rfStorageInternalFlow = 30;
+    public static int advancedRfStorageMax = 100000;
+    public static int advancedRfStorageInternalFlow = 100;
     public static int ticksAllowedWithoutRF = 1;
 
     public static int maxMana = 10000;
@@ -142,6 +144,10 @@ public class GeneralConfiguration {
                 1, 10000000, "The maximum amount of RF for the RF Storage block");
         rfStorageInternalFlow = cfg.getInt("rfStorageInternalFlow", CATEGORY_GENERAL, rfStorageInternalFlow,
                 1, 1000000, "How much RF/t the RF Storage block can contribute to crafting");
+        advancedRfStorageMax = cfg.getInt("advancedRfStorageMax", CATEGORY_GENERAL, advancedRfStorageMax,
+                1, 10000000, "The maximum amount of RF for the advanced RF Storage block");
+        advancedRfStorageInternalFlow = cfg.getInt("advancedRfStorageInternalFlow", CATEGORY_GENERAL, advancedRfStorageInternalFlow,
+                1, 1000000, "How much RF/t the advanced RF Storage block can contribute to crafting");
 
         ticksAllowedWithoutRF = cfg.getInt("ticksAllowedWithoutRF", CATEGORY_GENERAL, ticksAllowedWithoutRF, -1, 1000000000,
                 "If -1 then the efab will pause the crafting until power is available. Otherwise it will allow a delay of the specified amount of ticks before aborting");

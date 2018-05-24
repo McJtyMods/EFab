@@ -11,7 +11,9 @@ import mcjty.efab.blocks.pipes.PipeBlock;
 import mcjty.efab.blocks.poweroptimizer.PowerOptimizerBlock;
 import mcjty.efab.blocks.processor.ProcessorBlock;
 import mcjty.efab.blocks.rfcontrol.RfControlBlock;
+import mcjty.efab.blocks.rfstorage.AdvancedRFStorageTE;
 import mcjty.efab.blocks.rfstorage.RFStorageBlock;
+import mcjty.efab.blocks.rfstorage.RFStorageTE;
 import mcjty.efab.blocks.steamengine.SteamEngineBlock;
 import mcjty.efab.blocks.storage.StorageBlock;
 import mcjty.efab.blocks.tank.AdvancedTankTE;
@@ -33,6 +35,7 @@ public class ModBlocks {
     public static SteamEngineBlock steamEngineBlock;
     public static RfControlBlock rfControlBlock;
     public static RFStorageBlock rfStorageBlock;
+    public static RFStorageBlock advancedRfStorageBlock;
     public static ProcessorBlock processorBlock;
     public static MonitorBlock monitorBlock;
     public static AutoCraftingMonitorBlock autoCraftingMonitorBlock;
@@ -50,7 +53,8 @@ public class ModBlocks {
         boilerBlock = new BoilerBlock();
         steamEngineBlock = new SteamEngineBlock();
         rfControlBlock = new RfControlBlock();
-        rfStorageBlock = new RFStorageBlock();
+        rfStorageBlock = new RFStorageBlock("rfstorage", false, RFStorageTE.class);
+        advancedRfStorageBlock = new RFStorageBlock("rfstorage_advanced", true, AdvancedRFStorageTE.class);
         processorBlock = new ProcessorBlock();
         monitorBlock = new MonitorBlock();
         autoCraftingMonitorBlock = new AutoCraftingMonitorBlock();
@@ -71,6 +75,7 @@ public class ModBlocks {
         steamEngineBlock.initModel();
         rfControlBlock.initModel();
         rfStorageBlock.initModel();
+        advancedRfStorageBlock.initModel();
         processorBlock.initModel();
         monitorBlock.initModel();
         autoCraftingMonitorBlock.initModel();

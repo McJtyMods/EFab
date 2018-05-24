@@ -32,6 +32,10 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
         tagCompound.setInteger("energy", energy);
     }
 
+    protected int getMaxStorage() {
+        return GeneralConfiguration.rfStorageMax;
+    }
+
     @Override
     public int getMaxInternalConsumption() {
         return GeneralConfiguration.rfStorageInternalFlow;
@@ -62,9 +66,9 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
     private int receiveEnergyInternal(int maxReceive, boolean simulate) {
         int toreceive = Math.min(maxReceive, GeneralConfiguration.rfStorageInputPerTick);
         int newenergy = energy + toreceive;
-        if (newenergy > GeneralConfiguration.rfStorageMax) {
-            toreceive -= newenergy - GeneralConfiguration.rfStorageMax;
-            newenergy = GeneralConfiguration.rfStorageMax;
+        if (newenergy > getMaxStorage()) {
+            toreceive -= newenergy - getMaxStorage();
+            newenergy = getMaxStorage();
         }
         if (!simulate && energy != newenergy) {
             energy = newenergy;
@@ -82,7 +86,7 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
     @Optional.Method(modid = "redstoneflux")
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
-        return GeneralConfiguration.rfStorageMax;
+        return getMaxStorage();
     }
 
     @Optional.Method(modid = "redstoneflux")
@@ -123,7 +127,7 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
 
                     @Override
                     public int getMaxEnergyStored() {
-                        return GeneralConfiguration.rfStorageMax;
+                        return getMaxStorage();
                     }
 
                     @Override
