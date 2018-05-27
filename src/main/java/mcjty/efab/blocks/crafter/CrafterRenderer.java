@@ -137,7 +137,8 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(-tileEntity.getPos().getX()-.5, -tileEntity.getPos().getY() - 1 + offs + .1, -tileEntity.getPos().getZ() - .4);
+        GlStateManager.translate(-tileEntity.getPos().getX()-.25, -tileEntity.getPos().getY() - 1 + offs + .3, -tileEntity.getPos().getZ() - .2);
+//        GlStateManager.translate(-tileEntity.getPos().getX()-.5, -tileEntity.getPos().getY() - 1 + offs + .1, -tileEntity.getPos().getZ() - .4);
 
         renderModel(tileEntity, getBakedPipeModel());
 
@@ -156,7 +157,8 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(-tileEntity.getPos().getX(), -tileEntity.getPos().getY() - 1 + offs + .1, -tileEntity.getPos().getZ() - .4);
+//        GlStateManager.translate(-tileEntity.getPos().getX(), -tileEntity.getPos().getY() - 1 + offs + .1, -tileEntity.getPos().getZ() - .4);
+        GlStateManager.translate(-tileEntity.getPos().getX()+.25, -tileEntity.getPos().getY() - 1 + offs + .3, -tileEntity.getPos().getZ() - .2 );
 
         renderModel(tileEntity, getBakedPipeModel());
 
