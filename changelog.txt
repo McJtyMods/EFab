@@ -1,0 +1,5 @@
+0.0.37alpha:
+- Made compatible with the latest McJtyLib (3.0.0)
+- Optimization: Don’t invalidate the grid when validating another grid. This solves a performance issue when there were lots of grids connected to a huge efab multiblock
+- TOP will now show the active recipe output instead of only the first (for the crafter)
+- Added new advanced RF storage that holds more power
