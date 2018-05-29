@@ -30,10 +30,6 @@ public class ClientProxy extends CommonProxy {
 
         MinecraftForge.EVENT_BUS.register(this);
         OBJLoader.INSTANCE.addDomain(EFab.MODID);
-//        ModelLoaderRegistry.registerLoader(new BakedModelLoader());
-        if (EFab.botania) {
-            BotaniaSupportSetup.initModels();
-        }
         McJtyLibClient.preInit(e);
     }
 
@@ -46,6 +42,9 @@ public class ClientProxy extends CommonProxy {
     public void registerModels(ModelRegistryEvent event) {
         ModItems.initModels();
         ModBlocks.initModels();
+        if (EFab.botania) {
+            BotaniaSupportSetup.initModels();
+        }
     }
 
 
