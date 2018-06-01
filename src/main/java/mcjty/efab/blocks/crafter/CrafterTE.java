@@ -6,12 +6,12 @@ import mcjty.efab.blocks.grid.GridCrafterHelper;
 import mcjty.efab.blocks.grid.GridTE;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.recipes.IEFabRecipe;
-import mcjty.lib.container.DefaultSidedInventory;
-import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.bindings.DefaultAction;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IAction;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.container.DefaultSidedInventory;
+import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.NullSidedInvWrapper;
@@ -55,22 +55,22 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
 
-    public final static String ACTION_LEFT = "left";
-    public final static String ACTION_RIGHT = "right";
-    public final static Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
+    public static final String ACTION_LEFT = "left";
+    public static final String ACTION_RIGHT = "right";
+    public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
 
     @Override
-    public IValue[] getValues() {
+    public IValue<?>[] getValues() {
         return new IValue[] {
-                new DefaultValue<>(VALUE_NAME, CrafterTE::getCraftingName, CrafterTE::setCraftingName)
+                new DefaultValue<>(VALUE_NAME, this::getCraftingName, this::setCraftingName)
         };
     }
 
     @Override
     public IAction[] getActions() {
         return new IAction[] {
-                new DefaultAction<>(ACTION_LEFT, o -> ((CrafterTE)o).left()),
-                new DefaultAction<>(ACTION_RIGHT, o -> ((CrafterTE)o).right()),
+                new DefaultAction(ACTION_LEFT, this::left),
+                new DefaultAction(ACTION_RIGHT, this::right),
         };
     }
 

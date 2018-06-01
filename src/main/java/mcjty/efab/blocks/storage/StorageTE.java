@@ -1,10 +1,10 @@
 package mcjty.efab.blocks.storage;
 
 import mcjty.efab.blocks.GenericEFabTile;
-import mcjty.lib.container.DefaultSidedInventory;
-import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.container.DefaultSidedInventory;
+import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +21,9 @@ public class StorageTE extends GenericEFabTile implements DefaultSidedInventory 
     public static final Key<String> VALUE_CRAFTING_NAME = new Key<>("name", Type.STRING);
 
     @Override
-    public IValue[] getValues() {
+    public IValue<?>[] getValues() {
         return new IValue[] {
-                new DefaultValue<>(VALUE_CRAFTING_NAME, StorageTE::getCraftingName, StorageTE::setCraftingName),
+                new DefaultValue<>(VALUE_CRAFTING_NAME, this::getCraftingName, this::setCraftingName),
         };
     }
 

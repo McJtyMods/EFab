@@ -19,11 +19,11 @@ import mcjty.efab.items.UpgradeItem;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.sound.SoundController;
+import mcjty.lib.bindings.DefaultAction;
+import mcjty.lib.bindings.IAction;
 import mcjty.lib.container.DefaultSidedInventory;
 import mcjty.lib.container.InventoryHelper;
-import mcjty.lib.bindings.DefaultAction;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.bindings.IAction;
 import mcjty.lib.varia.NullSidedInvWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,10 +63,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     @Override
     public IAction[] getActions() {
         return new IAction[] {
-                new DefaultAction<>(ACTION_CRAFT, o -> ((GridTE)o).startCraft(false)),
-                new DefaultAction<>(ACTION_CRAFT_REPEAT, o -> ((GridTE)o).startCraft(true)),
-                new DefaultAction<>(ACTION_LEFT, o -> ((GridTE)o).left()),
-                new DefaultAction<>(ACTION_RIGHT, o -> ((GridTE)o).right()),
+                new DefaultAction(ACTION_CRAFT, () -> this.startCraft(false)),
+                new DefaultAction(ACTION_CRAFT_REPEAT, () -> this.startCraft(true)),
+                new DefaultAction(ACTION_LEFT, this::left),
+                new DefaultAction(ACTION_RIGHT, this::right),
         };
     }
 
