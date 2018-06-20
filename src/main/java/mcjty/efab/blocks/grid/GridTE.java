@@ -820,7 +820,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     gearBoxes.add(p);
                 } else if (block == ModBlocks.rfControlBlock) {
                     rfControls.add(p);
-                } else if (block == ModBlocks.rfStorageBlock) {
+                } else if (block == ModBlocks.rfStorageBlock || block == ModBlocks.advancedRfStorageBlock) {
                     rfStorages.add(p);
                 } else if (block == ModBlocks.processorBlock) {
                     processors.add(p);
