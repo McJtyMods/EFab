@@ -99,6 +99,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> crafters = new HashSet<>();
     private final Set<BlockPos> storages = new HashSet<>();
     private final Set<BlockPos> powerOptimizers = new HashSet<>();
+    private BlockPos mainGrid = null;           // The grid with most
     private Set<RecipeTier> supportedTiers = null;
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
@@ -254,6 +255,14 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         int countBusy = 0;
         int countOff = 0;
         int countMissing = 0;
+
+        boolean startnewcrafts = false;
+        crafterDelay--;
+        if (crafterDelay <= 0) {
+            crafterDelay = GeneralConfiguration.crafterDelay;
+            startnewcrafts = true;
+        }
+
         for (BlockPos crafterPos : new HashSet<>(crafters)) {
             TileEntity te = getWorld().getTileEntity(crafterPos);
             if (te instanceof CrafterTE) {
@@ -267,13 +276,9 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         IEFabRecipe recipe = crafterTE.checkCraft(this);
                         if (recipe == null) {
                             countMissing++;
-                        } else {
-                            crafterDelay--;
-                            if (crafterDelay <= 0) {
-                                crafterDelay = GeneralConfiguration.crafterDelay;
-                                crafterTE.startCraft(this, recipe);
-                                countBusy++;
-                            }
+                        } else if (startnewcrafts) {
+                            crafterTE.startCraft(this, recipe);
+                            countBusy++;
                         }
                     }
                 } else {
