@@ -12,4 +12,9 @@ public class UpgradeDigital extends UpgradeItem {
     public RecipeTier providesTier() {
         return RecipeTier.UPGRADE_DIGITAL;
     }
+
+    @Override
+    public int getPriority() {
+        return 2;
+    }
 }

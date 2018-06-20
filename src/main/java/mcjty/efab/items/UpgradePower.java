@@ -12,4 +12,9 @@ public class UpgradePower extends UpgradeItem {
     public RecipeTier providesTier() {
         return RecipeTier.UPGRADE_POWER;
     }
+
+    @Override
+    public int getPriority() {
+        return 8;
+    }
 }

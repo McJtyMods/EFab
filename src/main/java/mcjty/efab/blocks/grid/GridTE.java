@@ -99,7 +99,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> crafters = new HashSet<>();
     private final Set<BlockPos> storages = new HashSet<>();
     private final Set<BlockPos> powerOptimizers = new HashSet<>();
-    private BlockPos mainGrid = null;           // The grid with most
+    private boolean isMaster = false;           // Is this grid the 'master' grid which will handle autocrafting
     private Set<RecipeTier> supportedTiers = null;
 
     private final GridCrafterHelper crafterHelper = new GridCrafterHelper(this);
@@ -238,6 +238,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private String[] craftingStatus = new String[] { "", "" };
 
     private void updateCrafters() {
+        // Only the master does crafting
         checkMultiBlockCache();
 
         if (crafters.isEmpty()) {
@@ -310,8 +311,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 errorTicks++;
                 markDirtyQuick();
             }
-            updateCrafters();
-            updateMonitorStatus(craftingStatus);
+            if (isMaster) {
+                updateCrafters();
+                updateMonitorStatus(craftingStatus);
+            }
 
             if (ticksRemaining.get() >= 0) {
                 markDirtyQuick();
@@ -798,21 +801,46 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    private void findMultiBlockParts(BlockPos current) {
+    /// A sum of all priorities of the upgrades so that we can find the 'best' grid for autocrafting
+    public int calculateGridPriority() {
+        int total = 0;
+        for (int i = GridContainer.SLOT_UPDATES; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                if (stack.getItem() instanceof UpgradeItem) {
+                    total += ((UpgradeItem) stack.getItem()).getPriority();
+                }
+            }
+        }
+        return total;
+    }
+
+    private void findMultiBlockParts() {
         Set<BlockPos> visited = new HashSet<>();
         Queue<BlockPos> todo = new ArrayDeque<>();
 
-        visited.add(current);
-        addTodo(todo, visited, current);
+        BlockPos bestGridSoFar = pos;
+        int bestPrioritySoFar = calculateGridPriority();
+        Set<BlockPos> grids = new HashSet<>();
+        grids.add(pos);
+
+        visited.add(pos);
+        addTodo(todo, visited, pos);
         while (!todo.isEmpty()) {
             BlockPos p = todo.poll();
             visited.add(p);
             Block block = getWorld().getBlockState(p).getBlock();
             if (block == ModBlocks.gridBlock) {
-//                TileEntity te = getWorld().getTileEntity(p);
-//                if (te instanceof GridTE) {
-//                    ((GridTE) te).invalidateMultiBlockCache();
-//                }
+                // Find the 'master' grid used for crafting
+                TileEntity te = getWorld().getTileEntity(p);
+                if (te instanceof GridTE) {
+                    int priority = ((GridTE) te).calculateGridPriority();
+                    if (priority > bestPrioritySoFar) {
+                        bestPrioritySoFar = priority;
+                        bestGridSoFar = p;
+                    }
+                }
+                grids.add(p);
                 addTodo(todo, visited, p);
             } else if (block == ModBlocks.baseBlock) {
                 addTodo(todo, visited, p);
@@ -851,6 +879,14 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 // Don't go further here
             }
         }
+
+        // Find the master grid
+        for (BlockPos grid : grids) {
+            TileEntity te = getWorld().getTileEntity(grid);
+            if (te instanceof GridTE) {
+                ((GridTE)te).isMaster = grid.equals(bestGridSoFar);
+            }
+        }
     }
 
 
@@ -871,7 +907,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             storages.clear();
             manaReceptacles.clear();
             powerOptimizers.clear();
-            findMultiBlockParts(getPos());
+            findMultiBlockParts();
         }
     }
 
@@ -1274,7 +1310,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (!processors.isEmpty()) {
                 supportedTiers.add(RecipeTier.COMPUTING);
             }
-            for (int i = GridContainer.SLOT_UPDATES ; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
+            for (int i = GridContainer.SLOT_UPDATES; i < GridContainer.SLOT_UPDATES + GridContainer.COUNT_UPDATES ; i++) {
                 ItemStack stack = getStackInSlot(i);
                 if (!stack.isEmpty()) {
                     if (stack.getItem() instanceof UpgradeItem) {

@@ -12,4 +12,9 @@ public class UpgradeMagic extends UpgradeItem {
     public RecipeTier providesTier() {
         return RecipeTier.UPGRADE_MAGIC;
     }
+
+    @Override
+    public int getPriority() {
+        return 4;
+    }
 }

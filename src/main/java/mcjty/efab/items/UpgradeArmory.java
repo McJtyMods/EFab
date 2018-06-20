@@ -12,4 +12,9 @@ public class UpgradeArmory extends UpgradeItem {
     public RecipeTier providesTier() {
         return RecipeTier.UPGRADE_ARMORY;
     }
+
+    @Override
+    public int getPriority() {
+        return 1;
+    }
 }

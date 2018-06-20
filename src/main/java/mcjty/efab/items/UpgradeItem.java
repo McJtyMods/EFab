@@ -27,4 +27,6 @@ public abstract class UpgradeItem extends Item {
 
     public abstract RecipeTier providesTier();
 
+    public abstract int getPriority();  // Used to get a deterministic ordering for the best grid to use for auto crafting. These priorities are actually flags that have to be added
+
 }
