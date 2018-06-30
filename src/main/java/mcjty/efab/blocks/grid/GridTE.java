@@ -210,25 +210,27 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         return true;
     }
 
-    public void consumeIngredients(List<ItemStack> ingredients) {
+    public void consumeIngredients(List<ItemStack> ingredients, Predicate<String> testName) {
         for (ItemStack ingredient : ingredients) {
             int needed = ingredient.getCount();
             for (BlockPos storagePos : storages) {
                 TileEntity te = getWorld().getTileEntity(storagePos);
                 if (te instanceof StorageTE) {
                     StorageTE storageTE = (StorageTE) te;
-                    for (int ii = 0; ii < storageTE.getSizeInventory() ; ii++) {
-                        ItemStack storageStack = storageTE.getStackInSlot(ii);
-                        if (!storageStack.isEmpty() && OreDictionary.itemMatches(ingredient, storageStack, false)) {
-                            ItemStack extracted = storageTE.decrStackSize(ii, needed);
-                            needed -= extracted.getCount();
-                            if (needed <= 0) {
-                                break;
+                    if (testName.test(storageTE.getCraftingName())) {
+                        for (int ii = 0; ii < storageTE.getSizeInventory(); ii++) {
+                            ItemStack storageStack = storageTE.getStackInSlot(ii);
+                            if (!storageStack.isEmpty() && OreDictionary.itemMatches(ingredient, storageStack, false)) {
+                                ItemStack extracted = storageTE.decrStackSize(ii, needed);
+                                needed -= extracted.getCount();
+                                if (needed <= 0) {
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (needed <= 0) {
-                        break;
+                        if (needed <= 0) {
+                            break;
+                        }
                     }
                 }
             }
@@ -555,7 +557,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             tank.getHandler().drain(stack, true);
         }
 
-        consumeIngredients(ingredients);
+        consumeIngredients(ingredients, matcher);
 
         return false;
     }
