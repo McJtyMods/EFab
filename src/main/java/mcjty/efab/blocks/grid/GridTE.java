@@ -90,7 +90,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private final Set<BlockPos> tanks = new HashSet<>();
     private final Set<BlockPos> gearBoxes = new HashSet<>();
     private final Set<BlockPos> rfControls = new HashSet<>();
-    private final Set<BlockPos> rfStorages = new HashSet<>();
+    private final Set<BlockPos> rfStorBasic = new HashSet<>();
+    private final Set<BlockPos> rfStorDense = new HashSet<>();
     private final Set<BlockPos> manaReceptacles = new HashSet<>();
     private final Set<BlockPos> processors = new HashSet<>();
     private final Set<BlockPos> pipes = new HashSet<>();
@@ -399,7 +400,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
                 stillneeded = handlePowerPerTick(stillneeded, this.rfControls, GeneralConfiguration.rfControlMax);
                 if (stillneeded > 0) {
-                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorages, GeneralConfiguration.rfStorageInternalFlow);
+                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorBasic, GeneralConfiguration.rfStorageInternalFlow);
+                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorDense, GeneralConfiguration.advancedRfStorageInternalFlow);
                     if (stillneeded > 0) {
                         if (GeneralConfiguration.ticksAllowedWithoutRF >= 0) {
                             rfWarning++;
@@ -448,14 +450,15 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private void handlePowerOptimized(@Nonnull IEFabRecipe recipe, int step, MInteger ticksRemain) {
         while (ticksRemain.get() >= step) {
             int needed = recipe.getRequiredRfPerTick() * step;
-            int available = getAvailablePower(this.rfControls) + getAvailablePower(this.rfStorages);
+            int available = getAvailablePower(this.rfControls) + getAvailablePower(this.rfStorBasic) + getAvailablePower(this.rfStorDense);
             if (needed > available) {
                 return;
             }
 
             ticksRemain.dec(step);
             needed = handlePowerPerTick(needed, this.rfControls, 1000000000);
-            handlePowerPerTick(needed, this.rfStorages, 1000000000);
+            needed = handlePowerPerTick(needed, this.rfStorBasic, 1000000000);
+            handlePowerPerTick(needed, this.rfStorDense, 1000000000);
         }
     }
 
@@ -855,8 +858,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     gearBoxes.add(p);
                 } else if (block == ModBlocks.rfControlBlock) {
                     rfControls.add(p);
-                } else if (block == ModBlocks.rfStorageBlock || block == ModBlocks.advancedRfStorageBlock) {
-                    rfStorages.add(p);
+                } else if (block == ModBlocks.rfStorageBlock) {
+                    rfStorBasic.add(p);
+                } else if (block == ModBlocks.advancedRfStorageBlock) {
+                    rfStorDense.add(p);
                 } else if (block == ModBlocks.processorBlock) {
                     processors.add(p);
                 } else if (block == ModBlocks.pipeBlock) {
@@ -900,7 +905,8 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             tanks.clear();
             gearBoxes.clear();
             rfControls.clear();
-            rfStorages.clear();
+            rfStorBasic.clear();
+            rfStorDense.clear();
             processors.clear();
             pipes.clear();
             monitors.clear();
@@ -1208,7 +1214,15 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                         maxpertick += energyStorage.getMaxInternalConsumption();
                     }
                 }
-                for (BlockPos p : rfStorages) {
+                for (BlockPos p : rfStorBasic) {
+                    TileEntity te = getWorld().getTileEntity(p);
+                    if (te instanceof IEFabEnergyStorage) {
+                        IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
+                        totavailable += energyStorage.getEnergyStored(null);
+                        maxpertick += energyStorage.getMaxInternalConsumption();
+                    }
+                }
+                for (BlockPos p : rfStorDense) {
                     TileEntity te = getWorld().getTileEntity(p);
                     if (te instanceof IEFabEnergyStorage) {
                         IEFabEnergyStorage energyStorage = (IEFabEnergyStorage) te;
