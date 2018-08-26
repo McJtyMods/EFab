@@ -794,7 +794,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         }
     }
 
-    private void addTodo(Queue<BlockPos> todo, Set<BlockPos> visited, BlockPos pos) {
+	private void addTodo(Collection<BlockPos> todo, Collection<BlockPos> visited, BlockPos pos) {
         for (EnumFacing dir : EnumFacing.VALUES) {
             BlockPos p = pos.offset(dir);
             if (!visited.contains(p) && !todo.contains(p)) {
@@ -818,10 +818,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     }
 
     private void findMultiBlockParts() {
-        Set<BlockPos> visited = new HashSet<>();
-        Queue<BlockPos> todo = new ArrayDeque<>();
-
-        BlockPos bestGridSoFar = pos;
+		Collection<BlockPos> visited = new HashSet<>();
+		Collection<BlockPos> todo = new HashSet<>();
+		
+		BlockPos bestGridSoFar = pos;
         int bestPrioritySoFar = calculateGridPriority();
         Set<BlockPos> grids = new HashSet<>();
         grids.add(pos);
@@ -829,8 +829,15 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         visited.add(pos);
         addTodo(todo, visited, pos);
         while (!todo.isEmpty()) {
-            BlockPos p = todo.poll();
-            visited.add(p);
+			/*
+			 * We have to recreate a new iterator on each iteration of this loop
+			 * because we constantly add new elements to this Collection and thus
+			 * render the previous iterator invalid (ConcurrentModificationException).
+			 */
+			Iterator<BlockPos> i = todo.iterator();
+			BlockPos p = i.next();
+			i.remove();			
+			visited.add(p);
             Block block = getWorld().getBlockState(p).getBlock();
             if (block == ModBlocks.gridBlock) {
                 // Find the 'master' grid used for crafting
