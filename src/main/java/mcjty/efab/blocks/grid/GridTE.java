@@ -797,7 +797,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
     private void addTodo(Queue<BlockPos> todo, Set<BlockPos> visited, BlockPos pos) {
         for (EnumFacing dir : EnumFacing.VALUES) {
             BlockPos p = pos.offset(dir);
-            if (!visited.contains(p)) {
+            if (!visited.contains(p) && !todo.contains(p)) {
                 todo.add(p);
             }
         }
