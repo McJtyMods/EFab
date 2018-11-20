@@ -84,6 +84,7 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
      */
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        super.onBlockPlacedBy(world, pos, state, placer, stack);
         world.setBlockState(pos, state
                 .withProperty(FACING_HORIZ, placer.getHorizontalFacing().getOpposite())
                         .withProperty(STATE, random.nextInt(2))
