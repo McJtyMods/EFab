@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,11 +37,10 @@ public class MonitorBlock extends GenericEFabMultiBlockPart<MonitorTE, EmptyCont
         tooltip.add(TextFormatting.WHITE + "crafting operation status");
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void initModel() {
         super.initModel();
-        ClientRegistry.bindTileEntitySpecialRenderer(MonitorTE.class, new MonitorRenderer());
+        MonitorRenderer.register();
     }
 
     @Override

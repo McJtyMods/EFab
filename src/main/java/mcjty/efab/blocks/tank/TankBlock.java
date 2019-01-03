@@ -1,7 +1,6 @@
 package mcjty.efab.blocks.tank;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.tools.FluidTools;
 import mcjty.efab.tools.InventoryHelper;
 import mcjty.lib.container.EmptyContainer;
@@ -26,7 +25,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -70,11 +68,10 @@ public class TankBlock extends GenericEFabMultiBlockPart<TankTE, EmptyContainer>
 
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void initModel() {
         super.initModel();
-        ClientRegistry.bindTileEntitySpecialRenderer(TankTE.class, new TankRenderer());
+        TankRenderer.register();
     }
 
 

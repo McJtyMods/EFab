@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.opengl.GL11;
 
 public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE> {
@@ -121,5 +122,7 @@ public class SteamEngineRenderer extends TileEntitySpecialRenderer<SteamEngineTE
         GlStateManager.popMatrix();
     }
 
-
+    public static void register() {
+        ClientRegistry.bindTileEntitySpecialRenderer(SteamEngineTE.class, new SteamEngineRenderer());
+    }
 }

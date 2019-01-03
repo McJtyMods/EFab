@@ -32,11 +32,10 @@ public class BoilerBlock extends GenericEFabMultiBlockPart<BoilerTE, EmptyContai
         super(Material.IRON, BoilerTE.class, EmptyContainer::new, "boiler", false);
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void initModel() {
         super.initModel();
-        ClientRegistry.bindTileEntitySpecialRenderer(BoilerTE.class, new BoilerRenderer());
+        BoilerRenderer.register();
     }
 
     @Override

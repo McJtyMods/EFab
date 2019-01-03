@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
     @Override
@@ -148,4 +149,7 @@ public class GridRenderer extends TileEntitySpecialRenderer<GridTE> {
         }
     }
 
+    public static void register() {
+        ClientRegistry.bindTileEntitySpecialRenderer(GridTE.class, new GridRenderer());
+    }
 }

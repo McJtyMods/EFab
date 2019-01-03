@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
@@ -164,4 +165,7 @@ public class TankRenderer extends TileEntitySpecialRenderer<TankTE> {
         HUD_TOPLAYER
     }
 
+    public static void register() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TankTE.class, new TankRenderer());
+    }
 }

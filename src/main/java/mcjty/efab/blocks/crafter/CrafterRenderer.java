@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.opengl.GL11;
 
 public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
@@ -188,5 +189,7 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<CrafterTE> {
         RenderHelper.enableStandardItemLighting();
     }
 
-
+    public static void register() {
+        ClientRegistry.bindTileEntitySpecialRenderer(CrafterTE.class, new CrafterRenderer());
+    }
 }

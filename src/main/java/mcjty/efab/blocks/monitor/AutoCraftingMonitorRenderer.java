@@ -1,6 +1,7 @@
 package mcjty.efab.blocks.monitor;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class AutoCraftingMonitorRenderer extends TileEntitySpecialRenderer<AutoCraftingMonitorTE> {
 
@@ -12,5 +13,9 @@ public class AutoCraftingMonitorRenderer extends TileEntitySpecialRenderer<AutoC
             return;
         }
         MonitorRenderHelper.renderHud(te, x, y, z, 0, false);
+    }
+
+    public static void register() {
+        ClientRegistry.bindTileEntitySpecialRenderer(AutoCraftingMonitorTE.class, new AutoCraftingMonitorRenderer());
     }
 }
