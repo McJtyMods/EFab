@@ -1,7 +1,5 @@
 package mcjty.efab.blocks.rfstorage;
 
-import cofh.redstoneflux.api.IEnergyProvider;
-import cofh.redstoneflux.api.IEnergyReceiver;
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.config.GeneralConfiguration;
@@ -10,13 +8,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.common.Optional;
 
-@Optional.InterfaceList({
-        @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux"),
-        @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux")
-})
-public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEnergyReceiver, IEFabEnergyStorage {
+public class RFStorageTE extends GenericEFabTile implements IEFabEnergyStorage {
 
     private int energy = 0;
 
@@ -51,18 +44,6 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
         return true;
     }
 
-    @Optional.Method(modid = "redstoneflux")
-    @Override
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return 0;
-    }
-
-    @Optional.Method(modid = "redstoneflux")
-    @Override
-    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return receiveEnergyInternal(maxReceive, simulate);
-    }
-
     private int receiveEnergyInternal(int maxReceive, boolean simulate) {
         int toreceive = Math.min(maxReceive, GeneralConfiguration.rfStorageInputPerTick);
         int newenergy = energy + toreceive;
@@ -77,22 +58,14 @@ public class RFStorageTE extends GenericEFabTile implements IEnergyProvider, IEn
         return toreceive;
     }
 
-    @Optional.Method(modid = "redstoneflux")
     @Override
     public int getEnergyStored(EnumFacing from) {
         return energy;
     }
 
-    @Optional.Method(modid = "redstoneflux")
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
         return getMaxStorage();
-    }
-
-    @Optional.Method(modid = "redstoneflux")
-    @Override
-    public boolean canConnectEnergy(EnumFacing from) {
-        return true;
     }
 
     @Override
