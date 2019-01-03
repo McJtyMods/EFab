@@ -34,11 +34,6 @@ public abstract class GenericEFabBlockWithTE<T extends GenericTileEntity, C exte
         setCreativeTab(EFab.tabEFab);
     }
 
-    @Override
-    public void initModel() {
-        super.initModel();
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public BiFunction<T, C, GenericGuiContainer<? super T>> getGuiFactory() {
