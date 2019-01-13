@@ -1,3 +1,7 @@
+0.1.2:
+- Needs McJtyLib 3.1.0
+- Support for COFH RF API is removed. Only Forge Energy is supported now
+
 0.1.1:
 - Covers164 fixed crafter ignoring inventory name filter on recipe consumption
 - Bodo Thiesen fixed a potential crash during multiblock detection and optimized it
