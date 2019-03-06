@@ -1,6 +1,5 @@
 package mcjty.efab.proxy;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
@@ -9,19 +8,18 @@ import mcjty.efab.items.ModItems;
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.StandardRecipes;
-import mcjty.lib.McJtyLib;
 import mcjty.lib.McJtyRegister;
-import mcjty.lib.base.GeneralConfig;
 import mcjty.lib.network.PacketHandler;
-import mcjty.lib.proxy.AbstractCommonProxy;
+import mcjty.lib.setup.DefaultCommonSetup;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.world.World;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -31,13 +29,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
-import java.util.concurrent.Callable;
 
-public abstract class CommonProxy extends AbstractCommonProxy {
+public class CommonSetup extends DefaultCommonSetup {
+
+    public static boolean botania;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
+
+        botania = Loader.isModLoaded("botania") || Loader.isModLoaded("Botania");
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -52,9 +53,14 @@ public abstract class CommonProxy extends AbstractCommonProxy {
 
         ModItems.init();
         ModBlocks.init();
-        if (EFab.botania) {
+        if (botania) {
             BotaniaSupportSetup.preInit();
         }
+    }
+
+    @Override
+    public void createTabs() {
+        createTab("EFab", new ItemStack(Blocks.CRAFTING_TABLE));
     }
 
     @SubscribeEvent
@@ -98,7 +104,7 @@ public abstract class CommonProxy extends AbstractCommonProxy {
         super.postInit(e);
         mainConfig = null;
         StandardRecipes.init();
-        if (EFab.botania) {
+        if (botania) {
             BotaniaSupportSetup.postInit();
         }
         File file = new File(modConfigDir.getPath(), "efab_recipes.json");

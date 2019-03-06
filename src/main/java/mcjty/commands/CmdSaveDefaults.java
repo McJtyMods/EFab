@@ -25,7 +25,7 @@ public class CmdSaveDefaults extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        File file = new File(EFab.proxy.modConfigDir.getPath(), "efab_recipes.json");
+        File file = new File(EFab.setup.getModConfigDir().getPath(), "efab_recipes.json");
         StandardRecipes.writeDefaults(file);
         ITextComponent component = new TextComponentString("Saved default recipes to 'efab_recipes.json'");
         if (sender instanceof EntityPlayer) {

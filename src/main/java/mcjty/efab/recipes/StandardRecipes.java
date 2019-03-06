@@ -1,9 +1,9 @@
 package mcjty.efab.recipes;
 
 import com.google.gson.*;
-import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
+import mcjty.efab.proxy.CommonSetup;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -109,7 +109,7 @@ public class StandardRecipes {
                 .tier(RecipeTier.RF)
                 .rfPerTick(200)
                 .time(500));
-        if (EFab.botania) {
+        if (CommonSetup.botania) {
             RecipeManager.registerRecipe(new EFabShapedRecipe(
                     new ItemStack(BotaniaSupportSetup.getManaReceptacle()),
                     "drr", "rbd", "rdr", 'r', Items.REDSTONE, 'b', ModBlocks.baseBlock, 'd', Items.DIAMOND)

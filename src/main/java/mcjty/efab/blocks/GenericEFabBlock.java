@@ -16,7 +16,7 @@ public abstract class GenericEFabBlock extends Block {
 
     public GenericEFabBlock(Material material, String name) {
         super(material);
-        setCreativeTab(EFab.tabEFab);
+        setCreativeTab(EFab.setup.getTab());
         setUnlocalizedName(EFab.MODID + "." + name);
         setRegistryName(name);
         setHardness(2.0f);

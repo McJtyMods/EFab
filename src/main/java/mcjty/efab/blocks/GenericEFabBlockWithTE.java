@@ -31,7 +31,7 @@ public abstract class GenericEFabBlockWithTE<T extends GenericTileEntity, C exte
                                   Function<Block, ItemBlock> itemBlockFunction,
                                   String name, boolean isContainer) {
         super(EFab.instance, material, tileEntityClass, containerFactory, itemBlockFunction, name, isContainer);
-        setCreativeTab(EFab.tabEFab);
+        setCreativeTab(EFab.setup.getTab());
     }
 
     @SideOnly(Side.CLIENT)

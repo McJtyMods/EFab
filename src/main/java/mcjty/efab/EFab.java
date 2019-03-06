@@ -2,20 +2,16 @@ package mcjty.efab;
 
 
 import mcjty.commands.CmdSaveDefaults;
-import mcjty.efab.proxy.CommonProxy;
+import mcjty.efab.proxy.CommonSetup;
 import mcjty.lib.base.ModBase;
-import net.minecraft.creativetab.CreativeTabs;
+import mcjty.lib.proxy.IProxy;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import org.apache.logging.log4j.Logger;
 
 @Mod(modid = EFab.MODID, name = EFab.MODNAME,
         dependencies =
@@ -32,37 +28,27 @@ public class EFab implements ModBase {
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
 
     @SidedProxy(clientSide = "mcjty.efab.proxy.ClientProxy", serverSide = "mcjty.efab.proxy.ServerProxy")
-    public static CommonProxy proxy;
+    public static IProxy proxy;
+    public static CommonSetup setup = new CommonSetup();
 
     @Mod.Instance(MODID)
     public static EFab instance;
 
-    public static Logger logger;
-
-    public static boolean botania;
-
-    public static CreativeTabs tabEFab = new CreativeTabs("EFab") {
-        @Override
-        public ItemStack getTabIconItem() {
-            return new ItemStack(Blocks.CRAFTING_TABLE);
-        }
-    };
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
-        botania = Loader.isModLoaded("botania") || Loader.isModLoaded("Botania");
-
-        logger = event.getModLog();
+        setup.preInit(event);
         proxy.preInit(event);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
+        setup.init(e);
         proxy.init(e);
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
+        setup.postInit(e);
         proxy.postInit(e);
     }
 

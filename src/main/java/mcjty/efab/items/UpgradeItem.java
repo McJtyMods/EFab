@@ -16,7 +16,7 @@ public abstract class UpgradeItem extends Item {
         setMaxStackSize(16);
         setRegistryName(name);
         setUnlocalizedName(EFab.MODID + "." + name);
-        setCreativeTab(EFab.tabEFab);
+        setCreativeTab(EFab.setup.getTab());
         McJtyRegister.registerLater(this, EFab.instance);
     }
 

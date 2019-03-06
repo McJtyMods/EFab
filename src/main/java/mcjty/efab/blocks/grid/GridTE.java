@@ -1,6 +1,5 @@
 package mcjty.efab.blocks.grid;
 
-import mcjty.efab.EFab;
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
 import mcjty.efab.blocks.IEFabEnergyStorage;
 import mcjty.efab.blocks.ISpeedBooster;
@@ -16,6 +15,7 @@ import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.GeneralConfiguration;
 import mcjty.efab.items.UpgradeItem;
+import mcjty.efab.proxy.CommonSetup;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.sound.SoundController;
@@ -427,7 +427,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 }
             }
         }
-        if (EFab.botania && recipe.getRequiredManaPerTick() > 0) {
+        if (CommonSetup.botania && recipe.getRequiredManaPerTick() > 0) {
             int stillneeded = recipe.getRequiredManaPerTick();
             stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
 
@@ -885,7 +885,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     powerOptimizers.add(p);
                 } else if (block instanceof TankBlock) {
                     tanks.add(p);
-                } else if (EFab.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
+                } else if (CommonSetup.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
                     manaReceptacles.add(p);
                 }
                 addTodo(todo, visited, p);
@@ -995,7 +995,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
                 handleAnimationSpeed(GeneralConfiguration.steamWheelBoost, this.steamEngines);
             }
-            if (EFab.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
+            if (CommonSetup.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
                 handleAnimationSpeed(GeneralConfiguration.manaRotationBoost, manaReceptacles);
             }
         }
@@ -1255,7 +1255,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
 
-        if (EFab.botania && recipe.getRequiredManaPerTick() > 0) {
+        if (CommonSetup.botania && recipe.getRequiredManaPerTick() > 0) {
             int totavailable = 0;
             int maxpertick = 0;
             for (BlockPos p : manaReceptacles) {
