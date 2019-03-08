@@ -9,7 +9,6 @@ import mcjty.efab.network.EFabMessages;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.StandardRecipes;
 import mcjty.lib.McJtyRegister;
-import mcjty.lib.network.PacketHandler;
 import mcjty.lib.setup.DefaultCommonSetup;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -25,7 +24,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
@@ -48,8 +46,7 @@ public class CommonSetup extends DefaultCommonSetup {
 
         readMainConfig();
 
-        SimpleNetworkWrapper network = PacketHandler.registerMessages(EFab.MODID, "efab");
-        EFabMessages.registerNetworkMessages(network);
+        EFabMessages.registerMessages("efab");
 
         ModItems.init();
         ModBlocks.init();

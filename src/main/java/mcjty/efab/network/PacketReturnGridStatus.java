@@ -5,16 +5,15 @@ import mcjty.efab.EFab;
 import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.grid.GridTE;
 import mcjty.lib.network.NetworkTools;
+import mcjty.lib.thirteen.Context;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class PacketReturnGridStatus implements IMessage {
     private BlockPos pos;
@@ -30,23 +29,9 @@ public class PacketReturnGridStatus implements IMessage {
         ticks = buf.readInt();
         total = buf.readInt();
 
-        int size = buf.readInt();
-        errors = new ArrayList<>(size);
-        for (int i = 0 ; i < size ; i++) {
-            errors.add(NetworkTools.readStringUTF8(buf));
-        }
-
-        size = buf.readInt();
-        usage = new ArrayList<>(size);
-        for (int i = 0 ; i < size ; i++) {
-            usage.add(NetworkTools.readStringUTF8(buf));
-        }
-
-        size = buf.readInt();
-        outputs = new ArrayList<>(size);
-        for (int i = 0 ; i < size ; i++) {
-            outputs.add(NetworkTools.readItemStack(buf));
-        }
+        errors = NetworkTools.readStringList(buf);
+        usage = NetworkTools.readStringList(buf);
+        outputs = NetworkTools.readItemStackList(buf);
     }
 
     @Override
@@ -54,21 +39,16 @@ public class PacketReturnGridStatus implements IMessage {
         NetworkTools.writePos(buf, pos);
         buf.writeInt(ticks);
         buf.writeInt(total);
-        buf.writeInt(errors.size());
-        for (String error : errors) {
-            NetworkTools.writeStringUTF8(buf, error);
-        }
-        buf.writeInt(usage.size());
-        for (String use : usage) {
-            NetworkTools.writeStringUTF8(buf, use);
-        }
-        buf.writeInt(outputs.size());
-        for (ItemStack output : outputs) {
-            NetworkTools.writeItemStack(buf, output);
-        }
+        NetworkTools.writeStringList(buf, errors);
+        NetworkTools.writeStringList(buf, usage);
+        NetworkTools.writeItemStackList(buf, outputs);
     }
 
     public PacketReturnGridStatus() {
+    }
+
+    public PacketReturnGridStatus(ByteBuf buf) {
+        fromBytes(buf);
     }
 
     public PacketReturnGridStatus(BlockPos pos, GridTE gridTE) {
@@ -89,19 +69,16 @@ public class PacketReturnGridStatus implements IMessage {
         this.outputs = crafterTE.getOutputs();
     }
 
-    public static class Handler implements IMessageHandler<PacketReturnGridStatus, IMessage> {
-        @Override
-        public IMessage onMessage(PacketReturnGridStatus message, MessageContext ctx) {
-            EFab.proxy.addScheduledTaskClient(() -> {
-                TileEntity te = EFab.proxy.getClientWorld().getTileEntity(message.pos);
-                if (te instanceof GridTE) {
-                    ((GridTE) te).syncFromServer(message.ticks, message.total, message.errors, message.outputs, message.usage);
-                } else if (te instanceof CrafterTE) {
-                    ((CrafterTE) te).syncFromServer(message.errors, message.outputs);
-                }
-            });
-            return null;
-        }
-
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            TileEntity te = EFab.proxy.getClientWorld().getTileEntity(pos);
+            if (te instanceof GridTE) {
+                ((GridTE) te).syncFromServer(ticks, total, errors, outputs, usage);
+            } else if (te instanceof CrafterTE) {
+                ((CrafterTE) te).syncFromServer(errors, outputs);
+            }
+        });
+        ctx.setPacketHandled(true);
     }
 }

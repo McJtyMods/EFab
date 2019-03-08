@@ -1,22 +1,36 @@
 package mcjty.efab.network;
 
+import mcjty.efab.EFab;
 import mcjty.lib.network.PacketHandler;
+import mcjty.lib.thirteen.ChannelBuilder;
+import mcjty.lib.thirteen.SimpleChannel;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class EFabMessages {
     public static SimpleNetworkWrapper INSTANCE;
 
-    public static void registerNetworkMessages(SimpleNetworkWrapper net) {
-        INSTANCE = net;
+    public static void registerMessages(String name) {
+        SimpleChannel net = ChannelBuilder
+                .named(new ResourceLocation(EFab.MODID, name))
+                .networkProtocolVersion(() -> "1.0")
+                .clientAcceptedVersions(s -> true)
+                .serverAcceptedVersions(s -> true)
+                .simpleChannel();
+
+        INSTANCE = net.getNetwork();
 
         // Server side
-        net.registerMessage(PacketGetGridStatus.Handler.class, PacketGetGridStatus.class, PacketHandler.nextPacketID(), Side.SERVER);
-        net.registerMessage(PacketGetMonitorText.Handler.class, PacketGetMonitorText.class, PacketHandler.nextPacketID(), Side.SERVER);
-        net.registerMessage(PacketSendRecipe.Handler.class, PacketSendRecipe.class, PacketHandler.nextPacketID(), Side.SERVER);
+        net.registerMessageServer(id(), PacketGetGridStatus.class, PacketGetGridStatus::toBytes, PacketGetGridStatus::new, PacketGetGridStatus::handle);
+        net.registerMessageServer(id(), PacketGetMonitorText.class, PacketGetMonitorText::toBytes, PacketGetMonitorText::new, PacketGetMonitorText::handle);
+        net.registerMessageServer(id(), PacketSendRecipe.class, PacketSendRecipe::toBytes, PacketSendRecipe::new, PacketSendRecipe::handle);
 
         // Client side
-        net.registerMessage(PacketReturnGridStatus.Handler.class, PacketReturnGridStatus.class, PacketHandler.nextPacketID(), Side.CLIENT);
-        net.registerMessage(PacketMonitorTextReady.Handler.class, PacketMonitorTextReady.class, PacketHandler.nextPacketID(), Side.CLIENT);
+        net.registerMessageClient(id(), PacketReturnGridStatus.class, PacketReturnGridStatus::toBytes, PacketReturnGridStatus::new, PacketReturnGridStatus::handle);
+        net.registerMessageClient(id(), PacketMonitorTextReady.class, PacketMonitorTextReady::toBytes, PacketMonitorTextReady::new, PacketMonitorTextReady::handle);
+    }
+
+    private static int id() {
+        return PacketHandler.nextPacketID();
     }
 }

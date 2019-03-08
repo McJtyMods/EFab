@@ -4,13 +4,13 @@ import io.netty.buffer.ByteBuf;
 import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.grid.GridTE;
 import mcjty.lib.network.NetworkTools;
+import mcjty.lib.thirteen.Context;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.function.Supplier;
 
 public class PacketGetGridStatus implements IMessage {
     private BlockPos pos;
@@ -28,29 +28,29 @@ public class PacketGetGridStatus implements IMessage {
     public PacketGetGridStatus() {
     }
 
+    public PacketGetGridStatus(ByteBuf buf) {
+        fromBytes(buf);
+    }
+
     public PacketGetGridStatus(BlockPos pos) {
         this.pos = pos;
     }
 
-    public static class Handler implements IMessageHandler<PacketGetGridStatus, PacketReturnGridStatus> {
-        @Override
-        public PacketReturnGridStatus onMessage(PacketGetGridStatus message, MessageContext ctx) {
-            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
-            return null;
-        }
-
-        private void handle(PacketGetGridStatus message, MessageContext ctx) {
-            World world = ctx.getServerHandler().player.getEntityWorld();
-            TileEntity te = world.getTileEntity(message.pos);
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            World world = ctx.getSender().getEntityWorld();
+            TileEntity te = world.getTileEntity(pos);
             if (te instanceof GridTE) {
                 GridTE gridTE = (GridTE) te;
-                PacketReturnGridStatus returnMessage = new PacketReturnGridStatus(message.pos, gridTE);
-                EFabMessages.INSTANCE.sendTo(returnMessage, ctx.getServerHandler().player);
+                PacketReturnGridStatus returnMessage = new PacketReturnGridStatus(pos, gridTE);
+                EFabMessages.INSTANCE.sendTo(returnMessage, ctx.getSender());
             } else if (te instanceof CrafterTE) {
                 CrafterTE crafterTE = (CrafterTE) te;
-                PacketReturnGridStatus returnMessage = new PacketReturnGridStatus(message.pos, crafterTE);
-                EFabMessages.INSTANCE.sendTo(returnMessage, ctx.getServerHandler().player);
+                PacketReturnGridStatus returnMessage = new PacketReturnGridStatus(pos, crafterTE);
+                EFabMessages.INSTANCE.sendTo(returnMessage, ctx.getSender());
             }
-        }
+        });
+        ctx.setPacketHandled(true);
     }
 }

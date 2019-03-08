@@ -4,17 +4,16 @@ import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.ICommandHandler;
 import mcjty.lib.network.NetworkTools;
 import mcjty.lib.network.TypedMapTools;
+import mcjty.lib.thirteen.Context;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class PacketGetMonitorText implements IMessage {
 
@@ -24,6 +23,10 @@ public class PacketGetMonitorText implements IMessage {
     protected TypedMap params;
 
     public PacketGetMonitorText() {
+    }
+
+    public PacketGetMonitorText(ByteBuf buf) {
+        fromBytes(buf);
     }
 
     public PacketGetMonitorText(BlockPos pos) {
@@ -43,23 +46,18 @@ public class PacketGetMonitorText implements IMessage {
         TypedMapTools.writeArguments(buf, params);
     }
 
-    public static class Handler implements IMessageHandler<PacketGetMonitorText, IMessage> {
-
-        @Override
-        public IMessage onMessage(mcjty.efab.network.PacketGetMonitorText message, MessageContext ctx) {
-            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
-            return null;
-        }
-
-        private void handle(mcjty.efab.network.PacketGetMonitorText message, MessageContext ctx) {
-            TileEntity te = ctx.getServerHandler().player.getEntityWorld().getTileEntity(message.pos);
+    public void handle(Supplier<Context> supplier) {
+        Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            TileEntity te = ctx.getSender().getEntityWorld().getTileEntity(pos);
             if(!(te instanceof ICommandHandler)) {
                 Logging.log("TileEntity is not a CommandHandler!");
                 return;
             }
             ICommandHandler commandHandler = (ICommandHandler) te;
-            List<String> list = commandHandler.executeWithResultList(CMD_GETMESSAGES, message.params, Type.STRING);
-            EFabMessages.INSTANCE.sendTo(new PacketMonitorTextReady(message.pos, CLIENTCMD_GETMESSAGES, list), ctx.getServerHandler().player);
-        }
+            List<String> list = commandHandler.executeWithResultList(CMD_GETMESSAGES, params, Type.STRING);
+            EFabMessages.INSTANCE.sendTo(new PacketMonitorTextReady(pos, CLIENTCMD_GETMESSAGES, list), ctx.getSender());
+        });
+        ctx.setPacketHandled(true);
     }
 }
