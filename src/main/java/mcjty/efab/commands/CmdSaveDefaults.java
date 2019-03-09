@@ -1,4 +1,4 @@
-package mcjty.commands;
+package mcjty.efab.commands;
 
 import mcjty.efab.EFab;
 import mcjty.efab.recipes.StandardRecipes;

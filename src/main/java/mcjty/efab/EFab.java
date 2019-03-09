@@ -1,7 +1,7 @@
 package mcjty.efab;
 
 
-import mcjty.commands.CmdSaveDefaults;
+import mcjty.efab.commands.CmdSaveDefaults;
 import mcjty.efab.proxy.CommonSetup;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.proxy.IProxy;
