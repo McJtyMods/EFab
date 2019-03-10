@@ -39,7 +39,7 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver, 
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.manaRotationSpinDown;
+            speed -= GeneralConfiguration.manaRotationSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -47,9 +47,9 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver, 
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.manaRotationSpeedUp;
-            if (speed > GeneralConfiguration.maxManaRotationSpeed) {
-                speed = GeneralConfiguration.maxManaRotationSpeed;
+            speed += GeneralConfiguration.manaRotationSpeedUp.get();
+            if (speed > GeneralConfiguration.maxManaRotationSpeed.get()) {
+                speed = (float) GeneralConfiguration.maxManaRotationSpeed.get();
             }
             markDirtyQuick();
         }
@@ -83,12 +83,12 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver, 
 
     @Override
     public boolean isFull() {
-        return mana >= GeneralConfiguration.maxMana;
+        return mana >= GeneralConfiguration.maxMana.get();
     }
 
     @Override
     public void recieveMana(int mana) {
-        this.mana = Math.min(GeneralConfiguration.maxMana, this.mana + mana);
+        this.mana = Math.min(GeneralConfiguration.maxMana.get(), this.mana + mana);
         markDirtyQuick();
     }
 

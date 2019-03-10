@@ -60,23 +60,23 @@ public final class SoundController {
 
 
     public static void playMachineSound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, machine, GeneralConfiguration.baseMachineVolume, GeneralConfiguration.soundMachineTicks);
+        playSound(worldObj, pos, machine, (float) GeneralConfiguration.baseMachineVolume.get(), GeneralConfiguration.soundMachineTicks.get());
     }
 
     public static void playSparksSound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, sparks, GeneralConfiguration.baseSparksVolume, GeneralConfiguration.soundSparksTicks);
+        playSound(worldObj, pos, sparks, (float) GeneralConfiguration.baseSparksVolume.get(), GeneralConfiguration.soundSparksTicks.get());
     }
 
     public static void playSteamSound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, steam, GeneralConfiguration.baseSteamVolume, GeneralConfiguration.soundSteamTicks);
+        playSound(worldObj, pos, steam, (float) GeneralConfiguration.baseSteamVolume.get(), GeneralConfiguration.soundSteamTicks.get());
     }
 
     public static void playBeeps1Sound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, beeps1, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
+        playSound(worldObj, pos, beeps1, (float) GeneralConfiguration.baseBeepsVolume.get(), GeneralConfiguration.soundBeepsTicks.get());
     }
 
     public static void playBeeps2Sound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, beeps2, GeneralConfiguration.baseBeepsVolume, GeneralConfiguration.soundBeepsTicks);
+        playSound(worldObj, pos, beeps2, (float) GeneralConfiguration.baseBeepsVolume.get(), GeneralConfiguration.soundBeepsTicks.get());
     }
 
     public static boolean isMachinePlaying(World worldObj, BlockPos pos) {

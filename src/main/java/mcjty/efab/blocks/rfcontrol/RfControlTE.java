@@ -63,15 +63,15 @@ public class RfControlTE extends GenericEFabTile implements IEFabEnergyStorage, 
 
     @Override
     public int getMaxInternalConsumption() {
-        return GeneralConfiguration.rfControlMax;
+        return GeneralConfiguration.rfControlMax.get();
     }
 
     private int receiveEnergyInternal(int maxReceive, boolean simulate) {
-        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfControlInputPerTick);
+        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfControlInputPerTick.get());
         int newenergy = energy + toreceive;
-        if (newenergy > GeneralConfiguration.rfControlMax) {
-            toreceive -= newenergy - GeneralConfiguration.rfControlMax;
-            newenergy = GeneralConfiguration.rfControlMax;
+        if (newenergy > GeneralConfiguration.rfControlMax.get()) {
+            toreceive -= newenergy - GeneralConfiguration.rfControlMax.get();
+            newenergy = GeneralConfiguration.rfControlMax.get();
         }
         if (!simulate && energy != newenergy) {
             energy = newenergy;
@@ -87,7 +87,7 @@ public class RfControlTE extends GenericEFabTile implements IEFabEnergyStorage, 
 
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
-        return GeneralConfiguration.rfControlMax;
+        return GeneralConfiguration.rfControlMax.get();
     }
 
     @Override
@@ -122,7 +122,7 @@ public class RfControlTE extends GenericEFabTile implements IEFabEnergyStorage, 
 
                     @Override
                     public int getMaxEnergyStored() {
-                        return GeneralConfiguration.rfControlMax;
+                        return GeneralConfiguration.rfControlMax.get();
                     }
 
                     @Override

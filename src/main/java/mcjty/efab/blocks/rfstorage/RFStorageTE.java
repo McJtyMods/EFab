@@ -26,12 +26,12 @@ public class RFStorageTE extends GenericEFabTile implements IEFabEnergyStorage {
     }
 
     protected int getMaxStorage() {
-        return GeneralConfiguration.rfStorageMax;
+        return GeneralConfiguration.rfStorageMax.get();
     }
 
     @Override
     public int getMaxInternalConsumption() {
-        return GeneralConfiguration.rfStorageInternalFlow;
+        return GeneralConfiguration.rfStorageInternalFlow.get();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RFStorageTE extends GenericEFabTile implements IEFabEnergyStorage {
     }
 
     private int receiveEnergyInternal(int maxReceive, boolean simulate) {
-        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfStorageInputPerTick);
+        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfStorageInputPerTick.get());
         int newenergy = energy + toreceive;
         if (newenergy > getMaxStorage()) {
             toreceive -= newenergy - getMaxStorage();

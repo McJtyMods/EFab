@@ -134,7 +134,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.craftAnimationSpinDown;
+            speed -= GeneralConfiguration.craftAnimationSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -142,9 +142,9 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.craftAnimationSpeedUp;
-            if (speed > GeneralConfiguration.maxCraftAnimationSpeed) {
-                speed = GeneralConfiguration.maxCraftAnimationSpeed;
+            speed += GeneralConfiguration.craftAnimationSpeedUp.get();
+            if (speed > GeneralConfiguration.maxCraftAnimationSpeed.get()) {
+                speed = (float) GeneralConfiguration.maxCraftAnimationSpeed.get();
             }
             markDirtyQuick();
         }

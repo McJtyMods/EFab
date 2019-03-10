@@ -36,7 +36,7 @@ public class SteamEngineTE extends GenericEFabTile implements ITickable, ISpeedB
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.steamWheelSpinDown;
+            speed -= GeneralConfiguration.steamWheelSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -44,9 +44,9 @@ public class SteamEngineTE extends GenericEFabTile implements ITickable, ISpeedB
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.steamWheelSpeedUp;
-            if (speed > GeneralConfiguration.maxSteamWheelSpeed) {
-                speed = GeneralConfiguration.maxSteamWheelSpeed;
+            speed += GeneralConfiguration.steamWheelSpeedUp.get();
+            if (speed > GeneralConfiguration.maxSteamWheelSpeed.get()) {
+                speed = (float) GeneralConfiguration.maxSteamWheelSpeed.get();
             }
             markDirtyQuick();
         }

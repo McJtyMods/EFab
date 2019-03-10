@@ -76,8 +76,6 @@ public class CommonSetup extends DefaultCommonSetup {
         Configuration cfg = mainConfig;
         try {
             cfg.load();
-            cfg.addCustomCategoryComment(GeneralConfiguration.CATEGORY_GENERAL, "General settings");
-
             GeneralConfiguration.init(cfg);
         } catch (Exception e1) {
             FMLLog.log(Level.ERROR, e1, "Problem loading config file!");

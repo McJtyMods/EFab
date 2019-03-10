@@ -44,7 +44,7 @@ public class RfControlBlock extends GenericEFabMultiBlockPart<RfControlTE, Empty
                 + TextFormatting.WHITE + " RF");
         tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + GeneralConfiguration.rfControlMax
                 + TextFormatting.WHITE + " RF/t to crafting");
-        if (GeneralConfiguration.maxSpeedupBonus > 1) {
+        if (GeneralConfiguration.maxSpeedupBonus.get() > 1) {
             tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxSpeedupBonus + " RF controls");
             tooltip.add(TextFormatting.GOLD + "to speed up RF based recipes");
         }

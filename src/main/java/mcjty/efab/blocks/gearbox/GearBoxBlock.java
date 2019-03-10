@@ -27,7 +27,7 @@ public class GearBoxBlock extends GenericEFabMultiBlockPart<GearBoxTE, EmptyCont
         super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block adds " + TextFormatting.GREEN + "gearbox"
                 + TextFormatting.WHITE + " style crafting to the fabricator");
-        if (GeneralConfiguration.maxSpeedupBonus > 1) {
+        if (GeneralConfiguration.maxSpeedupBonus.get() > 1) {
             tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxSpeedupBonus + " gearboxes");
             tooltip.add(TextFormatting.GOLD + "to speed up gearbox related recipes");
         }

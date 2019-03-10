@@ -6,11 +6,11 @@ public class AdvancedRFStorageTE extends RFStorageTE {
 
     @Override
     protected int getMaxStorage() {
-        return GeneralConfiguration.advancedRfStorageMax;
+        return GeneralConfiguration.advancedRfStorageMax.get();
     }
 
     @Override
     public int getMaxInternalConsumption() {
-        return GeneralConfiguration.advancedRfStorageInternalFlow;
+        return GeneralConfiguration.advancedRfStorageInternalFlow.get();
     }
 }

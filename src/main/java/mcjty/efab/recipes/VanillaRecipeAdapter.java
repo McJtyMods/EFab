@@ -37,7 +37,7 @@ public class VanillaRecipeAdapter implements IEFabRecipe {
 
     @Override
     public int getCraftTime() {
-        return GeneralConfiguration.vanillaCraftTime;
+        return GeneralConfiguration.vanillaCraftTime.get();
     }
 
     @Nonnull

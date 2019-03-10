@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class BoilerTE extends GenericEFabTile implements ITickable {
 
-    private float temperature = GeneralConfiguration.ambientBoilerTemperature;
+    private float temperature = (float) GeneralConfiguration.ambientBoilerTemperature.get();
 
     // Client side only for steam rendering
     private double timer = 0;
@@ -27,14 +27,14 @@ public class BoilerTE extends GenericEFabTile implements ITickable {
         }
 
         if (hasHeatBelow()) {
-            if (temperature < GeneralConfiguration.maxBoilerTemperature) {
-                temperature += GeneralConfiguration.boilerRiseTemperature;
+            if (temperature < GeneralConfiguration.maxBoilerTemperature.get()) {
+                temperature += GeneralConfiguration.boilerRiseTemperature.get();
             }
         } else {
-            if (temperature > GeneralConfiguration.ambientBoilerTemperature) {
-                temperature -= GeneralConfiguration.boilerCoolTemperature;
-                if (temperature < GeneralConfiguration.ambientBoilerTemperature) {
-                    temperature = GeneralConfiguration.ambientBoilerTemperature;
+            if (temperature > GeneralConfiguration.ambientBoilerTemperature.get()) {
+                temperature -= GeneralConfiguration.boilerCoolTemperature.get();
+                if (temperature < GeneralConfiguration.ambientBoilerTemperature.get()) {
+                    temperature = (float) GeneralConfiguration.ambientBoilerTemperature.get();
                 }
             }
         }

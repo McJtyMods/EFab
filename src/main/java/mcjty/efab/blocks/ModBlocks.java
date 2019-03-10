@@ -48,8 +48,8 @@ public class ModBlocks {
         gearBoxBlock = new GearBoxBlock();
         pipeBlock = new PipeBlock();
         gridBlock = new GridBlock();
-        tankBlock = new TankBlock("tank", GeneralConfiguration.tankCapacity, TankTE.class);
-        tank2Block = new TankBlock("tank2", GeneralConfiguration.tank2Capacity, AdvancedTankTE.class);
+        tankBlock = new TankBlock("tank", GeneralConfiguration.tankCapacity.get(), TankTE.class);
+        tank2Block = new TankBlock("tank2", GeneralConfiguration.tank2Capacity.get(), AdvancedTankTE.class);
         boilerBlock = new BoilerBlock();
         steamEngineBlock = new SteamEngineBlock();
         rfControlBlock = new RfControlBlock();

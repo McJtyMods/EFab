@@ -53,7 +53,7 @@ public abstract class AbstractMonitorTE extends GenericEFabTile implements ITick
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.steamWheelSpinDown;
+            speed -= GeneralConfiguration.steamWheelSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -61,9 +61,9 @@ public abstract class AbstractMonitorTE extends GenericEFabTile implements ITick
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.steamWheelSpeedUp;
-            if (speed > GeneralConfiguration.maxSteamWheelSpeed) {
-                speed = GeneralConfiguration.maxSteamWheelSpeed;
+            speed += GeneralConfiguration.steamWheelSpeedUp.get();
+            if (speed > GeneralConfiguration.maxSteamWheelSpeed.get()) {
+                speed = (float) GeneralConfiguration.maxSteamWheelSpeed.get();
             }
             markDirtyQuick();
         }

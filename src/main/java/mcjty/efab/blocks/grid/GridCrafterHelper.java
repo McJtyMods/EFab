@@ -119,7 +119,7 @@ public class GridCrafterHelper {
             workInventory.setInventorySlotContents(i, inventory.getStackInSlot(i));
         }
         List<IEFabRecipe> validRecipes = RecipeManager.findValidRecipes(workInventory, world);
-        if (validRecipes.isEmpty() && GeneralConfiguration.vanillaCraftingAllowed) {
+        if (validRecipes.isEmpty() && GeneralConfiguration.vanillaCraftingAllowed.get()) {
             // Try vanilla
             if (!vanillaRecipeValid) {
                 vanillaRecipe = CraftingManager.findMatchingRecipe(workInventory, world);
