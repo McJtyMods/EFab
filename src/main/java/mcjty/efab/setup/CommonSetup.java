@@ -8,18 +8,12 @@ import mcjty.efab.items.ModItems;
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.StandardRecipes;
-import mcjty.lib.McJtyRegister;
 import mcjty.lib.setup.DefaultCommonSetup;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public class CommonSetup extends DefaultCommonSetup {
@@ -30,7 +24,6 @@ public class CommonSetup extends DefaultCommonSetup {
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
 
-        MinecraftForge.EVENT_BUS.register(this);
         NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 
         RecipeManager.init();
@@ -53,16 +46,6 @@ public class CommonSetup extends DefaultCommonSetup {
     @Override
     public void createTabs() {
         createTab("EFab", new ItemStack(Blocks.CRAFTING_TABLE));
-    }
-
-    @SubscribeEvent
-    public void registerBlocks(RegistryEvent.Register<Block> event) {
-        McJtyRegister.registerBlocks(EFab.instance, event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public void registerItems(RegistryEvent.Register<Item> event) {
-        McJtyRegister.registerItems(EFab.instance, event.getRegistry());
     }
 
     @Override

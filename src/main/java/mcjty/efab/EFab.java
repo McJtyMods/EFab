@@ -27,7 +27,7 @@ public class EFab implements ModBase {
 
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
 
-    @SidedProxy(clientSide = "mcjty.efab.proxy.ClientProxy", serverSide = "mcjty.efab.proxy.ServerProxy")
+    @SidedProxy(clientSide = "mcjty.efab.setup.ClientProxy", serverSide = "mcjty.efab.setup.ServerProxy")
     public static IProxy proxy;
     public static CommonSetup setup = new CommonSetup();
 
