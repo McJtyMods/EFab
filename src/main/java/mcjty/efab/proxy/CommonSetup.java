@@ -17,13 +17,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-
-import java.io.File;
 
 public class CommonSetup extends DefaultCommonSetup {
 
@@ -34,8 +31,7 @@ public class CommonSetup extends DefaultCommonSetup {
         super.preInit(e);
 
         MinecraftForge.EVENT_BUS.register(this);
-
-        setupModCompat();
+        NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 
         RecipeManager.init();
 
@@ -46,7 +42,8 @@ public class CommonSetup extends DefaultCommonSetup {
         ModBlocks.init();
     }
 
-    private void setupModCompat() {
+    @Override
+    protected void setupModCompat() {
         botania = Loader.isModLoaded("botania") || Loader.isModLoaded("Botania");
         if (botania) {
             BotaniaSupportSetup.preInit();
@@ -69,20 +66,10 @@ public class CommonSetup extends DefaultCommonSetup {
     }
 
     @Override
-    public void init(FMLInitializationEvent e) {
-        super.init(e);
-        NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
-    }
-
-    @Override
     public void postInit(FMLPostInitializationEvent e) {
         super.postInit(e);
         ConfigSetup.postInit();
         StandardRecipes.init();
-        if (botania) {
-            BotaniaSupportSetup.postInit();
-        }
-        File file = new File(modConfigDir.getPath(), "efab_recipes.json");
-        StandardRecipes.readRecipesConfig(file);
+        StandardRecipes.readRecipesConfig();
     }
 }

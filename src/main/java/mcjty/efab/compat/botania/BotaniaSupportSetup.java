@@ -17,10 +17,6 @@ public class BotaniaSupportSetup {
         manaReceptacleBlock = new ManaReceptacleBlock();
     }
 
-    public static void postInit() {
-
-    }
-
     @SideOnly(Side.CLIENT)
     public static void initModels() {
         manaReceptacleBlock.initModel();

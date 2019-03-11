@@ -1,6 +1,7 @@
 package mcjty.efab.recipes;
 
 import com.google.gson.*;
+import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.proxy.CommonSetup;
@@ -166,7 +167,8 @@ public class StandardRecipes {
                 .fluid(new FluidStack(FluidRegistry.LAVA, 1000)));
     }
 
-    public static void readRecipesConfig(File file) {
+    public static void readRecipesConfig() {
+        File file = new File(EFab.setup.getModConfigDir().getPath(), "efab_recipes.json");
         if (!file.exists()) {
             Logging.log("efab_recipes.cfg does not exist, usting defaults");
             return;
