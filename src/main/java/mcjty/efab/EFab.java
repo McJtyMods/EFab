@@ -2,7 +2,7 @@ package mcjty.efab;
 
 
 import mcjty.efab.commands.CmdSaveDefaults;
-import mcjty.efab.proxy.CommonSetup;
+import mcjty.efab.setup.CommonSetup;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.proxy.IProxy;
 import net.minecraft.entity.player.EntityPlayer;

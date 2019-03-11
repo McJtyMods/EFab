@@ -15,7 +15,7 @@ import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.items.UpgradeItem;
-import mcjty.efab.proxy.CommonSetup;
+import mcjty.efab.setup.CommonSetup;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.sound.SoundController;

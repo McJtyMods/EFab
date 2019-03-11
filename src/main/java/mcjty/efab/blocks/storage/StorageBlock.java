@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.storage;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.proxy.GuiProxy;
+import mcjty.efab.setup.GuiProxy;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;

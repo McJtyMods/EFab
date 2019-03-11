@@ -4,7 +4,7 @@ import com.google.gson.*;
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
-import mcjty.efab.proxy.CommonSetup;
+import mcjty.efab.setup.CommonSetup;
 import mcjty.lib.varia.Logging;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;

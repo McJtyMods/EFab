@@ -1,4 +1,4 @@
-package mcjty.efab.proxy;
+package mcjty.efab.setup;
 
 import mcjty.efab.EFab;
 import mcjty.efab.blocks.ModBlocks;

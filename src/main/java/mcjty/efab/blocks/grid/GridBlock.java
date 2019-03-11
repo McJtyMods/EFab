@@ -2,7 +2,7 @@ package mcjty.efab.blocks.grid;
 
 import mcjty.efab.blocks.GenericEFabBlockWithTE;
 import mcjty.efab.blocks.ModBlocks;
-import mcjty.efab.proxy.GuiProxy;
+import mcjty.efab.setup.GuiProxy;
 import mcjty.efab.sound.ISoundProducer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.theoneprobe.api.*;

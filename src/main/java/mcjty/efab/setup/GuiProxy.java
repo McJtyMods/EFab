@@ -1,4 +1,4 @@
-package mcjty.efab.proxy;
+package mcjty.efab.setup;
 
 import mcjty.lib.blocks.GenericBlock;
 import net.minecraft.block.Block;
