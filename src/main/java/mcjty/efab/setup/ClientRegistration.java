@@ -19,7 +19,7 @@ public class ClientRegistration {
     public static void registerModels(ModelRegistryEvent event) {
         ModItems.initModels();
         ModBlocks.initModels();
-        if (CommonSetup.botania) {
+        if (ModSetup.botania) {
             BotaniaSupportSetup.initModels();
         }
     }

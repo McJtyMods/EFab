@@ -15,7 +15,7 @@ import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.items.UpgradeItem;
-import mcjty.efab.setup.CommonSetup;
+import mcjty.efab.setup.ModSetup;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeTier;
 import mcjty.efab.sound.SoundController;
@@ -427,7 +427,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 }
             }
         }
-        if (CommonSetup.botania && recipe.getRequiredManaPerTick() > 0) {
+        if (ModSetup.botania && recipe.getRequiredManaPerTick() > 0) {
             int stillneeded = recipe.getRequiredManaPerTick();
             stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
 
@@ -885,7 +885,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                     powerOptimizers.add(p);
                 } else if (block instanceof TankBlock) {
                     tanks.add(p);
-                } else if (CommonSetup.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
+                } else if (ModSetup.botania && BotaniaSupportSetup.isManaReceptacle(block)) {
                     manaReceptacles.add(p);
                 }
                 addTodo(todo, visited, p);
@@ -995,7 +995,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
                 handleAnimationSpeed(ConfigSetup.steamWheelBoost.get(), this.steamEngines);
             }
-            if (CommonSetup.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
+            if (ModSetup.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
                 handleAnimationSpeed(ConfigSetup.manaRotationBoost.get(), manaReceptacles);
             }
         }
@@ -1255,7 +1255,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             }
         }
 
-        if (CommonSetup.botania && recipe.getRequiredManaPerTick() > 0) {
+        if (ModSetup.botania && recipe.getRequiredManaPerTick() > 0) {
             int totavailable = 0;
             int maxpertick = 0;
             for (BlockPos p : manaReceptacles) {

@@ -2,7 +2,7 @@ package mcjty.efab;
 
 
 import mcjty.efab.commands.CmdSaveDefaults;
-import mcjty.efab.setup.CommonSetup;
+import mcjty.efab.setup.ModSetup;
 import mcjty.lib.base.ModBase;
 import mcjty.lib.proxy.IProxy;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +29,7 @@ public class EFab implements ModBase {
 
     @SidedProxy(clientSide = "mcjty.efab.setup.ClientProxy", serverSide = "mcjty.efab.setup.ServerProxy")
     public static IProxy proxy;
-    public static CommonSetup setup = new CommonSetup();
+    public static ModSetup setup = new ModSetup();
 
     @Mod.Instance(MODID)
     public static EFab instance;
