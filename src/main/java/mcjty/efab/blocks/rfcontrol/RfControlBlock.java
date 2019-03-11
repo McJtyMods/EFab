@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.rfcontrol;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -40,12 +40,12 @@ public class RfControlBlock extends GenericEFabMultiBlockPart<RfControlTE, Empty
     @Override
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + GeneralConfiguration.rfControlMax
+        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + ConfigSetup.rfControlMax
                 + TextFormatting.WHITE + " RF");
-        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + GeneralConfiguration.rfControlMax
+        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + ConfigSetup.rfControlMax
                 + TextFormatting.WHITE + " RF/t to crafting");
-        if (GeneralConfiguration.maxSpeedupBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxSpeedupBonus + " RF controls");
+        if (ConfigSetup.maxSpeedupBonus.get() > 1) {
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus + " RF controls");
             tooltip.add(TextFormatting.GOLD + "to speed up RF based recipes");
         }
     }

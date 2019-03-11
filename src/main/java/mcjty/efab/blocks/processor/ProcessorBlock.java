@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.processor;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,8 +28,8 @@ public class ProcessorBlock extends GenericEFabMultiBlockPart<ProcessorTE, Empty
         tooltip.add(TextFormatting.WHITE + "This block adds " + TextFormatting.GREEN + "processing"
                 + TextFormatting.WHITE + " power to the fabricator");
         tooltip.add(TextFormatting.WHITE + "and is also needed for auto crafting");
-        if (GeneralConfiguration.maxSpeedupBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxSpeedupBonus + " processors");
+        if (ConfigSetup.maxSpeedupBonus.get() > 1) {
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus + " processors");
             tooltip.add(TextFormatting.GOLD + "to speed up processing based recipes");
         }
     }

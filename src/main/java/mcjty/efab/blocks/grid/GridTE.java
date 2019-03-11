@@ -13,7 +13,7 @@ import mcjty.efab.blocks.storage.StorageTE;
 import mcjty.efab.blocks.tank.TankBlock;
 import mcjty.efab.blocks.tank.TankTE;
 import mcjty.efab.compat.botania.BotaniaSupportSetup;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.items.UpgradeItem;
 import mcjty.efab.proxy.CommonSetup;
 import mcjty.efab.recipes.IEFabRecipe;
@@ -263,7 +263,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         boolean startnewcrafts = false;
         crafterDelay--;
         if (crafterDelay <= 0) {
-            crafterDelay = GeneralConfiguration.crafterDelay.get();
+            crafterDelay = ConfigSetup.crafterDelay.get();
             startnewcrafts = true;
         }
 
@@ -273,7 +273,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 CrafterTE crafterTE = (CrafterTE) te;
                 if (crafterTE.isOn()) {
                     if (crafterTE.isCrafting()) {
-                        crafterTE.setSpeedBoost(GeneralConfiguration.craftAnimationBoost.get());
+                        crafterTE.setSpeedBoost(ConfigSetup.craftAnimationBoost.get());
                         crafterTE.handleCraft(this);
                         countBusy++;
                     } else {
@@ -380,7 +380,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
 
         if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
             // Consume a bit of water
-            int amount = GeneralConfiguration.waterSteamCraftingConsumption.get();
+            int amount = ConfigSetup.waterSteamCraftingConsumption.get();
             amount *= getSpeedBonus(recipe);        // Consume more if the operation is faster
 
             FluidStack stack = new FluidStack(FluidRegistry.WATER, amount);
@@ -398,14 +398,14 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 int stillneeded = recipe.getRequiredRfPerTick();
                 stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
 
-                stillneeded = handlePowerPerTick(stillneeded, this.rfControls, GeneralConfiguration.rfControlMax.get());
+                stillneeded = handlePowerPerTick(stillneeded, this.rfControls, ConfigSetup.rfControlMax.get());
                 if (stillneeded > 0) {
-                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorBasic, GeneralConfiguration.rfStorageInternalFlow.get());
-                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorDense, GeneralConfiguration.advancedRfStorageInternalFlow.get());
+                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorBasic, ConfigSetup.rfStorageInternalFlow.get());
+                    stillneeded = handlePowerPerTick(stillneeded, this.rfStorDense, ConfigSetup.advancedRfStorageInternalFlow.get());
                     if (stillneeded > 0) {
-                        if (GeneralConfiguration.ticksAllowedWithoutRF.get() >= 0) {
+                        if (ConfigSetup.ticksAllowedWithoutRF.get() >= 0) {
                             rfWarning++;
-                            if (rfWarning > GeneralConfiguration.ticksAllowedWithoutRF.get()) {
+                            if (rfWarning > ConfigSetup.ticksAllowedWithoutRF.get()) {
                                 return CraftProgressResult.ABORT;
                             }
                         }
@@ -431,11 +431,11 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             int stillneeded = recipe.getRequiredManaPerTick();
             stillneeded *= getSpeedBonus(recipe);   // Consume more if the operation is faster
 
-            stillneeded = handleManaPerTick(stillneeded, this.manaReceptacles, GeneralConfiguration.maxManaUsage.get());
+            stillneeded = handleManaPerTick(stillneeded, this.manaReceptacles, ConfigSetup.maxManaUsage.get());
             if (stillneeded > 0) {
-                if (GeneralConfiguration.ticksAllowedWithoutMana.get() >= 0) {
+                if (ConfigSetup.ticksAllowedWithoutMana.get() >= 0) {
                     manaWarning++;
-                    if (manaWarning > GeneralConfiguration.ticksAllowedWithoutMana.get()) {
+                    if (manaWarning > ConfigSetup.ticksAllowedWithoutMana.get()) {
                         return CraftProgressResult.ABORT;
                     }
                 }
@@ -993,10 +993,10 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             markDirtyClient();
 
             if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
-                handleAnimationSpeed(GeneralConfiguration.steamWheelBoost.get(), this.steamEngines);
+                handleAnimationSpeed(ConfigSetup.steamWheelBoost.get(), this.steamEngines);
             }
             if (CommonSetup.botania && recipe.getRequiredTiers().contains(RecipeTier.MANA)) {
-                handleAnimationSpeed(GeneralConfiguration.manaRotationBoost.get(), manaReceptacles);
+                handleAnimationSpeed(ConfigSetup.manaRotationBoost.get(), manaReceptacles);
             }
         }
     }
@@ -1007,31 +1007,31 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
         if (recipe.getRequiredTiers().contains(RecipeTier.GEARBOX)) {
             int cnt = gearBoxes.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus.get(), cnt);
+                bonus = Math.min(ConfigSetup.maxSpeedupBonus.get(), cnt);
             }
         }
         if (recipe.getRequiredTiers().contains(RecipeTier.STEAM)) {
             int cnt = steamEngines.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus.get(), cnt);
+                bonus = Math.min(ConfigSetup.maxSpeedupBonus.get(), cnt);
             }
         }
         if (recipe.getRequiredTiers().contains(RecipeTier.RF)) {
             int cnt = rfControls.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus.get(), cnt);
+                bonus = Math.min(ConfigSetup.maxSpeedupBonus.get(), cnt);
             }
         }
         if (recipe.getRequiredTiers().contains(RecipeTier.COMPUTING)) {
             int cnt = processors.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(GeneralConfiguration.maxSpeedupBonus.get(), cnt);
+                bonus = Math.min(ConfigSetup.maxSpeedupBonus.get(), cnt);
             }
         }
         if (recipe.getRequiredTiers().contains(RecipeTier.LIQUID)) {
             int cnt = pipes.size();
             if (cnt > 1 && bonus < cnt) {
-                bonus = Math.min(GeneralConfiguration.maxPipeSpeedBonus.get(), cnt);
+                bonus = Math.min(ConfigSetup.maxPipeSpeedBonus.get(), cnt);
             }
         }
         return bonus;
@@ -1261,7 +1261,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
             for (BlockPos p : manaReceptacles) {
                 TileEntity te = getWorld().getTileEntity(p);
                 totavailable += BotaniaSupportSetup.getMana(getWorld(), p);
-                maxpertick += GeneralConfiguration.maxManaUsage.get();
+                maxpertick += ConfigSetup.maxManaUsage.get();
             }
             if (recipe.getRequiredManaPerTick() > maxpertick) {
                 if (errors != null) {
@@ -1299,7 +1299,7 @@ public class GridTE extends GenericTileEntity implements DefaultSidedInventory, 
                 }
             }
 
-            if (findSuitableTank(new FluidStack(FluidRegistry.WATER, GeneralConfiguration.waterSteamStartAmount.get())) == null) {
+            if (findSuitableTank(new FluidStack(FluidRegistry.WATER, ConfigSetup.waterSteamStartAmount.get())) == null) {
                 if (errors != null) {
                     errors.add("Insufficient water to make steam!");
                 } else {

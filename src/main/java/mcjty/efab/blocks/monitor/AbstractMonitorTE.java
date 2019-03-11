@@ -2,7 +2,7 @@ package mcjty.efab.blocks.monitor;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ISpeedBooster;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.network.PacketGetMonitorText;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
@@ -53,7 +53,7 @@ public abstract class AbstractMonitorTE extends GenericEFabTile implements ITick
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.steamWheelSpinDown.get();
+            speed -= ConfigSetup.steamWheelSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -61,9 +61,9 @@ public abstract class AbstractMonitorTE extends GenericEFabTile implements ITick
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.steamWheelSpeedUp.get();
-            if (speed > GeneralConfiguration.maxSteamWheelSpeed.get()) {
-                speed = (float) GeneralConfiguration.maxSteamWheelSpeed.get();
+            speed += ConfigSetup.steamWheelSpeedUp.get();
+            if (speed > ConfigSetup.maxSteamWheelSpeed.get()) {
+                speed = (float) ConfigSetup.maxSteamWheelSpeed.get();
             }
             markDirtyQuick();
         }

@@ -6,7 +6,7 @@ import mcjty.efab.blocks.crafter.CrafterTE;
 import mcjty.efab.blocks.grid.GridContainer;
 import mcjty.efab.compat.jei.grid.GridRecipeCategory;
 import mcjty.efab.compat.jei.grid.GridRecipeWrapperFactory;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.network.EFabMessages;
 import mcjty.efab.network.PacketSendRecipe;
 import mcjty.efab.recipes.IEFabRecipe;
@@ -42,7 +42,7 @@ public class EFabJeiPlugin implements IModPlugin {
         registry.addRecipes(efabRecipes, GridRecipeCategory.ID);
         IRecipeTransferRegistry transferRegistry = registry.getRecipeTransferRegistry();
 
-        if (GeneralConfiguration.vanillaCraftingAllowed.get()) {
+        if (ConfigSetup.vanillaCraftingAllowed.get()) {
             registry.addRecipeCatalyst(new ItemStack(ModBlocks.gridBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
             registry.addRecipeCatalyst(new ItemStack(ModBlocks.crafterBlock), GridRecipeCategory.ID, VanillaRecipeCategoryUid.CRAFTING);
             transferRegistry.addRecipeTransferHandler(GridContainer.class, VanillaRecipeCategoryUid.CRAFTING, GridContainer.SLOT_CRAFTINPUT, 9, GridContainer.SLOT_GHOSTOUT + 1, 36);

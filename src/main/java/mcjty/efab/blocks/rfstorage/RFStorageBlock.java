@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.rfstorage;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -29,10 +29,10 @@ public class RFStorageBlock extends GenericEFabMultiBlockPart<RFStorageTE, Empty
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, playerIn, tooltip, flag);
         tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN
-                + (advanced ? GeneralConfiguration.advancedRfStorageMax : GeneralConfiguration.rfStorageMax)
+                + (advanced ? ConfigSetup.advancedRfStorageMax : ConfigSetup.rfStorageMax)
                 + TextFormatting.WHITE + " RF");
         tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN
-                + (advanced ? GeneralConfiguration.advancedRfStorageInternalFlow : GeneralConfiguration.rfStorageInternalFlow)
+                + (advanced ? ConfigSetup.advancedRfStorageInternalFlow : ConfigSetup.rfStorageInternalFlow)
                 + TextFormatting.WHITE + " RF/t to crafting");
     }
 }

@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.boiler;
 
 import mcjty.efab.blocks.GenericEFabTile;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class BoilerTE extends GenericEFabTile implements ITickable {
 
-    private float temperature = (float) GeneralConfiguration.ambientBoilerTemperature.get();
+    private float temperature = (float) ConfigSetup.ambientBoilerTemperature.get();
 
     // Client side only for steam rendering
     private double timer = 0;
@@ -27,14 +27,14 @@ public class BoilerTE extends GenericEFabTile implements ITickable {
         }
 
         if (hasHeatBelow()) {
-            if (temperature < GeneralConfiguration.maxBoilerTemperature.get()) {
-                temperature += GeneralConfiguration.boilerRiseTemperature.get();
+            if (temperature < ConfigSetup.maxBoilerTemperature.get()) {
+                temperature += ConfigSetup.boilerRiseTemperature.get();
             }
         } else {
-            if (temperature > GeneralConfiguration.ambientBoilerTemperature.get()) {
-                temperature -= GeneralConfiguration.boilerCoolTemperature.get();
-                if (temperature < GeneralConfiguration.ambientBoilerTemperature.get()) {
-                    temperature = (float) GeneralConfiguration.ambientBoilerTemperature.get();
+            if (temperature > ConfigSetup.ambientBoilerTemperature.get()) {
+                temperature -= ConfigSetup.boilerCoolTemperature.get();
+                if (temperature < ConfigSetup.ambientBoilerTemperature.get()) {
+                    temperature = (float) ConfigSetup.ambientBoilerTemperature.get();
                 }
             }
         }

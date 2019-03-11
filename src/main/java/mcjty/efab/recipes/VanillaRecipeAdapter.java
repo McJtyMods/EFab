@@ -1,6 +1,6 @@
 package mcjty.efab.recipes;
 
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,7 +37,7 @@ public class VanillaRecipeAdapter implements IEFabRecipe {
 
     @Override
     public int getCraftTime() {
-        return GeneralConfiguration.vanillaCraftTime.get();
+        return ConfigSetup.vanillaCraftTime.get();
     }
 
     @Nonnull

@@ -2,7 +2,7 @@ package mcjty.efab.sound;
 
 import com.google.common.collect.Maps;
 import mcjty.efab.EFab;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.util.ResourceLocation;
@@ -60,23 +60,23 @@ public final class SoundController {
 
 
     public static void playMachineSound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, machine, (float) GeneralConfiguration.baseMachineVolume.get(), GeneralConfiguration.soundMachineTicks.get());
+        playSound(worldObj, pos, machine, (float) ConfigSetup.baseMachineVolume.get(), ConfigSetup.soundMachineTicks.get());
     }
 
     public static void playSparksSound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, sparks, (float) GeneralConfiguration.baseSparksVolume.get(), GeneralConfiguration.soundSparksTicks.get());
+        playSound(worldObj, pos, sparks, (float) ConfigSetup.baseSparksVolume.get(), ConfigSetup.soundSparksTicks.get());
     }
 
     public static void playSteamSound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, steam, (float) GeneralConfiguration.baseSteamVolume.get(), GeneralConfiguration.soundSteamTicks.get());
+        playSound(worldObj, pos, steam, (float) ConfigSetup.baseSteamVolume.get(), ConfigSetup.soundSteamTicks.get());
     }
 
     public static void playBeeps1Sound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, beeps1, (float) GeneralConfiguration.baseBeepsVolume.get(), GeneralConfiguration.soundBeepsTicks.get());
+        playSound(worldObj, pos, beeps1, (float) ConfigSetup.baseBeepsVolume.get(), ConfigSetup.soundBeepsTicks.get());
     }
 
     public static void playBeeps2Sound(World worldObj, BlockPos pos) {
-        playSound(worldObj, pos, beeps2, (float) GeneralConfiguration.baseBeepsVolume.get(), GeneralConfiguration.soundBeepsTicks.get());
+        playSound(worldObj, pos, beeps2, (float) ConfigSetup.baseBeepsVolume.get(), ConfigSetup.soundBeepsTicks.get());
     }
 
     public static boolean isMachinePlaying(World worldObj, BlockPos pos) {

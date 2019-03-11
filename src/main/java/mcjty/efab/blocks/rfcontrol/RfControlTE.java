@@ -2,7 +2,7 @@ package mcjty.efab.blocks.rfcontrol;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.IEFabEnergyStorage;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -63,15 +63,15 @@ public class RfControlTE extends GenericEFabTile implements IEFabEnergyStorage, 
 
     @Override
     public int getMaxInternalConsumption() {
-        return GeneralConfiguration.rfControlMax.get();
+        return ConfigSetup.rfControlMax.get();
     }
 
     private int receiveEnergyInternal(int maxReceive, boolean simulate) {
-        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfControlInputPerTick.get());
+        int toreceive = Math.min(maxReceive, ConfigSetup.rfControlInputPerTick.get());
         int newenergy = energy + toreceive;
-        if (newenergy > GeneralConfiguration.rfControlMax.get()) {
-            toreceive -= newenergy - GeneralConfiguration.rfControlMax.get();
-            newenergy = GeneralConfiguration.rfControlMax.get();
+        if (newenergy > ConfigSetup.rfControlMax.get()) {
+            toreceive -= newenergy - ConfigSetup.rfControlMax.get();
+            newenergy = ConfigSetup.rfControlMax.get();
         }
         if (!simulate && energy != newenergy) {
             energy = newenergy;
@@ -87,7 +87,7 @@ public class RfControlTE extends GenericEFabTile implements IEFabEnergyStorage, 
 
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
-        return GeneralConfiguration.rfControlMax.get();
+        return ConfigSetup.rfControlMax.get();
     }
 
     @Override
@@ -122,7 +122,7 @@ public class RfControlTE extends GenericEFabTile implements IEFabEnergyStorage, 
 
                     @Override
                     public int getMaxEnergyStored() {
-                        return GeneralConfiguration.rfControlMax.get();
+                        return ConfigSetup.rfControlMax.get();
                     }
 
                     @Override

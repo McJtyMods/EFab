@@ -2,7 +2,7 @@ package mcjty.efab.blocks.steamengine;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ISpeedBooster;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 
@@ -36,7 +36,7 @@ public class SteamEngineTE extends GenericEFabTile implements ITickable, ISpeedB
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.steamWheelSpinDown.get();
+            speed -= ConfigSetup.steamWheelSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -44,9 +44,9 @@ public class SteamEngineTE extends GenericEFabTile implements ITickable, ISpeedB
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.steamWheelSpeedUp.get();
-            if (speed > GeneralConfiguration.maxSteamWheelSpeed.get()) {
-                speed = (float) GeneralConfiguration.maxSteamWheelSpeed.get();
+            speed += ConfigSetup.steamWheelSpeedUp.get();
+            if (speed > ConfigSetup.maxSteamWheelSpeed.get()) {
+                speed = (float) ConfigSetup.maxSteamWheelSpeed.get();
             }
             markDirtyQuick();
         }

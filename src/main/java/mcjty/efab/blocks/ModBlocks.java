@@ -19,7 +19,7 @@ import mcjty.efab.blocks.storage.StorageBlock;
 import mcjty.efab.blocks.tank.AdvancedTankTE;
 import mcjty.efab.blocks.tank.TankBlock;
 import mcjty.efab.blocks.tank.TankTE;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -48,8 +48,8 @@ public class ModBlocks {
         gearBoxBlock = new GearBoxBlock();
         pipeBlock = new PipeBlock();
         gridBlock = new GridBlock();
-        tankBlock = new TankBlock("tank", GeneralConfiguration.tankCapacity.get(), TankTE.class);
-        tank2Block = new TankBlock("tank2", GeneralConfiguration.tank2Capacity.get(), AdvancedTankTE.class);
+        tankBlock = new TankBlock("tank", ConfigSetup.tankCapacity.get(), TankTE.class);
+        tank2Block = new TankBlock("tank2", ConfigSetup.tank2Capacity.get(), AdvancedTankTE.class);
         boilerBlock = new BoilerBlock();
         steamEngineBlock = new SteamEngineBlock();
         rfControlBlock = new RfControlBlock();

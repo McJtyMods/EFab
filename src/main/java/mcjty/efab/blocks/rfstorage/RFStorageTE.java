@@ -2,7 +2,7 @@ package mcjty.efab.blocks.rfstorage;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.IEFabEnergyStorage;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -26,12 +26,12 @@ public class RFStorageTE extends GenericEFabTile implements IEFabEnergyStorage {
     }
 
     protected int getMaxStorage() {
-        return GeneralConfiguration.rfStorageMax.get();
+        return ConfigSetup.rfStorageMax.get();
     }
 
     @Override
     public int getMaxInternalConsumption() {
-        return GeneralConfiguration.rfStorageInternalFlow.get();
+        return ConfigSetup.rfStorageInternalFlow.get();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RFStorageTE extends GenericEFabTile implements IEFabEnergyStorage {
     }
 
     private int receiveEnergyInternal(int maxReceive, boolean simulate) {
-        int toreceive = Math.min(maxReceive, GeneralConfiguration.rfStorageInputPerTick.get());
+        int toreceive = Math.min(maxReceive, ConfigSetup.rfStorageInputPerTick.get());
         int newenergy = energy + toreceive;
         if (newenergy > getMaxStorage()) {
             toreceive -= newenergy - getMaxStorage();

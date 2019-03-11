@@ -1,16 +1,16 @@
 package mcjty.efab.blocks.rfstorage;
 
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 
 public class AdvancedRFStorageTE extends RFStorageTE {
 
     @Override
     protected int getMaxStorage() {
-        return GeneralConfiguration.advancedRfStorageMax.get();
+        return ConfigSetup.advancedRfStorageMax.get();
     }
 
     @Override
     public int getMaxInternalConsumption() {
-        return GeneralConfiguration.advancedRfStorageInternalFlow.get();
+        return ConfigSetup.advancedRfStorageInternalFlow.get();
     }
 }

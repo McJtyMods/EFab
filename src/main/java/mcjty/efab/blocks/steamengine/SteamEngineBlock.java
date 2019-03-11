@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.steamengine;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -37,8 +37,8 @@ public class SteamEngineBlock extends GenericEFabMultiBlockPart<SteamEngineTE, E
         tooltip.add(TextFormatting.WHITE + "This block adds " + TextFormatting.GREEN + "steam" + TextFormatting.WHITE + " crafting to the fabricator");
         tooltip.add(TextFormatting.WHITE + "Also needs a " + TextFormatting.GREEN + "boiler" + TextFormatting.WHITE
                 + " and a " + TextFormatting.GREEN + "tank" + TextFormatting.WHITE + " with water");
-        if (GeneralConfiguration.maxSpeedupBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxSpeedupBonus + " steam engines");
+        if (ConfigSetup.maxSpeedupBonus.get() > 1) {
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus + " steam engines");
             tooltip.add(TextFormatting.GOLD + "to speed up steam related recipes");
         }
     }

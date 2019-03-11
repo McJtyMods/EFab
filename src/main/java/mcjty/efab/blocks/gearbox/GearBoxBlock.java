@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.gearbox;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,8 +27,8 @@ public class GearBoxBlock extends GenericEFabMultiBlockPart<GearBoxTE, EmptyCont
         super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add(TextFormatting.WHITE + "This block adds " + TextFormatting.GREEN + "gearbox"
                 + TextFormatting.WHITE + " style crafting to the fabricator");
-        if (GeneralConfiguration.maxSpeedupBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxSpeedupBonus + " gearboxes");
+        if (ConfigSetup.maxSpeedupBonus.get() > 1) {
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus + " gearboxes");
             tooltip.add(TextFormatting.GOLD + "to speed up gearbox related recipes");
         }
     }

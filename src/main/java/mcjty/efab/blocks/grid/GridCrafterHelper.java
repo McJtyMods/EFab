@@ -1,6 +1,6 @@
 package mcjty.efab.blocks.grid;
 
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.VanillaRecipeAdapter;
@@ -119,7 +119,7 @@ public class GridCrafterHelper {
             workInventory.setInventorySlotContents(i, inventory.getStackInSlot(i));
         }
         List<IEFabRecipe> validRecipes = RecipeManager.findValidRecipes(workInventory, world);
-        if (validRecipes.isEmpty() && GeneralConfiguration.vanillaCraftingAllowed.get()) {
+        if (validRecipes.isEmpty() && ConfigSetup.vanillaCraftingAllowed.get()) {
             // Try vanilla
             if (!vanillaRecipeValid) {
                 vanillaRecipe = CraftingManager.findMatchingRecipe(workInventory, world);

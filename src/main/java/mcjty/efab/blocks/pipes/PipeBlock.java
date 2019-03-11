@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.pipes;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -36,8 +36,8 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
     @Override
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        if (GeneralConfiguration.maxPipeSpeedBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + GeneralConfiguration.maxPipeSpeedBonus + " pipes");
+        if (ConfigSetup.maxPipeSpeedBonus.get() > 1) {
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxPipeSpeedBonus + " pipes");
             tooltip.add(TextFormatting.GOLD + "to speed up liquid related recipes");
         }
     }

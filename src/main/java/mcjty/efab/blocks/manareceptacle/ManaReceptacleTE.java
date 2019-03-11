@@ -2,7 +2,7 @@ package mcjty.efab.blocks.manareceptacle;
 
 import mcjty.efab.blocks.GenericEFabTile;
 import mcjty.efab.blocks.ISpeedBooster;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import vazkii.botania.api.mana.IManaReceiver;
@@ -39,7 +39,7 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver, 
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.manaRotationSpinDown.get();
+            speed -= ConfigSetup.manaRotationSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -47,9 +47,9 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver, 
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.manaRotationSpeedUp.get();
-            if (speed > GeneralConfiguration.maxManaRotationSpeed.get()) {
-                speed = (float) GeneralConfiguration.maxManaRotationSpeed.get();
+            speed += ConfigSetup.manaRotationSpeedUp.get();
+            if (speed > ConfigSetup.maxManaRotationSpeed.get()) {
+                speed = (float) ConfigSetup.maxManaRotationSpeed.get();
             }
             markDirtyQuick();
         }
@@ -83,12 +83,12 @@ public class ManaReceptacleTE extends GenericEFabTile implements IManaReceiver, 
 
     @Override
     public boolean isFull() {
-        return mana >= GeneralConfiguration.maxMana.get();
+        return mana >= ConfigSetup.maxMana.get();
     }
 
     @Override
     public void recieveMana(int mana) {
-        this.mana = Math.min(GeneralConfiguration.maxMana.get(), this.mana + mana);
+        this.mana = Math.min(ConfigSetup.maxMana.get(), this.mana + mana);
         markDirtyQuick();
     }
 

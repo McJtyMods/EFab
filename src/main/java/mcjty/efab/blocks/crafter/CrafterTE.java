@@ -5,7 +5,7 @@ import mcjty.efab.blocks.ISpeedBooster;
 import mcjty.efab.blocks.grid.GridCrafterHelper;
 import mcjty.efab.blocks.grid.GridTE;
 import mcjty.efab.blocks.grid.MInteger;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.recipes.IEFabRecipe;
 import mcjty.lib.bindings.DefaultAction;
 import mcjty.lib.bindings.DefaultValue;
@@ -134,7 +134,7 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
     @Override
     public void update() {
         if (speed > 1.0f) {
-            speed -= GeneralConfiguration.craftAnimationSpinDown.get();
+            speed -= ConfigSetup.craftAnimationSpinDown.get();
             if (speed < 1.0f) {
                 speed = 1.0f;
             }
@@ -142,9 +142,9 @@ public class CrafterTE extends GenericEFabTile implements DefaultSidedInventory,
         }
         if (speedBoost > 0) {
             speedBoost--;
-            speed += GeneralConfiguration.craftAnimationSpeedUp.get();
-            if (speed > GeneralConfiguration.maxCraftAnimationSpeed.get()) {
-                speed = (float) GeneralConfiguration.maxCraftAnimationSpeed.get();
+            speed += ConfigSetup.craftAnimationSpeedUp.get();
+            if (speed > ConfigSetup.maxCraftAnimationSpeed.get()) {
+                speed = (float) ConfigSetup.maxCraftAnimationSpeed.get();
             }
             markDirtyQuick();
         }

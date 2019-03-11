@@ -1,9 +1,12 @@
 package mcjty.efab.config;
 
+import mcjty.efab.EFab;
 import mcjty.lib.thirteen.ConfigSpec;
 import net.minecraftforge.common.config.Configuration;
 
-public class GeneralConfiguration {
+import java.io.File;
+
+public class ConfigSetup {
 
     public static final String CATEGORY_GENERAL = "general";
 
@@ -223,8 +226,19 @@ public class GeneralConfiguration {
     public static ConfigSpec SERVER_CONFIG;
     public static ConfigSpec CLIENT_CONFIG;
 
-    public static void init(Configuration cfg) {
-        SERVER_CONFIG = SERVER_BUILDER.build(cfg);
-        CLIENT_CONFIG = CLIENT_BUILDER.build(cfg);
+    private static Configuration mainConfig;
+
+    public static void init() {
+        mainConfig = new Configuration(new File(EFab.setup.getModConfigDir().getPath(), "efab.cfg"));
+        mainConfig.load();
+        SERVER_CONFIG = SERVER_BUILDER.build(mainConfig);
+        CLIENT_CONFIG = CLIENT_BUILDER.build(mainConfig);
+    }
+
+    public static void postInit() {
+        if (mainConfig.hasChanged()) {
+            mainConfig.save();
+        }
+        mainConfig = null;
     }
 }

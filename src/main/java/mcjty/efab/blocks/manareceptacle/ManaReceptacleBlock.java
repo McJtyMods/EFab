@@ -1,7 +1,7 @@
 package mcjty.efab.blocks.manareceptacle;
 
 import mcjty.efab.blocks.GenericEFabMultiBlockPart;
-import mcjty.efab.config.GeneralConfiguration;
+import mcjty.efab.config.ConfigSetup;
 import mcjty.lib.container.EmptyContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -40,9 +40,9 @@ public class ManaReceptacleBlock extends GenericEFabMultiBlockPart<ManaReceptacl
     @Override
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + GeneralConfiguration.maxMana
+        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + ConfigSetup.maxMana
                 + TextFormatting.WHITE + " mana");
-        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + GeneralConfiguration.maxManaUsage
+        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + ConfigSetup.maxManaUsage
                 + TextFormatting.WHITE + " mana/t to crafting");
     }
 
