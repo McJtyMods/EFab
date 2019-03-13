@@ -15,9 +15,6 @@ public class RecipeManager {
         recipes.clear();
     }
 
-    public static void init() {
-    }
-
     public static List<IEFabRecipe> getRecipes() {
         return recipes;
     }

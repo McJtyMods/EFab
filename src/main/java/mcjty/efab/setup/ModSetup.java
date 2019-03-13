@@ -6,7 +6,6 @@ import mcjty.efab.compat.botania.BotaniaSupportSetup;
 import mcjty.efab.config.ConfigSetup;
 import mcjty.efab.items.ModItems;
 import mcjty.efab.network.EFabMessages;
-import mcjty.efab.recipes.RecipeManager;
 import mcjty.efab.recipes.StandardRecipes;
 import mcjty.lib.setup.DefaultModSetup;
 import net.minecraft.init.Blocks;
@@ -26,11 +25,10 @@ public class ModSetup extends DefaultModSetup {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 
-        RecipeManager.init();
+        ConfigSetup.init();
 
         EFabMessages.registerMessages("efab");
 
-        ConfigSetup.init();
         ModItems.init();
         ModBlocks.init();
     }
