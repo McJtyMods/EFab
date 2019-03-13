@@ -25,8 +25,6 @@ public class ModSetup extends DefaultModSetup {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(EFab.instance, new GuiProxy());
 
-        ConfigSetup.init();
-
         EFabMessages.registerMessages("efab");
 
         ModItems.init();
@@ -39,6 +37,11 @@ public class ModSetup extends DefaultModSetup {
         if (botania) {
             BotaniaSupportSetup.preInit();
         }
+    }
+
+    @Override
+    protected void setupConfig() {
+        ConfigSetup.init();
     }
 
     @Override
