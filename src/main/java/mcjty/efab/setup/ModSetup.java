@@ -46,7 +46,7 @@ public class ModSetup extends DefaultModSetup {
 
     @Override
     public void createTabs() {
-        createTab("EFab", new ItemStack(Blocks.CRAFTING_TABLE));
+        createTab("EFab", () -> new ItemStack(Blocks.CRAFTING_TABLE));
     }
 
     @Override
