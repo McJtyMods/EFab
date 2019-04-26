@@ -22,8 +22,8 @@ public class EFab implements ModBase {
 
     public static final String MODID = "efab";
     public static final String MODNAME = "EFab";
-    public static final String MODVERSION = "0.1.2";
-    public static final String MIN_MCJTYLIB_VER = "3.1.0";
+    public static final String MODVERSION = "0.2.0";
+    public static final String MIN_MCJTYLIB_VER = "3.5.0";
 
     public static final String MIN_FORGE11_VER = "13.19.0.2176";
 

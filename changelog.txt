@@ -1,4 +1,5 @@
-Upcoming:
+0.2.0:
+- Depends on McJtyLib 3.5.0!
 - Fixed ownership and other attributes for pipes when they are placed (fix by Shananiganeer)
 
 0.1.2:
