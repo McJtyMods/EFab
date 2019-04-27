@@ -29,10 +29,10 @@ public class RFStorageBlock extends GenericEFabMultiBlockPart<RFStorageTE, Empty
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, playerIn, tooltip, flag);
         tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN
-                + (advanced ? ConfigSetup.advancedRfStorageMax : ConfigSetup.rfStorageMax)
+                + (advanced ? ConfigSetup.advancedRfStorageMax.get() : ConfigSetup.rfStorageMax.get())
                 + TextFormatting.WHITE + " RF");
         tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN
-                + (advanced ? ConfigSetup.advancedRfStorageInternalFlow : ConfigSetup.rfStorageInternalFlow)
+                + (advanced ? ConfigSetup.advancedRfStorageInternalFlow.get() : ConfigSetup.rfStorageInternalFlow.get())
                 + TextFormatting.WHITE + " RF/t to crafting");
     }
 }

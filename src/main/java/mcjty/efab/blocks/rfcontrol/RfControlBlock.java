@@ -40,12 +40,12 @@ public class RfControlBlock extends GenericEFabMultiBlockPart<RfControlTE, Empty
     @Override
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + ConfigSetup.rfControlMax
+        tooltip.add(TextFormatting.WHITE + "This block can store " + TextFormatting.GREEN + ConfigSetup.rfControlMax.get()
                 + TextFormatting.WHITE + " RF");
-        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + ConfigSetup.rfControlMax
+        tooltip.add(TextFormatting.WHITE + "and contributes " + TextFormatting.GREEN + ConfigSetup.rfControlMax.get()
                 + TextFormatting.WHITE + " RF/t to crafting");
         if (ConfigSetup.maxSpeedupBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus + " RF controls");
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus.get() + " RF controls");
             tooltip.add(TextFormatting.GOLD + "to speed up RF based recipes");
         }
     }

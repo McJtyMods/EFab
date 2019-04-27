@@ -29,7 +29,7 @@ public class ProcessorBlock extends GenericEFabMultiBlockPart<ProcessorTE, Empty
                 + TextFormatting.WHITE + " power to the fabricator");
         tooltip.add(TextFormatting.WHITE + "and is also needed for auto crafting");
         if (ConfigSetup.maxSpeedupBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus + " processors");
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus.get() + " processors");
             tooltip.add(TextFormatting.GOLD + "to speed up processing based recipes");
         }
     }

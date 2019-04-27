@@ -38,7 +38,7 @@ public class SteamEngineBlock extends GenericEFabMultiBlockPart<SteamEngineTE, E
         tooltip.add(TextFormatting.WHITE + "Also needs a " + TextFormatting.GREEN + "boiler" + TextFormatting.WHITE
                 + " and a " + TextFormatting.GREEN + "tank" + TextFormatting.WHITE + " with water");
         if (ConfigSetup.maxSpeedupBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus + " steam engines");
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxSpeedupBonus.get() + " steam engines");
             tooltip.add(TextFormatting.GOLD + "to speed up steam related recipes");
         }
     }

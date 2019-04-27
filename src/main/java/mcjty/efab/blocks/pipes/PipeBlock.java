@@ -37,7 +37,7 @@ public class PipeBlock extends GenericEFabMultiBlockPart<PipeTE, EmptyContainer>
     public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
         if (ConfigSetup.maxPipeSpeedBonus.get() > 1) {
-            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxPipeSpeedBonus + " pipes");
+            tooltip.add(TextFormatting.GOLD + "You can use up to " + ConfigSetup.maxPipeSpeedBonus.get() + " pipes");
             tooltip.add(TextFormatting.GOLD + "to speed up liquid related recipes");
         }
     }
